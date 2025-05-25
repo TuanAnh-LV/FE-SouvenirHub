@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./loading.css";
+import "./Loading.css";
 
 const Loading = ({ timeout = 20000 }) => {
   const [showTimeout, setShowTimeout] = useState(true);
