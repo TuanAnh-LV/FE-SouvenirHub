@@ -1,7 +1,7 @@
 import React, { lazy } from 'react'
 
 // Lazy load components
-const Home = lazy(() => import('../pages/home'))
+const Home = lazy(() => import('../pages/Home'))
 const About = lazy(() => import('../pages/about'))
 const Contact = lazy(() => import('../pages/contact'))
 
