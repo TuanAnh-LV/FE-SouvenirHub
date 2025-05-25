@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import './App.css'
-import Loading from './app/loading'
+import Loading from './app/Loading'
 import { useSelector } from 'react-redux'
 import routes from './routes/routes'
 
