@@ -67,21 +67,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const handleLogin = async (token) => {
+  const handleLogin = async (token, userFromLogin = null) => {
     try {
-      if (!token) {
+      if (!token)
         throw new HttpException("No token provided", HTTP_STATUS.UNAUTHORIZED);
-      }
 
       localStorage.setItem("token", token);
       setToken(token);
-      const response = await AuthService.getUserRole();
-      const userData = response.data;
+
+      let userData = userFromLogin;
+
+      if (!userData) {
+        const response = await AuthService.getUserRole();
+        userData = response.data;
+      }
 
       if (!userData) throw new Error("No user info");
 
       setUserInfo(userData);
       setRole(userData.role);
+      localStorage.setItem("userInfo", JSON.stringify(userData));
       localStorage.setItem("role", userData.role);
     } catch (error) {
       console.error("Failed to get user info:", error);
@@ -94,13 +99,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  //   const logout = () => {
-  //     setToken(null);
-  //     setRole(null);
-  //     setUserInfo(null);
-  //     localStorage.clear();
-  //     window.location.href = "/login";
-  //   };
+  const logout = () => {
+    setToken(null);
+    setRole(null);
+    setUserInfo(null);
+    localStorage.clear();
+  };
 
   //   const forgotPassword = async (params) => {
   //     try {
@@ -142,7 +146,7 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         setIsLoading,
         handleLogin,
-        // logout,
+        logout,
         // forgotPassword,
         // getCurrentUser,
         loginGoogle,

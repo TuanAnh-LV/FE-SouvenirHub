@@ -8,6 +8,20 @@ export const ROUTER_URL = {
     DASHBOARD: "/admin",
    
   },
+  USER: {
+    PROFILE: "/user/profile",
+    SETTINGS: "/user/settings",
+  },
+  BUYER: {
+    DASHBOARD: "/buyer",
+    ORDERS: "/buyer/orders",
+    CART: "/buyer/cart",
+  },
+  SELLER: {
+    DASHBOARD: "/seller",
+    PRODUCTS: "/seller/products",
+    ORDERS: "/seller/orders",
+  },
   COMMON: {
     HOME: "/",
     ABOUT: "/about",

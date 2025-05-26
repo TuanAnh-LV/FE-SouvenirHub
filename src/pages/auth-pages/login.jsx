@@ -11,7 +11,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
-  const { loginGoogle } = useAuth();
+  const { loginGoogle, handleLogin } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -26,9 +26,9 @@ const LoginPage = () => {
         email: form.email,
         password: form.password,
       });
-      if (response?.data?.token) {
-        localStorage.setItem("token", response.data.token);
-        message.success("Login successful!");
+      if (response?.data?.token && response?.data?.user) {
+        await handleLogin(response.data.token, response.data.user);
+        message.success("Đăng nhập thành công!");
         navigate(ROUTER_URL.COMMON.HOME);
       } else {
         message.error("Invalid login response.");
@@ -44,7 +44,7 @@ const LoginPage = () => {
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
-      const idToken = await result.user.getIdToken(); // 👈 Lấy Firebase idToken
+      const idToken = await result.user.getIdToken();
       await loginGoogle(idToken);
       message.success("Login with Google successful!");
       navigate(ROUTER_URL.COMMON.HOME);
