@@ -46,80 +46,93 @@ export const AuthProvider = ({ children }) => {
     }
   }, [userInfo]);
 
-//   const loginGoogle = async (googleId) => {
-//     try {
-//       const response = await AuthService.loginGoogle({ google_id: googleId });
-//       if (!response.data?.data?.token) {
-//         throw new HttpException("Invalid login response", HTTP_STATUS.BADREQUEST);
-//       }
-//       const token = response.data.data.token;
-//       setToken(token);
-//       localStorage.setItem("token", token);
-//       await handleLogin(token);
-//     } catch (error) {
-//       console.error("Failed to login with Google:", error);
-//       throw error instanceof HttpException ? error : new HttpException("Failed to login with Google", HTTP_STATUS.INTERNALSERVER_ERROR);
-//     }
-//   };
-
-  const handleLogin = async (token) => {
+  const loginGoogle = async (idToken) => {
     try {
-      if (!token) {
-        throw new HttpException("No token provided", HTTP_STATUS.UNAUTHORIZED);
-      }
-      localStorage.setItem("token", token);
-      setToken(token);
+      const response = await AuthService.loginGoogle({ idToken });
 
-      const response = await AuthService.getUserRole({ token });
-      if (!response.data?.data) {
-        throw new HttpException("Invalid user data", HTTP_STATUS.BADREQUEST);
+      const token = response.data?.token;
+      if (!token) {
+        throw new Error("Invalid Google login response");
       }
-      const userData = response.data.data;
-      setUserInfo(userData);
-      setRole(userData.role);
-      localStorage.setItem("role", userData.role);
+
+      await handleLogin(token);
     } catch (error) {
-      console.error("Failed to get user info:", error);
-    //   logout();
-      throw error instanceof HttpException ? error : new HttpException("Failed to get user info", HTTP_STATUS.INTERNALSERVER_ERROR);
+      console.error("Failed to login with Google:", error);
+      throw error instanceof HttpException
+        ? error
+        : new HttpException(
+            "Failed to login with Google",
+            HTTP_STATUS.INTERNALSERVER_ERROR
+          );
     }
   };
 
-//   const logout = () => {
-//     setToken(null);
-//     setRole(null);
-//     setUserInfo(null);
-//     localStorage.clear();
-//     window.location.href = "/login";
-//   };
+  const handleLogin = async (token, userFromLogin = null) => {
+    try {
+      if (!token)
+        throw new HttpException("No token provided", HTTP_STATUS.UNAUTHORIZED);
 
-//   const forgotPassword = async (params) => {
-//     try {
-//       const response = await AuthService.forgotPassword(params.email);
-//       return response.data;
-//     } catch (error) {
-//       console.error("Failed to forgot password:", error);
-//       throw error instanceof HttpException ? error : new HttpException("Failed to forgot password", HTTP_STATUS.INTERNALSERVER_ERROR);
-//     }
-//   };
+      localStorage.setItem("token", token);
+      setToken(token);
 
-//   const getCurrentUser = async () => {
-//     try {
-//       const storedToken = localStorage.getItem("token");
-//       if (!storedToken) {
-//         throw new HttpException("No token found", HTTP_STATUS.UNAUTHORIZED);
-//       }
-//       const response = await AuthService.getUserRole({ token: storedToken });
-//       if (!response.data?.data) {
-//         throw new HttpException("Invalid response data", HTTP_STATUS.BADREQUEST);
-//       }
-//       setUserInfo(response.data.data);
-//     } catch (error) {
-//       console.error("Failed to get current user:", error);
-//       logout();
-//       throw error instanceof HttpException ? error : new HttpException("Failed to get current user", HTTP_STATUS.INTERNALSERVER_ERROR);
-//     }
-//   };
+      let userData = userFromLogin;
+
+      if (!userData) {
+        const response = await AuthService.getUserRole();
+        userData = response.data;
+      }
+
+      if (!userData) throw new Error("No user info");
+
+      setUserInfo(userData);
+      setRole(userData.role);
+      localStorage.setItem("userInfo", JSON.stringify(userData));
+      localStorage.setItem("role", userData.role);
+    } catch (error) {
+      console.error("Failed to get user info:", error);
+      throw error instanceof HttpException
+        ? error
+        : new HttpException(
+            "Failed to get user info",
+            HTTP_STATUS.INTERNALSERVER_ERROR
+          );
+    }
+  };
+
+  const logout = () => {
+    setToken(null);
+    setRole(null);
+    setUserInfo(null);
+    localStorage.clear();
+  };
+
+  //   const forgotPassword = async (params) => {
+  //     try {
+  //       const response = await AuthService.forgotPassword(params.email);
+  //       return response.data;
+  //     } catch (error) {
+  //       console.error("Failed to forgot password:", error);
+  //       throw error instanceof HttpException ? error : new HttpException("Failed to forgot password", HTTP_STATUS.INTERNALSERVER_ERROR);
+  //     }
+  //   };
+
+  //   const getCurrentUser = async () => {
+  //     try {
+  //       const storedToken = localStorage.getItem("token");
+  //       if (!storedToken) {
+  //         throw new HttpException("No token found", HTTP_STATUS.UNAUTHORIZED);
+  //       }
+  //       const response = await AuthService.getUserRole({ token: storedToken });
+  //       if (!response.data?.data) {
+  //         throw new HttpException("Invalid response data", HTTP_STATUS.BADREQUEST);
+  //       }
+  //       setUserInfo(response.data.data);
+  //     } catch (error) {
+  //       console.error("Failed to get current user:", error);
+  //       logout();
+  //       throw error instanceof HttpException ? error : new HttpException("Failed to get current user", HTTP_STATUS.INTERNALSERVER_ERROR);
+  //     }
+  //   };
 
   return (
     <AuthContext.Provider
@@ -133,10 +146,10 @@ export const AuthProvider = ({ children }) => {
         isLoading,
         setIsLoading,
         handleLogin,
-        // logout,
+        logout,
         // forgotPassword,
         // getCurrentUser,
-        // loginGoogle,
+        loginGoogle,
       }}
     >
       {children}
@@ -147,7 +160,10 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new HttpException("useAuth must be used within an AuthProvider", HTTP_STATUS.INTERNALSERVER_ERROR);
+    throw new HttpException(
+      "useAuth must be used within an AuthProvider",
+      HTTP_STATUS.INTERNALSERVER_ERROR
+    );
   }
   return context;
 };
