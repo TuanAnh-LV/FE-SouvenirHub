@@ -1,25 +1,25 @@
-import React, { Suspense } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import './App.css'
-import Loading from './app/Loading'
-import { useSelector } from 'react-redux'
-import routes from './routes/routes'
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, useRoutes } from "react-router-dom";
+import routes from "./routes/routes";
+import Loading from "./app/Loading";
+import { useSelector } from "react-redux";
+
+function AppRoutes() {
+  const routing = useRoutes(routes);
+  return routing;
+}
 
 function App() {
-  const isLoading = useSelector((state) => state.loading.isLoading)
+  const isLoading = useSelector((state) => state.loading.isLoading);
 
   return (
     <Router>
       {isLoading && <Loading />}
-      <Suspense >
-        <Routes>
-          {routes.map((route, index) => (
-            <Route key={index} path={route.path} element={route.element} />
-          ))}
-        </Routes>
+      <Suspense fallback={<div>Đang tải...</div>}>
+        <AppRoutes />
       </Suspense>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
