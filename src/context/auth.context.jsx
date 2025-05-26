@@ -1,0 +1,153 @@
+import { createContext, useState, useContext, useEffect } from "react";
+import { AuthService } from "../services/auth-service/auth.service";
+import { HttpException } from "../app/toastException/http.exception";
+
+// HTTP status codes
+const HTTP_STATUS = {
+  BADREQUEST: 400,
+  UNAUTHORIZED: 401,
+  INTERNALSERVER_ERROR: 500,
+};
+
+const AuthContext = createContext(undefined);
+
+export const AuthProvider = ({ children }) => {
+  const [role, setRole] = useState(() => {
+    const storedRole = localStorage.getItem("role");
+    return storedRole || null;
+  });
+
+  const [token, setToken] = useState(() => {
+    const storedToken = localStorage.getItem("token");
+    return storedToken || null;
+  });
+
+  const [userInfo, setUserInfo] = useState(() => {
+    try {
+      const storedUserInfo = localStorage.getItem("userInfo");
+      return storedUserInfo ? JSON.parse(storedUserInfo) : null;
+    } catch (error) {
+      console.error("Failed to parse userInfo from localStorage:", error);
+      return null;
+    }
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (userInfo) {
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      } else {
+        localStorage.removeItem("userInfo");
+      }
+    } catch (error) {
+      console.error("Failed to update userInfo in localStorage:", error);
+    }
+  }, [userInfo]);
+
+//   const loginGoogle = async (googleId) => {
+//     try {
+//       const response = await AuthService.loginGoogle({ google_id: googleId });
+//       if (!response.data?.data?.token) {
+//         throw new HttpException("Invalid login response", HTTP_STATUS.BADREQUEST);
+//       }
+//       const token = response.data.data.token;
+//       setToken(token);
+//       localStorage.setItem("token", token);
+//       await handleLogin(token);
+//     } catch (error) {
+//       console.error("Failed to login with Google:", error);
+//       throw error instanceof HttpException ? error : new HttpException("Failed to login with Google", HTTP_STATUS.INTERNALSERVER_ERROR);
+//     }
+//   };
+
+  const handleLogin = async (token) => {
+    try {
+      if (!token) {
+        throw new HttpException("No token provided", HTTP_STATUS.UNAUTHORIZED);
+      }
+      localStorage.setItem("token", token);
+      setToken(token);
+
+      const response = await AuthService.getUserRole({ token });
+      if (!response.data?.data) {
+        throw new HttpException("Invalid user data", HTTP_STATUS.BADREQUEST);
+      }
+      const userData = response.data.data;
+      setUserInfo(userData);
+      setRole(userData.role);
+      localStorage.setItem("role", userData.role);
+    } catch (error) {
+      console.error("Failed to get user info:", error);
+    //   logout();
+      throw error instanceof HttpException ? error : new HttpException("Failed to get user info", HTTP_STATUS.INTERNALSERVER_ERROR);
+    }
+  };
+
+//   const logout = () => {
+//     setToken(null);
+//     setRole(null);
+//     setUserInfo(null);
+//     localStorage.clear();
+//     window.location.href = "/login";
+//   };
+
+//   const forgotPassword = async (params) => {
+//     try {
+//       const response = await AuthService.forgotPassword(params.email);
+//       return response.data;
+//     } catch (error) {
+//       console.error("Failed to forgot password:", error);
+//       throw error instanceof HttpException ? error : new HttpException("Failed to forgot password", HTTP_STATUS.INTERNALSERVER_ERROR);
+//     }
+//   };
+
+//   const getCurrentUser = async () => {
+//     try {
+//       const storedToken = localStorage.getItem("token");
+//       if (!storedToken) {
+//         throw new HttpException("No token found", HTTP_STATUS.UNAUTHORIZED);
+//       }
+//       const response = await AuthService.getUserRole({ token: storedToken });
+//       if (!response.data?.data) {
+//         throw new HttpException("Invalid response data", HTTP_STATUS.BADREQUEST);
+//       }
+//       setUserInfo(response.data.data);
+//     } catch (error) {
+//       console.error("Failed to get current user:", error);
+//       logout();
+//       throw error instanceof HttpException ? error : new HttpException("Failed to get current user", HTTP_STATUS.INTERNALSERVER_ERROR);
+//     }
+//   };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        role,
+        setRole,
+        token,
+        setToken,
+        userInfo,
+        setUserInfo,
+        isLoading,
+        setIsLoading,
+        handleLogin,
+        // logout,
+        // forgotPassword,
+        // getCurrentUser,
+        // loginGoogle,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new HttpException("useAuth must be used within an AuthProvider", HTTP_STATUS.INTERNALSERVER_ERROR);
+  }
+  return context;
+};

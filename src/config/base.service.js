@@ -123,17 +123,16 @@
 
 
 
-import { toggleLoading } from '../../app/loadingSlice';
+import { toggleLoading } from '../app/loadingSlice';
 // import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
 import axios from 'axios';
-
 // import { ApiRequestModel } from '../../model/ApiRequestModel';
 import { toast } from 'react-toastify';
-import { getItemInLocalStorage } from '../../utils/localStorage';
-import { store } from "../../app/store";
+import { getItemInLocalStorage } from '../utils/localStorage';
+import  store  from "../app/store";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from '../const/const';
-import { ROUTER_URL } from '../../const/router.const';
-import { HttpException } from '../../app/toastException';
+import { ROUTER_URL } from '../const/router.const';
+import { HttpException } from '../app/toastException';
 
 export const axiosInstance = axios.create({
     baseURL: DOMAIN_ADMIN,
