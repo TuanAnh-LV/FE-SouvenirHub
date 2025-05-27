@@ -1,0 +1,120 @@
+import { useState, useCallback, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import {  Button, Typography, InputNumber, Checkbox, Image, Rate, Tag } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { ProductService } from "../../services/product-service/product.service";
+const { Title, Paragraph, Text } = Typography;
+
+const ProductDetail = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [engraving, setEngraving] = useState(false);
+
+  const fetchProduct = useCallback(async () => {
+    try {
+      const response = await ProductService.getByid(id);
+      setProduct(response.data);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
+
+  if (!product) {
+    return <div className="text-center py-10">Đang tải sản phẩm...</div>;
+  }
+
+  const price = parseInt(product.price?.$numberDecimal || 0, 10);
+  const engravingCost = 50000;
+  const totalPrice = engraving ? price + engravingCost : price;
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Images */}
+        <div>
+          <Image
+            width="100%"
+            src={product.images?.[0]}
+            alt={product.name}
+            preview={true}
+            style={{ borderRadius: 8, objectFit: "cover", maxHeight: 350 }}
+          />
+          <div className="grid grid-cols-4 gap-2 mt-2">
+            {product.images?.slice(1).map((img, i) => (
+              <Image
+                key={i}
+                width={80}
+                height={80}
+                src={img}
+                alt={`thumb-${i}`}
+                preview={true}
+                style={{ objectFit: "cover", borderRadius: 4 }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Product Info */}
+        <div>
+          <Title level={3} className="mb-2">{product.name}</Title>
+          <div className="flex items-center gap-2 mb-2">
+            <Tag color="blue">{product.category_id?.name}</Tag>
+            <Tag color="green">{product.shop_id?.name}</Tag>
+            <div className="flex flex-col">
+              <Rate
+                disabled
+                defaultValue={5}
+                className="ml-2"
+                style={{ fontSize: 16 }}
+              />
+              {/* <span style={{ fontSize: 12, color: "#888", marginTop: 2 }}>5.0</span> */}
+            </div>
+          </div>
+          <Title level={3} className="text-red-500 mb-2">
+            {totalPrice.toLocaleString()}₫
+          </Title>
+          <Checkbox
+            checked={engraving}
+            onChange={(e) => setEngraving(e.target.checked)}
+            className="mb-2"
+          >
+            Khắc tên (+50.000₫)
+          </Checkbox>
+          <Paragraph className="mt-2 mb-1 font-semibold">Mô tả sản phẩm:</Paragraph>
+          <Text type="secondary" className="block mb-2" style={{ whiteSpace: "pre-line" }}>
+            {product.description}
+          </Text>
+          <Paragraph className="mt-2 mb-1 font-semibold">Số lượng:</Paragraph>
+          <InputNumber
+            min={1}
+            max={product.stock}
+            value={quantity}
+            onChange={setQuantity}
+            className="mb-2"
+          />
+          <Paragraph className="mt-2 mb-1 font-semibold">
+            Còn lại: <span className="text-green-600">{product.stock}</span> sản phẩm
+          </Paragraph>
+          <Paragraph className="mt-4 text-gray-500">
+            Giao hàng dự kiến: 3-4 ngày + (Thời gian thực hiện 7-12 ngày)
+          </Paragraph>
+          <Button
+            type="primary"
+            icon={<ShoppingCartOutlined />}
+            size="large"
+            className="mt-4 w-full bg-orange-500 hover:bg-orange-600"
+          >
+            Thêm vào giỏ hàng
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;

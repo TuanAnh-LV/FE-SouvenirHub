@@ -27,5 +27,9 @@ export const ROUTER_URL = {
     ABOUT: "/about",
     CONTACT: "/contact",
   },
+  PRODUCT: {
+    DETAIL: "/products/:id",
+    ALL: "/products"    
+  },
   UNAUTHORIZED: "/unauthorize"
 };

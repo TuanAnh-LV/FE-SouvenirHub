@@ -11,4 +11,13 @@ export const API = {
     RESET_PASSWORD: "/auth/reset-password",
     FORGOT_PASSWORD: "/auth/forgot-password",
   },
+  PRODUCT: {
+    GET_BY_ID: "/products/:id",
+    GET_ALL: "/products",
+    GET_BY_CATEGORY: "/products/category/:categoryId",
+    SEARCH: "/products/search?q=",
+    CREATE: "/products",
+    UPDATE: "/products/:id",
+    DELETE: "/products/:id",
+  }
 };
