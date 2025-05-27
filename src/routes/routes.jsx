@@ -23,11 +23,17 @@ const routes = [
   { path: ROUTER_URL.COMMON.CONTACT, element: <Contact /> },
   { path: ROUTER_URL.LOGIN, element: <Login /> },
   { path: ROUTER_URL.SIGNUP, element: <Signup /> },
-
+  { path: ROUTER_URL.PRODUCT.DETAIL, element: <ProductDetail /> },
+  { path: ROUTER_URL.PRODUCT.ALL, element: <AllProductPage /> },
   {
-    path: ROUTER_URL.ADMIN.DASHBOARD,
-    element: <ProtectedRoute allowedRoles={["admin"]} />,
-    children: [{ path: "", element: <AdminDashboard /> }],
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: ROUTER_URL.ADMIN.DASHBOARD, element: <AdminDashboard /> },
+    ],
   },
   {
     element: (
