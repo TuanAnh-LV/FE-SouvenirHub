@@ -12,12 +12,19 @@ export const API = {
     FORGOT_PASSWORD: "/auth/forgot-password",
   },
   PRODUCT: {
-    GET_BY_ID: "/products/:id",
-    GET_ALL: "/products",
-    GET_BY_CATEGORY: "/products/category/:categoryId",
-    SEARCH: "/products/search?q=",
-    CREATE: "/products",
-    UPDATE: "/products/:id",
-    DELETE: "/products/:id",
-  }
+    GET_ALL_PRODUCTS: "/products",
+    GET_PRODUCT_BY_ID: "/products/:id",
+    CREATE_PRODUCT: "/products/create",
+    UPDATE_PRODUCT: "/products/update/:id",
+    DELETE_PRODUCT: "/products/delete/:id",
+    SEARCH_PRODUCTS: "/products/search",
+  },
+  CATEGORY: {
+    GET_ALL_CATEGORIES: "/categories",
+    GET_CATEGORY_BY_ID: "/categories/:id",
+    CREATE_CATEGORY: "/categories/create",
+    UPDATE_CATEGORY: "/categories/update/:id",
+    DELETE_CATEGORY: "/categories/delete/:id",
+  },
+
 };

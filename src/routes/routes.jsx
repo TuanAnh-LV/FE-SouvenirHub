@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { ROUTER_URL } from "../const/router.const";
 import ProtectedRoute from "../routes/protected/protectedRoute";
+import MainLayout from "../layouts/MainLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 // Lazy pages
 const Home = lazy(() => import("../pages/Home"));
@@ -21,10 +23,6 @@ const routes = [
   { path: ROUTER_URL.COMMON.CONTACT, element: <Contact /> },
   { path: ROUTER_URL.LOGIN, element: <Login /> },
   { path: ROUTER_URL.SIGNUP, element: <Signup /> },
-  { path: ROUTER_URL.PRODUCT.DETAIL, element: <ProductDetail /> },
-  { path: ROUTER_URL.PRODUCT.ALL, element: <AllProductPage /> },
-
-
 
   {
     path: ROUTER_URL.ADMIN.DASHBOARD,
@@ -32,14 +30,24 @@ const routes = [
     children: [{ path: "", element: <AdminDashboard /> }],
   },
   {
-    path: ROUTER_URL.SELLER.DASHBOARD,
-    element: <ProtectedRoute allowedRoles={["seller"]} />,
-    children: [{ path: "", element: <SellerDashboard /> }],
+    element: (
+      <ProtectedRoute allowedRoles={["seller"]}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: ROUTER_URL.SELLER.DASHBOARD, element: <SellerDashboard /> },
+    ],
   },
   {
-    path: ROUTER_URL.BUYER.DASHBOARD,
-    element: <ProtectedRoute allowedRoles={["buyer"]} />,
-    children: [{ path: "", element: <BuyerDashboard /> }],
+    element: (
+      <ProtectedRoute allowedRoles={["buyer"]}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: ROUTER_URL.BUYER.DASHBOARD, element: <BuyerDashboard /> },
+    ],
   },
 
   {
