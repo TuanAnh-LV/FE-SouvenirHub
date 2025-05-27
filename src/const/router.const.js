@@ -26,6 +26,7 @@ export const ROUTER_URL = {
     HOME: "/",
     ABOUT: "/about",
     CONTACT: "/contact",
+    SHOP_PROFILE: "/shop-profile/:id",
   },
   PRODUCT: {
     DETAIL: "/products/:id",

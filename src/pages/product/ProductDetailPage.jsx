@@ -1,4 +1,6 @@
-import ProductDetail from "../../components/product/ProductDetail";
+import { lazy } from "react";
+// const AboutShop = lazy(() => import("../../components/product/AboutShop"));
+const ProductDetail = lazy(() => import("../../components/product/ProductDetail"));
 
 const ProductDetailPage = () => {
   
@@ -6,6 +8,7 @@ const ProductDetailPage = () => {
   return (
     <>
     <ProductDetail/>
+    {/* <AboutShop/> */}
     </>
   );
 };

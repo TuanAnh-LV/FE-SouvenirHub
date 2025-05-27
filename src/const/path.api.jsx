@@ -26,5 +26,8 @@ export const API = {
     UPDATE_CATEGORY: "/categories/update/:id",
     DELETE_CATEGORY: "/categories/delete/:id",
   },
+  SHOP : {
+    GET_SHOP_PROFILE: "/shops/:id",
+  },
 
 };

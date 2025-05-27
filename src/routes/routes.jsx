@@ -15,7 +15,7 @@ const SellerDashboard = lazy(() => import("../pages/seller/SellerDashboard"));
 const BuyerDashboard = lazy(() => import("../pages/buyer/BuyerDashboard"));
 const ProductDetail = lazy(() => import("../pages/product/ProductDetailPage"));
 const AllProductPage = lazy(() => import("../pages/product/AllProductPage"));
-
+const ShopProfile = lazy(() => import("../pages/shop-profile/ShopProfile"));
 
 const routes = [
   {
@@ -28,6 +28,8 @@ const routes = [
       { path: ROUTER_URL.SIGNUP, element: <Signup /> },
       { path: ROUTER_URL.PRODUCT.DETAIL, element: <ProductDetail /> },
       { path: ROUTER_URL.PRODUCT.ALL, element: <AllProductPage /> },
+      { path: ROUTER_URL.COMMON.SHOP_PROFILE, element: <ShopProfile /> },
+
     ],
   },
   {
