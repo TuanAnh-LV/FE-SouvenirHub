@@ -20,7 +20,7 @@ const AllProductPage = () => {
   }, [fetchProduct]);
 
   return (
-    <div className="mx-auto p-4 bg-white flex" style={{ marginLeft: "10%", marginRight: "10%" }}>
+    <div className="main mt-7 mx-auto p-4 bg-white flex" style={{ marginLeft: "10%", marginRight: "10%" }}>
       {/* Filter Panel */}
       <div className="w-[250px] pr-6 flex flex-col gap-6">
         <h3 className="text-lg font-semibold mb-4">BỘ LỌC</h3>

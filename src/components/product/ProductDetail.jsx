@@ -33,23 +33,30 @@ const ProductDetail = () => {
   const totalPrice = engraving ? price + engravingCost : price;
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div
+      className="mx-auto p-4"
+      style={{
+        maxWidth: "80%",
+        width: "100%",
+        marginTop: "3%",
+      }}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
         {/* Images */}
         <div>
           <Image
-            width="100%"
+            width="80%"
             src={product.images?.[0]}
             alt={product.name}
             preview={true}
             style={{ borderRadius: 8, objectFit: "cover", maxHeight: 350 }}
           />
-          <div className="grid grid-cols-4 gap-2 mt-2">
+          <div className="grid grid-cols-4 gap-1 mt-2">
             {product.images?.slice(1).map((img, i) => (
               <Image
                 key={i}
-                width={80}
-                height={80}
+                width="100%"
+                height="auto"
                 src={img}
                 alt={`thumb-${i}`}
                 preview={true}
@@ -58,7 +65,6 @@ const ProductDetail = () => {
             ))}
           </div>
         </div>
-
         {/* Product Info */}
         <div>
           <Title level={3} className="mb-2">{product.name}</Title>
@@ -72,7 +78,6 @@ const ProductDetail = () => {
                 className="ml-2"
                 style={{ fontSize: 16 }}
               />
-              {/* <span style={{ fontSize: 12, color: "#888", marginTop: 2 }}>5.0</span> */}
             </div>
           </div>
           <Title level={3} className="text-red-500 mb-2">
