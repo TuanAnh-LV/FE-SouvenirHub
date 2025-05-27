@@ -1,16 +1,10 @@
 
 export const ROUTER_URL = {
   LOGIN: '/login',
-  REGISTER: '/register',
   FORGOT_PASSWORD: "/forgot-password",
   SIGNUP: "/signup",
   ADMIN: {
     DASHBOARD: "/admin",
-   
-  },
-  USER: {
-    PROFILE: "/user/profile",
-    SETTINGS: "/user/settings",
   },
   BUYER: {
     DASHBOARD: "/buyer",
@@ -21,6 +15,12 @@ export const ROUTER_URL = {
     DASHBOARD: "/seller",
     PRODUCTS: "/seller/products",
     ORDERS: "/seller/orders",
+  },
+  PRODUCTS: {
+    ALL: "/products",
+    DETAIL: "/products/:id",
+    CREATE: "/products/create",
+    UPDATE: "/products/update/:id",
   },
   COMMON: {
     HOME: "/",
