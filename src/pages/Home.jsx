@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProductService } from "../services/product/product.service";
-import { message } from "antd";
-
+// import { toast } from "antd";
+import { toast } from "react-toastify";
 const Home = () => {
   const [products, setProducts] = useState([]);
 
@@ -10,9 +10,8 @@ const Home = () => {
       try {
         const res = await ProductService.getAllProducts();
         setProducts(res.data || []);
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-        message.error("Không thể tải sản phẩm.");
+      } catch {
+        toast.error("Không thể tải sản phẩm.");
       }
     })();
   }, []);
@@ -37,7 +36,7 @@ const Home = () => {
           {products.slice(0, 8).map((product) => (
             <div
               key={product._id}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition p-4"
+              className="bg-[#FFE1D6] rounded-lg shadow hover:shadow-lg transition p-4"
             >
               <img
                 src={product.images?.[0] || "/default-product.png"}
@@ -57,7 +56,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="mt-16 bg-gradient-to-r from-pink-400 to-orange-400 p-10 rounded-xl text-white text-center">
+      <section className="mt-16 mb-12 bg-gradient-to-r from-pink-400 to-orange-400 p-10 rounded-xl text-white text-center">
         <h2 className="text-3xl font-bold mb-4">Khám phá ngay</h2>
         <p className="text-lg mb-6">Còn nhiều sản phẩm độc đáo đang chờ bạn!</p>
         <button className="bg-white text-orange-600 font-bold px-6 py-2 rounded-full hover:bg-gray-100 transition">

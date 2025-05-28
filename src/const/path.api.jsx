@@ -26,8 +26,24 @@ export const API = {
     UPDATE_CATEGORY: "/categories/update/:id",
     DELETE_CATEGORY: "/categories/delete/:id",
   },
-  SHOP : {
-    GET_SHOP_PROFILE: "/shops/:id",
+
+  USER: {
+    UPDATE_PROFILE: "/user/me",
+    GET_USER_INFO: "/user/me",
+    GET_USER_BY_ID: "/users/:id",
+    GET_ALL_USERS: "/users",
+    DELETE_USER: "/users/delete/:id",
+  },
+  SHOP: {
+    CREATE_SHOP: "/shops",
+    GET_SHOP_BY_ID: "/shops/:id",
+    UPDATE_SHOP: "/shops/me",
+    DELETE_SHOP: "/shops/delete/:id",
+    GET_CURRENT_SHOP: "/shops/me",
+  },
+  SHOP_APPLICATION: {
+    CREATE_APPLICATION: "/shop-applications",
+    GET_APPLICATION_BY_ID: "/shop-applications/:id",
   },
 
 };

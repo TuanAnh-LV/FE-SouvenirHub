@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { ROUTER_URL } from "../const/router.const";
-import ProtectedRoute from "../routes/protected/protectedRoute";
+import ProtectedRoute from "./protected/protectedRoute";
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 
@@ -16,8 +16,11 @@ const BuyerDashboard = lazy(() => import("../pages/buyer/BuyerDashboard"));
 const ProductDetail = lazy(() => import("../pages/product/ProductDetailPage"));
 const AllProductPage = lazy(() => import("../pages/product/AllProductPage"));
 const ShopProfile = lazy(() => import("../pages/shop-profile/ShopProfile"));
+const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
+const Profile = lazy(() => import("../pages/Profile"));
 
 const routes = [
+  // Public routes
   {
     element: <MainLayout />,
     children: [
@@ -26,40 +29,48 @@ const routes = [
       { path: ROUTER_URL.COMMON.CONTACT, element: <Contact /> },
       { path: ROUTER_URL.LOGIN, element: <Login /> },
       { path: ROUTER_URL.SIGNUP, element: <Signup /> },
-      { path: ROUTER_URL.PRODUCT.DETAIL, element: <ProductDetail /> },
-      { path: ROUTER_URL.PRODUCT.ALL, element: <AllProductPage /> },
+      { path: ROUTER_URL.PRODUCTS.DETAIL, element: <ProductDetail /> },
+      { path: ROUTER_URL.PRODUCTS.ALL, element: <AllProductPage /> },
       { path: ROUTER_URL.COMMON.SHOP_PROFILE, element: <ShopProfile /> },
-
+      { path: ROUTER_URL.COMMON.PROFILE, element: <Profile /> },
     ],
   },
+
+  // Admin route with DashboardLayout
+
   {
+    path: "/admin",
     element: (
       <ProtectedRoute allowedRoles={["admin"]}>
         <DashboardLayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: ROUTER_URL.ADMIN.DASHBOARD, element: <AdminDashboard /> },
+      { path: "", element: <AdminDashboard /> }, // /admin
     ],
   },
+
+  // Seller route with DashboardLayout
   {
+    path: "/seller",
     element: (
       <ProtectedRoute allowedRoles={["seller"]}>
         <DashboardLayout />
       </ProtectedRoute>
     ),
-    children: [
-      { path: ROUTER_URL.SELLER.DASHBOARD, element: <SellerDashboard /> },
-    ],
+    children: [{ path: "dashboard", element: <SellerDashboard /> }],
   },
+
   {
+    path: "/buyer",
     element: (
       <ProtectedRoute allowedRoles={["buyer"]}>
         <DashboardLayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: ROUTER_URL.BUYER.DASHBOARD, element: <BuyerDashboard /> },
+      { path: "dashboard", element: <BuyerDashboard /> },
+      { path: "register-shop", element: <RegisterShop /> },
     ],
   },
 

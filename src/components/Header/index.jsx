@@ -4,7 +4,7 @@ import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/auth.context";
 import logo from "../../assets/souvenir-hub-logo.png";
 // import { useCart } from "../../context/CartContext";
-
+import { toast } from "react-toastify";
 const Header = () => {
   const navigate = useNavigate();
   const { userInfo, logout } = useAuth();
@@ -12,6 +12,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
+    toast.success("Đăng xuất thành công!");
     navigate("/login");
   };
 
@@ -52,6 +53,11 @@ const Header = () => {
             key: "orders",
             label: "Đơn hàng",
             onClick: () => navigate("/buyer/orders"),
+          },
+          {
+            key: "dashboard-buyer",
+            label: "Dashboard",
+            onClick: () => navigate("/buyer/dashboard"),
           },
           { key: "logout", label: "Đăng xuất", onClick: handleLogout },
         ];
@@ -99,7 +105,7 @@ const Header = () => {
         {userInfo ? (
           <Dropdown menu={{ items: getMenuItems() }} placement="bottomRight">
             <div className="flex items-center gap-2 cursor-pointer">
-              <Avatar size={32} icon={<UserOutlined />} />
+              <Avatar size={32} src={userInfo.avatar} icon={<UserOutlined />} />
               <span className="font-semibold text-gray-800">
                 {userInfo.name}
               </span>
