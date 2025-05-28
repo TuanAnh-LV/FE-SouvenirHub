@@ -4,7 +4,7 @@ import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/auth.context";
 import logo from "../../assets/souvenir-hub-logo.png";
 // import { useCart } from "../../context/CartContext";
-
+import { toast } from "react-toastify";
 const Header = () => {
   const navigate = useNavigate();
   const { userInfo, logout } = useAuth();
@@ -12,6 +12,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
+    toast.success("Đăng xuất thành công!");
     navigate("/login");
   };
 
