@@ -29,4 +29,13 @@ export const AuthService = {
       isLoading: true,
     });
   },
+  updateProfile: (data) => {
+    return BaseService.put({
+      url: API.USER.UPDATE_PROFILE,
+      payload: data,
+      isLoading: true,
+      isFormData: true,
+      isAuth: true,
+    });
+  },
 };
