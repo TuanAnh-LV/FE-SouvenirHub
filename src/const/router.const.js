@@ -28,6 +28,7 @@ export const ROUTER_URL = {
     ABOUT: "/about",
     CONTACT: "/contact",
     PROFILE: "/profile",
+    SHOP_PROFILE: "/shop-profile/:id"
   },
   UNAUTHORIZED: "/unauthorize"
 };

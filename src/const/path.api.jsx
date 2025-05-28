@@ -26,6 +26,7 @@ export const API = {
     UPDATE_CATEGORY: "/categories/update/:id",
     DELETE_CATEGORY: "/categories/delete/:id",
   },
+
   USER: {
     UPDATE_PROFILE: "/user/me",
     GET_USER_INFO: "/user/me",
@@ -44,4 +45,5 @@ export const API = {
     CREATE_APPLICATION: "/shop-applications",
     GET_APPLICATION_BY_ID: "/shop-applications/:id",
   },
+
 };
