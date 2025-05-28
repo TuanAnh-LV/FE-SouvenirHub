@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../../services/auth-service/auth.service";
 import { ROUTER_URL } from "../../const/router.const";
-import { message } from "antd";
+// import { toast } from "antd";
 import LogoImage from "../../assets/souvenir-hub-logo.png";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../utils/firebase-config";
 import { useAuth } from "../../context/auth.context";
+import { toast } from "react-toastify";
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -28,14 +29,13 @@ const LoginPage = () => {
       });
       if (response?.data?.token && response?.data?.user) {
         await handleLogin(response.data.token, response.data.user);
-        message.success("Đăng nhập thành công!");
+        toast.success("Đăng nhập thành công!");
         navigate(ROUTER_URL.COMMON.HOME);
       } else {
-        message.error("Invalid login response.");
+        toast.error("Invalid login response.");
       }
-    } catch (error) {
-      console.error("Login error:", error);
-      message.error("Login failed. Please check your credentials.");
+    } catch {
+      toast.error("Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -46,11 +46,10 @@ const LoginPage = () => {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       await loginGoogle(idToken);
-      message.success("Login with Google successful!");
+      toast.success("Login with Google successful!");
       navigate(ROUTER_URL.COMMON.HOME);
-    } catch (error) {
-      console.error("Google login error:", error);
-      message.error("Google login failed");
+    } catch {
+      toast.error("Google login failed");
     }
   };
 

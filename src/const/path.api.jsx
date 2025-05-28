@@ -11,4 +11,39 @@ export const API = {
     RESET_PASSWORD: "/auth/reset-password",
     FORGOT_PASSWORD: "/auth/forgot-password",
   },
+  PRODUCT: {
+    GET_ALL_PRODUCTS: "/products",
+    GET_PRODUCT_BY_ID: "/products/:id",
+    CREATE_PRODUCT: "/products/create",
+    UPDATE_PRODUCT: "/products/update/:id",
+    DELETE_PRODUCT: "/products/delete/:id",
+    SEARCH_PRODUCTS: "/products/search",
+  },
+  CATEGORY: {
+    GET_ALL_CATEGORIES: "/categories",
+    GET_CATEGORY_BY_ID: "/categories/:id",
+    CREATE_CATEGORY: "/categories/create",
+    UPDATE_CATEGORY: "/categories/update/:id",
+    DELETE_CATEGORY: "/categories/delete/:id",
+  },
+
+  USER: {
+    UPDATE_PROFILE: "/user/me",
+    GET_USER_INFO: "/user/me",
+    GET_USER_BY_ID: "/users/:id",
+    GET_ALL_USERS: "/users",
+    DELETE_USER: "/users/delete/:id",
+  },
+  SHOP: {
+    CREATE_SHOP: "/shops",
+    GET_SHOP_BY_ID: "/shops/:id",
+    UPDATE_SHOP: "/shops/me",
+    DELETE_SHOP: "/shops/delete/:id",
+    GET_CURRENT_SHOP: "/shops/me",
+  },
+  SHOP_APPLICATION: {
+    CREATE_APPLICATION: "/shop-applications",
+    GET_APPLICATION_BY_ID: "/shop-applications/:id",
+  },
+
 };
