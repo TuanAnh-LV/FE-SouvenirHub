@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { message } from "antd";
+// import { toast } from "antd";
+import { toast } from "react-toastify";
 import LogoImage from "../../assets/souvenir-hub-logo.png";
 import { AuthService } from "../../services/auth-service/auth.service";
 import { ROUTER_URL } from "../../const/router.const";
@@ -20,14 +21,13 @@ const Signup = () => {
     try {
       const res = await AuthService.register(form);
       if (res?.data?.token) {
-        message.success("Signup successful!");
+        toast.success("Signup successful!");
         navigate(ROUTER_URL.LOGIN);
       } else {
-        message.error("Signup failed.");
+        toast.error("Signup failed.");
       }
-    } catch (err) {
-      console.error(err);
-      message.error("An error occurred during signup.");
+    } catch {
+      toast.error("An error occurred during signup.");
     } finally {
       setLoading(false);
     }

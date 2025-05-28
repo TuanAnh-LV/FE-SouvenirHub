@@ -10,6 +10,7 @@ export const ROUTER_URL = {
     DASHBOARD: "/buyer",
     ORDERS: "/buyer/orders",
     CART: "/buyer/cart",
+    REGISTER_SHOP: "/buyer/register-shop",
   },
   SELLER: {
     DASHBOARD: "/seller",
@@ -26,6 +27,7 @@ export const ROUTER_URL = {
     HOME: "/",
     ABOUT: "/about",
     CONTACT: "/contact",
+    PROFILE: "/profile",
   },
   UNAUTHORIZED: "/unauthorize"
 };

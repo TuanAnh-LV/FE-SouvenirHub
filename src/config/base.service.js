@@ -75,13 +75,28 @@ export const BaseService = {
 
   post({ url, isLoading = true, payload = {}, headers = {} }) {
     checkLoading(isLoading);
-    return axiosInstance.post(url, payload, { headers });
+
+    const isFormData = payload instanceof FormData;
+    const finalHeaders = {
+      ...headers,
+      ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : {})
+    };
+  
+    return axiosInstance.post(url, payload, { headers: finalHeaders });
   },
 
   put({ url, isLoading = true, payload = {}, headers = {} }) {
     checkLoading(isLoading);
-    return axiosInstance.put(url, payload, { headers });
+
+    const isFormData = payload instanceof FormData;
+    const finalHeaders = {
+      ...headers,
+      ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : {})
+    };
+  
+    return axiosInstance.put(url, payload, { headers: finalHeaders });
   },
+  
 
   remove({ url, isLoading = true, payload = {}, headers = {} }) {
     checkLoading(isLoading);

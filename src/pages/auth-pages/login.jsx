@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../../services/auth-service/auth.service";
 import { ROUTER_URL } from "../../const/router.const";
-import { message } from "antd";
+// import { message } from "antd";
 import LogoImage from "../../assets/souvenir-hub-logo.png";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../utils/firebase-config";
 import { useAuth } from "../../context/auth.context";
+import { toast } from "react-toastify";
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
