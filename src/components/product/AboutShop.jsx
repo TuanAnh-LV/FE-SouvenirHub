@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Button } from "antd";
 import { ShopOutlined, StarFilled } from "@ant-design/icons";
+import { ProductService } from "../../services/shop-service/shop.service";
 
-const AboutShop = () => {
+const AboutShop = ({ shop_id }) => {
+  const [shopProfile, setShopProfile] = useState(null);
   const [showContent, setShowContent] = useState(true);
   const navigate = useNavigate();
+
+  const fetchShopProfile = useCallback(async () => {
+    try {
+      const response = await ProductService.getShopById(shop_id);
+      setShopProfile(response.data);
+      console.log("Shop profile data:", response.data);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
+  }, [shop_id]);
+
+  useEffect(() => {
+    fetchShopProfile();
+  }, [fetchShopProfile]);
+
+  if (!shopProfile) return null;
 
   return (
     <div
@@ -52,13 +70,13 @@ const AboutShop = () => {
             <>
               <div className="flex flex-row gap-6 items-start">
                 <img
-                  src="https://res.cloudinary.com/du5lr3xri/image/upload/v1748081377/souvenirhub/products/u8ucjztycjnbwr5w7hsw.webp"
-                  alt="Đỏ Art"
+                  src={shopProfile.logo_url}
+                  alt={shopProfile.name}
                   className="w-24 h-24 rounded object-cover"
                 />
 
                 <div className="flex-1">
-                  <div className="font-semibold text-lg">Đỏ Art</div>
+                  <div className="font-semibold text-lg">{shopProfile.name}</div>
                   <div className="text-sm text-gray-700 font-semibold mb-2">
                     Địa chỉ:{" "}
                     <span className="font-normal">
@@ -73,7 +91,7 @@ const AboutShop = () => {
                     </div>
                     <div className="flex flex-col items-center">
                       <StarFilled style={{ color: "#faad14", fontSize: 20 }} />
-                      <span className="font-semibold">5</span>
+                      <span className="font-semibold">{shopProfile.rating || 0}</span>
                       <span>Đánh giá</span>
                     </div>
                   </div>
@@ -82,34 +100,15 @@ const AboutShop = () => {
                 <Button
                   className="bg-gray-200 rounded-full px-8 py-2 font-semibold text-base"
                   style={{ height: "48px" }}
-                  onClick={() => navigate(`/shop-profile/{$id}`)}
+                  onClick={() => navigate(`/shop-profile/${shopProfile._id}`)}
                 >
                   Xem shop
                 </Button>
               </div>
 
-              <ul className="list-disc list-inside text-sm text-black space-y-1 mt-4">
-                <li>
-                  Khởi nguồn từ tình yêu với văn hoá dân gian và lịch sử Việt Nam.
-                  Chính vì lẽ đó, các sản phẩm đậm chất truyền thống, mang màu sắc Á
-                  Đông và văn hoá Việt Nam.
-                </li>
-                <li>
-                  Những nhân vật lịch sử, câu chuyện dân gian Việt Nam,… được tái hiện
-                  trên nền da mộc mạc, với những đường nét thanh, mảnh, dày, đặc
-                  khiếu vũ cùng màu sắc dường như sống động hơn, tạo nên tác phẩm
-                  độc nhất vô nhị, mang giá trị nghệ thuật và nét văn hoá riêng.
-                </li>
-                <li>
-                  Hy vọng thông qua sản phẩm của mình, những di sản truyền thống,
-                  sự giàu và đẹp của văn hoá Việt Nam sẽ đến gần hơn với công chúng.
-                </li>
-                <li>
-                  Ngoài ra, thương hiệu này cũng muốn mang tới những sản phẩm khác
-                  biệt với các sản phẩm đại trà trên thị trường và tạo giá trị riêng
-                  cho mỗi người sở hữu.
-                </li>
-              </ul>
+              <div className="text-sm text-black mt-4">
+                {shopProfile.description}
+              </div>
             </>
           )}
         </div>
