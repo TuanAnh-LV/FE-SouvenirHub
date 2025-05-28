@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Button } from "antd";
+import { Card, Button, Row, Col, Typography } from "antd";
 import { ShopOutlined, StarFilled } from "@ant-design/icons";
 import { ProductService } from "../../services/shop-service/shop.service";
+
+const { Title, Text, Paragraph } = Typography;
 
 const AboutShop = ({ shop_id }) => {
   const [shopProfile, setShopProfile] = useState(null);
@@ -12,8 +14,7 @@ const AboutShop = ({ shop_id }) => {
   const fetchShopProfile = useCallback(async () => {
     try {
       const response = await ProductService.getShopById(shop_id);
-      setShopProfile(response.data);
-      console.log("Shop profile data:", response.data);
+      setShopProfile(response.data.shop);
     } catch (error) {
       console.error("Error fetching product data:", error);
     }
@@ -27,21 +28,22 @@ const AboutShop = ({ shop_id }) => {
 
   return (
     <div
-      className="mx-auto"
+      className="mx-auto p-4"
       style={{
         maxWidth: "80%",
         width: "100%",
-        marginTop: "24px",
+        marginTop: "3%",
       }}
     >
       <Card
         className="bg-[#fdf7f2] rounded-md mb-6"
         style={{ padding: 24 }}
         title={
-          <button
-            className="font-semibold text-lg bg-transparent border-none outline-none cursor-pointer flex items-center"
+          <Button
+            type="text"
+            className="font-semibold text-lg flex items-center"
             onClick={() => setShowContent((prev) => !prev)}
-            style={{ padding: 0, transition: "color 0.2s" }}
+            style={{ padding: 0, display: "flex", alignItems: "center" }}
           >
             Về thương hiệu
             <span
@@ -50,11 +52,12 @@ const AboutShop = ({ shop_id }) => {
                 display: "inline-block",
                 transition: "transform 0.3s",
                 transform: showContent ? "rotate(0deg)" : "rotate(180deg)",
+                fontSize: 18,
               }}
             >
               ▼
             </span>
-          </button>
+          </Button>
         }
       >
         <div
@@ -67,49 +70,62 @@ const AboutShop = ({ shop_id }) => {
           }}
         >
           {showContent && (
-            <>
-              <div className="flex flex-row gap-6 items-start">
+            <Row gutter={24} align="top">
+              <Col xs={24} sm={8} md={6} lg={5} xl={4}>
                 <img
                   src={shopProfile.logo_url}
                   alt={shopProfile.name}
-                  className="w-24 h-24 rounded object-cover"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: 8,
+                    objectFit: "cover",
+                    display: "block",
+                    margin: "0 auto",
+                  }}
                 />
-
-                <div className="flex-1">
-                  <div className="font-semibold text-lg">{shopProfile.name}</div>
-                  <div className="text-sm text-gray-700 font-semibold mb-2">
-                    Địa chỉ:{" "}
-                    <span className="font-normal">
-                      Khu phố 2, Hiệp Bình Chánh, Thủ Đức, TP.HCM
-                    </span>
-                  </div>
-                  <div className="flex gap-8 text-xs text-gray-700 mb-2">
-                    <div className="flex flex-col items-center">
-                      <ShopOutlined style={{ fontSize: 20 }} />
+              </Col>
+              <Col xs={24} sm={16} md={18} lg={19} xl={20}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                  <div style={{ flex: 1 }}>
+                    <Title level={4} style={{ marginBottom: 8 }}>
+                      {shopProfile.name}
+                    </Title>
+                    <Text
+                      strong
+                      className="text-base"
+                      style={{
+                        display: "block",
+                        marginBottom: 8,
+                      }}
+                    >
+                      Địa chỉ: Khu phố 2, Hiệp Bình Chánh, Thủ Đức, TP.HCM
+                    </Text>
+                    <div
+                      className="flex items-center mb-1"
+                      style={{ marginBottom: 8 }}
+                    >
+                      <ShopOutlined style={{ fontSize: 20, marginRight: 8 }} />
                       <span className="font-semibold">50</span>
-                      <span>Sản phẩm</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <StarFilled style={{ color: "#faad14", fontSize: 20 }} />
+                      <span className="ml-1">Sản phẩm</span>
+                      <StarFilled style={{ color: "#faad14", fontSize: 20, marginLeft: 24, marginRight: 8 }} />
                       <span className="font-semibold">{shopProfile.rating || 0}</span>
-                      <span>Đánh giá</span>
+                      <span className="ml-1">Đánh giá</span>
                     </div>
                   </div>
+                  <Button
+                    className="bg-gray-200 rounded-full px-8 py-2 font-semibold text-base"
+                    style={{ height: "48px", marginBottom: 16, marginLeft: 16 }}
+                    onClick={() => navigate(`/shop-profile/${shopProfile._id}`)}
+                  >
+                    Xem shop
+                  </Button>
                 </div>
-
-                <Button
-                  className="bg-gray-200 rounded-full px-8 py-2 font-semibold text-base"
-                  style={{ height: "48px" }}
-                  onClick={() => navigate(`/shop-profile/${shopProfile._id}`)}
-                >
-                  Xem shop
-                </Button>
-              </div>
-
-              <div className="text-sm text-black mt-4">
-                {shopProfile.description}
-              </div>
-            </>
+                <Paragraph style={{ marginBottom: 0, fontSize: "1.1rem", fontWeight: 500 }}>
+                  {shopProfile.description}
+                </Paragraph>
+              </Col>
+            </Row>
           )}
         </div>
       </Card>

@@ -10,6 +10,7 @@ const AllProductPage = () => {
     try {
       const response = await ProductService.getAll();
       setProducts(response.data); 
+      console.log("Products fetched:", response.data);
     } catch (error) {
       console.error("Error fetching product data:", error);
     }
@@ -20,11 +21,11 @@ const AllProductPage = () => {
   }, [fetchProduct]);
 
   return (
-    <div className="main mt-7 mx-auto p-4 bg-white flex" style={{ marginLeft: "10%", marginRight: "10%" }}>
+    <div className="main mt-7 mx-auto p-4 bg-white flex" style={{ marginLeft: "5%", marginRight: "5%" }}>
       {/* Filter Panel */}
       <div className="w-[250px] pr-6 flex flex-col gap-6">
-        <h3 className="text-lg font-semibold mb-4">BỘ LỌC</h3>
-
+        <h3 className="text-lg font-semibold mb-1">BỘ LỌC</h3>
+        <hr style={{ marginTop: 0, marginBottom: 16 }} />
         <div className="mb-6">
           <h4 className="font-medium mb-2">Địa điểm</h4>
           <Checkbox.Group

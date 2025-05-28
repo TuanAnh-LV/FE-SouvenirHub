@@ -13,7 +13,7 @@ const ProductGrid = ({ products }) => {
 
   return (
     <Row gutter={[16, 16]}>
-      {products.map((product) => (
+      {Array.isArray(products) && products.map((product) => (
         <Col key={product._id} xs={24} sm={12} md={8} lg={8}>
           <Card
             hoverable
@@ -25,6 +25,7 @@ const ProductGrid = ({ products }) => {
                 style={{ height: 200, objectFit: "cover" }}
               />
             }
+            style={{ background: "#FFD1B3" }}
           >
             <Card.Meta
               title={product.name}

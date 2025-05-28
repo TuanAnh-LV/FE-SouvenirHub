@@ -142,7 +142,10 @@ const ProductDetail = () => {
       </Paragraph>
     </div>
     </div>
-    <AboutShop shop_id = {product.shop_id._id}/>
+    {/* Remove or reduce marginTop for AboutShop */}
+    <div style={{ marginBottom: "5%" }}>
+      <AboutShop shop_id={product.shop_id._id} />
+    </div>
     </>
   );
 };
