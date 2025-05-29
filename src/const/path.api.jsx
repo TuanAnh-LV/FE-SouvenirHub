@@ -14,10 +14,13 @@ export const API = {
   PRODUCT: {
     GET_ALL_PRODUCTS: "/products",
     GET_PRODUCT_BY_ID: "/products/:id",
-    CREATE_PRODUCT: "/products/create",
-    UPDATE_PRODUCT: "/products/update/:id",
-    DELETE_PRODUCT: "/products/delete/:id",
+    CREATE_PRODUCT: "/products",
+    UPDATE_PRODUCT: "/products/:id",
+    DELETE_PRODUCT: "/products/:id",
     SEARCH_PRODUCTS: "/products/search",
+    CREATE_PRODUCT_IMAGE: "/products-images/:id",
+    DELETE_PRODUCT_IMAGE: "/products-images/image/:id",
+    DELETE_PRODUCT_IMAGES: "/products-images/product/:id",
   },
   CATEGORY: {
     GET_ALL_CATEGORIES: "/categories",
