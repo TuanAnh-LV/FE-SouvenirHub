@@ -18,16 +18,16 @@ export const API = {
     UPDATE_PRODUCT: "/products/:id",
     DELETE_PRODUCT: "/products/:id",
     SEARCH_PRODUCTS: "/products/search",
-    CREATE_PRODUCT_IMAGE: "/products-images/:id",
-    DELETE_PRODUCT_IMAGE: "/products-images/image/:id",
-    DELETE_PRODUCT_IMAGES: "/products-images/product/:id",
+    CREATE_PRODUCT_IMAGE: "/product-images/:id",
+    DELETE_PRODUCT_IMAGE: "/product-images/image/:id",
+    DELETE_PRODUCT_IMAGES: "/product-images/product/:id",
   },
   CATEGORY: {
     GET_ALL_CATEGORIES: "/categories",
     GET_CATEGORY_BY_ID: "/categories/:id",
-    CREATE_CATEGORY: "/categories/create",
-    UPDATE_CATEGORY: "/categories/update/:id",
-    DELETE_CATEGORY: "/categories/delete/:id",
+    CREATE_CATEGORY: "/categories",
+    UPDATE_CATEGORY: "/categories/:id",
+    DELETE_CATEGORY: "/categories/:id",
   },
 
   USER: {
