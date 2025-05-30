@@ -13,13 +13,12 @@ const CreateProduct = () => {
   const handleFinish = async () => {
     try {
       const values = await form.validateFields();
-      // Create product
+      // Gọi API tạo sản phẩm trước
       const response = await ProductService.createProduct(values);
-      console.log("Product created:", response);
       if (response && response.data) {
         const newProductId = response.data._id;
-        // Prepare images for upload
-        handleUpload(newProductId);
+        // Chờ tạo sản phẩm xong mới upload ảnh
+        await handleUpload(newProductId);
       }
     } catch (error) {
       message.error("Tạo sản phẩm hoặc tải ảnh thất bại!", error);
