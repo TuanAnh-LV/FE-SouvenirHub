@@ -12,13 +12,14 @@ const Login = lazy(() => import("../pages/auth-pages/login"));
 const Signup = lazy(() => import("../pages/auth-pages/signup"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const SellerDashboard = lazy(() => import("../pages/seller/SellerDashboard"));
+const SellerProducts = lazy(() => import("../pages/seller/seller-product/SellerProduct"));
 const BuyerDashboard = lazy(() => import("../pages/buyer/BuyerDashboard"));
 const ProductDetail = lazy(() => import("../pages/product/ProductDetailPage"));
 const AllProductPage = lazy(() => import("../pages/product/AllProductPage"));
 const ShopProfile = lazy(() => import("../pages/shop-profile/ShopProfile"));
 const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
 const Profile = lazy(() => import("../pages/Profile"));
-
+const CreateProduct = lazy(() => import("../pages/seller/seller-product/CreateProduct"));
 const routes = [
   // Public routes
   {
@@ -58,7 +59,10 @@ const routes = [
         <DashboardLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: "dashboard", element: <SellerDashboard /> }],
+    children: [{ path: "dashboard", element: <SellerDashboard /> },
+               { path: "products", element: <SellerProducts /> },      
+               { path: "create-product", element: <CreateProduct /> }      
+    ],
   },
 
   {

@@ -8,5 +8,5 @@ export const ProductService = {
             isLoading: true,
         });
     }
-  };
+};
   
