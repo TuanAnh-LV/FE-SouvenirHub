@@ -14,17 +14,20 @@ export const API = {
   PRODUCT: {
     GET_ALL_PRODUCTS: "/products",
     GET_PRODUCT_BY_ID: "/products/:id",
-    CREATE_PRODUCT: "/products/create",
-    UPDATE_PRODUCT: "/products/update/:id",
-    DELETE_PRODUCT: "/products/delete/:id",
+    CREATE_PRODUCT: "/products",
+    UPDATE_PRODUCT: "/products/:id",
+    DELETE_PRODUCT: "/products/:id",
     SEARCH_PRODUCTS: "/products/search",
+    CREATE_PRODUCT_IMAGE: "/product-images/:id",
+    DELETE_PRODUCT_IMAGE: "/product-images/image/:id",
+    DELETE_PRODUCT_IMAGES: "/product-images/product/:id",
   },
   CATEGORY: {
     GET_ALL_CATEGORIES: "/categories",
     GET_CATEGORY_BY_ID: "/categories/:id",
-    CREATE_CATEGORY: "/categories/create",
-    UPDATE_CATEGORY: "/categories/update/:id",
-    DELETE_CATEGORY: "/categories/delete/:id",
+    CREATE_CATEGORY: "/categories",
+    UPDATE_CATEGORY: "/categories/:id",
+    DELETE_CATEGORY: "/categories/:id",
   },
 
   USER: {
