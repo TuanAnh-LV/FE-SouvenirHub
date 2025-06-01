@@ -34,6 +34,11 @@ const SidebarMenu = () => {
       label: "Đơn hàng của tôi",
       icon: <ShoppingCartOutlined />,
     },
+    {
+      path: "/buyer/profile",
+      label: "Hồ sơ",
+      icon: <UserOutlined />,
+    },
   ];
 
   const seller = [
@@ -63,7 +68,7 @@ const SidebarMenu = () => {
   ];
 
   const getMenu = () => {
-    if (role === "buyer") return [...buyer, ...common];
+    if (role === "buyer") return [...buyer];
     if (role === "seller") return [...seller, ...common];
     if (role === "admin") return [...admin, ...common];
     return [];
