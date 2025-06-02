@@ -20,6 +20,8 @@ const ShopProfile = lazy(() => import("../pages/shop-profile/ShopProfile"));
 const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
 const Profile = lazy(() => import("../pages/Profile"));
 const CreateProduct = lazy(() => import("../pages/seller/seller-product/CreateProduct"));
+const BuyerCart = lazy(() => import("../pages/buyer/BuyerCart"));
+const BuyerProfilePage = lazy(() => import("../pages/buyer/BuyerProfile"));
 const routes = [
   // Public routes
   {
@@ -61,7 +63,8 @@ const routes = [
     ),
     children: [{ path: "dashboard", element: <SellerDashboard /> },
                { path: "products", element: <SellerProducts /> },      
-               { path: "create-product", element: <CreateProduct /> }      
+               { path: "create-product", element: <CreateProduct /> }
+
     ],
   },
 
@@ -75,6 +78,10 @@ const routes = [
     children: [
       { path: "dashboard", element: <BuyerDashboard /> },
       { path: "register-shop", element: <RegisterShop /> },
+      { path: "profile", element: <BuyerProfilePage /> },
+      { path: "orders", element: <BuyerCart /> },      
+
+
     ],
   },
 

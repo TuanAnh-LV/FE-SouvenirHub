@@ -2,13 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { Input, Badge, Dropdown, Avatar } from "antd";
 import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/auth.context";
+import { useCart } from "../../context/cart.context";
 import logo from "../../assets/souvenir-hub-logo.png";
 // import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 const Header = () => {
   const navigate = useNavigate();
   const { userInfo, logout } = useAuth();
-  // const { cartCount } = useCart();
+  const { cartCount, getCartCount } = useCart();
+
+  useEffect(() => {
+    // Fetch cart count when the component mounts
+    getCartCount();
+  }, [getCartCount]);
 
   const handleLogout = () => {
     logout();
@@ -47,7 +54,7 @@ const Header = () => {
           {
             key: "profile",
             label: "Thông tin cá nhân",
-            onClick: () => navigate("/profile"),
+            onClick: () => navigate("/buyer/profile"),
           },
           {
             key: "orders",
@@ -128,11 +135,11 @@ const Header = () => {
 
         <div
           className="flex items-center cursor-pointer text-brown-700 font-semibold"
-          onClick={() => navigate("/buyer/cart")}
+          onClick={() => navigate("/buyer/orders")}
         >
-          {/* <Badge count={cartCount || 0} size="small" offset={[0, 6]}> */}
-          <ShoppingOutlined style={{ fontSize: 22 }} />
-          {/* </Badge> */}
+          <Badge count={cartCount || 0} size="small" offset={[0, 6]}>
+            <ShoppingOutlined style={{ fontSize: 22 }} />
+          </Badge>
           <span className="ml-1">Giỏ hàng</span>
         </div>
       </div>
