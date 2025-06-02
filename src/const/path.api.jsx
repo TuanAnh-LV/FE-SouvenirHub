@@ -2,6 +2,22 @@ export const API = {
   COMMON: {
     PUBLIC_CATEGORY: "api/client/category/search",
   },
+  ADMIN: {
+    GET_ALL_ORDER: "/admin/orders",
+    GET_ORDER_BY_ID: "/admin/orders/:id",
+    GET_ALL_SHOPS: "/admin/shops",
+    GET_SHOP_BY_ID: "/admin/shops/:id",
+    GET_ALL_USERS: "/admin/users",
+    GET_USER_BY_ID: "/admin/users/:id",
+    GET_DASHBOARD_STATS: "/admin/stats",
+    UPDATE_ORDER_STATUS: "/admin/orders/status/:id",
+    GET_ALL_PENDING_SHOPS: "/admin/pending",
+    APPROVE_SHOP: "/admin/shops/:id/status",
+    PRODUCT_APPROVED: "/admin/products/:id/approve",
+    UPDATE_INFO_SHOP: "/admin/shops/:id",
+    GET_ALL_PRODUCTS_PENDING: "/admin/products/pending",
+    DELETE_SHOP: "/admin/shops/:id",
+  },
   AUTH: {
     LOGIN: "/auth/login",
     LOGIN_GOOGLE: "/auth/google-login",
