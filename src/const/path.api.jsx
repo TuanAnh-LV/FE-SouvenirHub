@@ -48,5 +48,18 @@ export const API = {
     CREATE_APPLICATION: "/shop-applications",
     GET_APPLICATION_BY_ID: "/shop-applications/:id",
   },
+  ADDRESS: {
+    GET_ADDRESSES: "/addresses",
+    CREATE_ADDRESS: "/addresses",
+    UPDATE_ADDRESS: "/addresses/:id",
+    DELETE_ADDRESS: "/addresses/:id",
+  },
+  ORDER: {
+    CREATE_ORDER: "/orders",
+    GET_ORDERS: "/orders",
+    GET_ORDER_BY_ID: "/orders/:id",
+    UPDATE_ORDER_STATUS: "/orders/:id/status",
+    CANCEL_ORDER: "/orders/:id/cancel",
+  },
 
 };

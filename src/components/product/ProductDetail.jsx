@@ -1,19 +1,24 @@
 import { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {  Button, Typography, InputNumber, Checkbox, Image, Rate, Tag } from "antd";
+import {  Button, Typography, InputNumber, Checkbox, Image, Rate, Tag, message } from "antd";
 import { ShoppingCartOutlined, EditOutlined } from "@ant-design/icons";
 import { ProductService } from "../../services/product-service/product.service";
+import { AddressService } from "../../services/adress/address.service";
+import { OrderService } from "../../services/order/order.service";
 import AboutShop from "./AboutShop";
+import { useCart } from "../../context/cart.context";
 
 const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [engraving, setEngraving] = useState(false);
 
   // Add this state for main image
   const [mainImg, setMainImg] = useState(null);
+  const { getCartCount } = useCart();
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -41,6 +46,38 @@ const ProductDetail = () => {
   const price = parseInt(product.price?.$numberDecimal || 0, 10);
   const engravingCost = 50000;
   const totalPrice = engraving ? price + engravingCost : price;
+
+  const handleAddToCart = async () => {
+    try {
+      // 1. Lấy danh sách địa chỉ
+      const res = await AddressService.getAddresses();
+      const addresses = res?.data || [];
+      if (!addresses.length) {
+        message.error("Bạn chưa có địa chỉ giao hàng. Vui lòng thêm địa chỉ trước!");
+        return;
+      }
+      const shipping_address_id = addresses[0]._id;
+
+      // 2. Chuẩn bị data order
+      const orderData = {
+        shipping_address_id,
+        items: [
+          {
+            product_id: product._id,
+            quantity: quantity,
+          },
+        ],
+      };
+
+      // 3. Gọi API tạo order
+      await OrderService.createOrder(orderData);
+      message.success("Đã thêm vào giỏ hàng!");
+      await getCartCount(); // Cập nhật lại số lượng giỏ hàng
+    } catch (error) {
+      message.error("Thêm vào giỏ hàng thất bại!");
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -137,13 +174,14 @@ const ProductDetail = () => {
             <Title level={3} className="text-red-500 mb-2">
               {totalPrice.toLocaleString()}₫
             </Title>
-            <Checkbox
+            {/* <Checkbox
               checked={engraving}
               onChange={(e) => setEngraving(e.target.checked)}
               className="mb-2"
+              hi
             >
               Khắc tên (+50.000₫)
-            </Checkbox>
+            </Checkbox> */}
             <Paragraph className="mt-2 mb-1 font-semibold">Mô tả sản phẩm:</Paragraph>
             <Text type="secondary" className="block mb-2" style={{ whiteSpace: "pre-line" }}>
               {product.description}
@@ -167,6 +205,7 @@ const ProductDetail = () => {
               icon={<ShoppingCartOutlined />}
               size="large"
               className="mt-4 w-full bg-orange-500 hover:bg-orange-600"
+              onClick={handleAddToCart}
             >
               Thêm vào giỏ hàng
             </Button>
