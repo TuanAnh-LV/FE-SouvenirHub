@@ -8,15 +8,24 @@ import {
 import { Input, Badge, Avatar, Dropdown, Menu } from "antd";
 import { useAuth } from "../../context/auth.context";
 import logo from "../../assets/souvenir-hub-logo.png";
-const DashboardHeader = () => {
-  const { userInfo } = useAuth();
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
+const DashboardHeader = () => {
+  const navigate = useNavigate();
+
+  const { userInfo, logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+    toast.success("Đăng xuất thành công!");
+    navigate("/login");
+  }
   const menu = (
     <Menu>
       <Menu.Item key="profile" icon={<SettingOutlined />}>
         Hồ sơ cá nhân
       </Menu.Item>
-      <Menu.Item key="logout" icon={<LogoutOutlined />}>
+      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
         Đăng xuất
       </Menu.Item>
     </Menu>
