@@ -8,11 +8,12 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.const";
 import { useAuth } from "../../context/auth.context";
-
+import { useNavigate } from "react-router-dom";
 const SidebarMenu = () => {
   const location = useLocation();
   const { userInfo } = useAuth();
   const role = userInfo?.role;
+  const navigate = useNavigate();
 
   const common = [
     {
@@ -74,6 +75,11 @@ const SidebarMenu = () => {
       label: "Shop Management",
       icon: <ShopOutlined />,
     },
+    {
+      path: "/admin/products/pending",
+      label: "Pending Products",
+      icon: <ShopOutlined />,
+    },
   ];
 
   const getMenu = () => {
@@ -85,7 +91,9 @@ const SidebarMenu = () => {
 
   return (
     <div className="w-64 bg-[#FFF1E6] p-6 min-h-screen">
-      <div className="text-2xl font-bold mb-6">SOUVENIR HUB</div>
+      <div className="text-2xl font-bold mb-6" onClick={() => navigate("/")}>
+        SOUVENIR HUB
+      </div>
       {getMenu().map((item) => (
         <Link
           key={item.path}

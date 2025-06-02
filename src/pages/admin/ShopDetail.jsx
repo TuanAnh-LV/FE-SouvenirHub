@@ -240,7 +240,7 @@ const ShopDetail = () => {
           <Card className="rounded-2xl shadow-sm mt-10" title="Products">
             <Table
               columns={productColumns}
-              dataSource={shop.products}
+              dataSource={shop.products?.filter((p) => p.status === "onSale")}
               pagination={{ pageSize: 5 }}
               rowKey="_id"
             />

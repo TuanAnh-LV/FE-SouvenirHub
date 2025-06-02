@@ -20,6 +20,7 @@ export const ROUTER_URL = {
     PRODUCTS: {
       PENDING: "/admin/products/pending",
       APPROVED: "/admin/products/approved",
+      DETAIL: "/admin/products/:id",
     },
     ORDERS: {
       ALL: "/admin/orders",
