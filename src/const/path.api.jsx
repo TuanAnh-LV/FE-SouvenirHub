@@ -14,8 +14,10 @@ export const API = {
     GET_ALL_PENDING_SHOPS: "/admin/pending",
     APPROVE_SHOP: "/admin/shops/:id/status",
     PRODUCT_APPROVED: "/admin/products/:id/approve",
+    PRODUCT_REJECTED: "/admin/products/:id/reject",
     UPDATE_INFO_SHOP: "/admin/shops/:id",
     GET_ALL_PRODUCTS_PENDING: "/admin/products/pending",
+    GET_PRODUCT_BY_ID: "/admin/products/:id",
     DELETE_SHOP: "/admin/shops/:id",
   },
   AUTH: {
@@ -77,5 +79,4 @@ export const API = {
     UPDATE_ORDER_STATUS: "/orders/:id/status",
     CANCEL_ORDER: "/orders/:id/cancel",
   },
-
 };

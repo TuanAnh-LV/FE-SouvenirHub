@@ -70,6 +70,13 @@ export const AdminService = {
             isLoading: true,
         });
     },
+    rejectProduct: (id, reason) => {
+        return BaseService.put({
+          url: API.ADMIN.PRODUCT_REJECTED.replace(":id", id),
+          data: { reason },
+          isLoading: true,
+        });
+      },      
     updateInfoShop: (id, data) => {
         return BaseService.put({
             url: API.ADMIN.UPDATE_INFO_SHOP.replace(":id", id),
@@ -83,6 +90,12 @@ export const AdminService = {
             isLoading: true,
         });
     },
+    getProductById: (id) => {
+        return BaseService.get({
+          url: API.ADMIN.GET_PRODUCT_BY_ID.replace(":id", id),
+          isLoading: true,
+        });
+      },
     deleteShop: (id) => {
         return BaseService.delete({
             url: API.ADMIN.DELETE_SHOP.replace(":id", id),

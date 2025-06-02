@@ -26,6 +26,12 @@ const ShopDetail = lazy(() => import("../pages/admin/ShopDetail"));
 const ShopApprovalDetail = lazy(() =>
   import("../pages/admin/ShopApprovalDetail")
 );
+const ManagePendingProducts = lazy(() =>
+  import("../pages/admin/ManagePendingProducts")
+);
+const ProductApprovalDetail = lazy(() =>
+  import("../pages/admin/ProductApprovalDetail")
+);
 
 const CreateProduct = lazy(() =>
   import("../pages/seller/seller-product/CreateProduct")
@@ -63,6 +69,14 @@ const routes = [
       { path: "manage-shop", element: <ManageShop /> },
       { path: "shops/:id", element: <ShopDetail /> },
       { path: "shop-applications/:id", element: <ShopApprovalDetail /> },
+      {
+        path: "products/pending",
+        element: <ManagePendingProducts />,
+      },
+      {
+        path: "products/:id",
+        element: <ProductApprovalDetail />,
+      },
     ],
   },
 
