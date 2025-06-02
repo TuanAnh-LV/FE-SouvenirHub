@@ -7,9 +7,10 @@ export const ProductService = {
       url: API.PRODUCT.GET_PRODUCT_BY_ID.replace(":id", id),
     });
   },
-  getAll() {
-    return BaseService.get({
+  getAll(data) {
+    return BaseService.post({
       url: API.PRODUCT.GET_ALL_PRODUCTS,
+      payload: data,
       isLoading: true,
     });
   },

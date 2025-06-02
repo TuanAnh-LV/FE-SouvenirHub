@@ -165,10 +165,14 @@ const ProductDetail = () => {
               <div className="flex flex-col">
                 <Rate
                   disabled
-                  defaultValue={5}
+                  allowHalf
+                  value={product.averageRating || 0}
                   className="ml-2"
                   style={{ fontSize: 16 }}
                 />
+                <span className="text-xs text-gray-500">
+                  {product.reviewCount || 0} đánh giá
+                </span>
               </div>
             </div>
             <Title level={3} className="text-red-500 mb-2">
@@ -195,7 +199,13 @@ const ProductDetail = () => {
               className="mb-2"
             />
             <Paragraph className="mt-2 mb-1 font-semibold">
-              Còn lại: <span className="text-green-600">{product.stock}</span> sản phẩm
+              Còn lại:{" "}
+              {product.stock === 0 ? (
+                <span className="text-red-500 font-bold">Hết hàng</span>
+              ) : (
+                <span className="text-green-600">{product.stock}</span>
+              )}{" "}
+              sản phẩm
             </Paragraph>
             <Paragraph className="mt-4 text-gray-500">
               Giao hàng dự kiến: 3-4 ngày + (Thời gian thực hiện 7-12 ngày)
@@ -204,8 +214,10 @@ const ProductDetail = () => {
               type="primary"
               icon={<ShoppingCartOutlined />}
               size="large"
-              className="mt-4 w-full bg-orange-500 hover:bg-orange-600"
+              className="mt-4 w-full"
+              style={{ background: "#E07B50", borderColor: "#E07B50" }}
               onClick={handleAddToCart}
+              disabled={product.stock === 0}
             >
               Thêm vào giỏ hàng
             </Button>

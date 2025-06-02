@@ -87,6 +87,8 @@ const CreateProduct = () => {
             category_id: "",
             price: 0,
             stock: 0,
+            specialNotes: "",
+            specifications: "",
           }}
         >
           <Row gutter={16}>
@@ -128,6 +130,24 @@ const CreateProduct = () => {
                 <TextArea
                   rows={3}
                   placeholder="thêm thông tin chi tiết liên quan đến sản phẩm"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Ghi chú đặc biệt"
+                name="specialNotes"
+              >
+                <TextArea
+                  rows={2}
+                  placeholder="Ghi chú đặc biệt cho sản phẩm (nếu có)"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Thông số kỹ thuật"
+                name="specifications"
+              >
+                <TextArea
+                  rows={2}
+                  placeholder="Thông số kỹ thuật của sản phẩm"
                 />
               </Form.Item>
             </Col>

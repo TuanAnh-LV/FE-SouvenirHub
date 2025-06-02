@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import { Table, Image, message } from "antd";
+import { Table, Image, message, Tag } from "antd";
 import { ProductService } from "../../services/shop-service/shop.service";
+import { ProductStatusLabel, ProductStatusColor } from "../../const/enum/ProductStatusEnum";
 
 const DEFAULT_IMG = "https://via.placeholder.com/60x60?text=No+Image";
 
@@ -89,6 +90,18 @@ const SellerProductsTable = () => {
       key: "stock",
       render: (stock) => <span>{stock} trong Kho</span>,
       align: "left", // Đổi từ "right" thành "left"
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      align: "center",
+      render: (status) => (
+        <Tag color={ProductStatusColor[status] || "default"}>
+          {ProductStatusLabel[status] || status}
+        </Tag>
+      ),
+      width: 110,
     },
   ];
 
