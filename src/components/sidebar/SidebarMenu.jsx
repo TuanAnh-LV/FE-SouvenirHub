@@ -15,23 +15,27 @@ const SidebarMenu = () => {
   const role = userInfo?.role;
 
   const common = [
-    { path: ROUTER_URL.COMMON.PROFILE, label: "Hồ sơ", icon: <UserOutlined /> },
+    {
+      path: ROUTER_URL.COMMON.PROFILE,
+      label: "Profile",
+      icon: <UserOutlined />,
+    },
   ];
 
   const buyer = [
     {
       path: "/buyer/dashboard",
-      label: "Tổng quan",
+      label: "Dashboard",
       icon: <HomeOutlined />,
     },
     {
       path: "/buyer/register-shop",
-      label: "Đăng ký shop",
+      label: "Register Shop",
       icon: <ShopOutlined />,
     },
     {
       path: "/buyer/orders",
-      label: "Đơn hàng của tôi",
+      label: "My Orders",
       icon: <ShoppingCartOutlined />,
     },
   ];
@@ -39,26 +43,31 @@ const SidebarMenu = () => {
   const seller = [
     {
       path: "/seller/dashboard",
-      label: "Tổng quan",
+      label: "Dashboard",
       icon: <HomeOutlined />,
     },
     {
       path: "/seller/products",
-      label: "Sản phẩm",
+      label: "Products",
       icon: <AppstoreOutlined />,
     },
     {
       path: "/seller/orders",
-      label: "Đơn hàng",
+      label: "Orders",
       icon: <ShoppingCartOutlined />,
     },
   ];
 
   const admin = [
     {
-      path: "/admin/dashboard",
-      label: "Bảng điều khiển",
+      path: "/admin",
+      label: "Dashboard",
       icon: <HomeOutlined />,
+    },
+    {
+      path: "/admin/manage-shop",
+      label: "Shop Management",
+      icon: <ShopOutlined />,
     },
   ];
 
@@ -70,7 +79,7 @@ const SidebarMenu = () => {
   };
 
   return (
-    <div className="w-64 bg-[#FFF1E6] h-screen p-6 space-y-4">
+    <div className="w-64 bg-[#FFF1E6] p-6 min-h-screen">
       <div className="text-2xl font-bold mb-6">SOUVENIR HUB</div>
       {getMenu().map((item) => (
         <Link

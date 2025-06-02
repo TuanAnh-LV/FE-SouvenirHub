@@ -15,6 +15,11 @@ const SellerDashboard = lazy(() => import("../pages/seller/SellerDashboard"));
 const BuyerDashboard = lazy(() => import("../pages/buyer/BuyerDashboard"));
 const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
 const Profile = lazy(() => import("../pages/Profile"));
+const ManageShop = lazy(() => import("../pages/admin/ManageShop"));
+const ShopDetail = lazy(() => import("../pages/admin/ShopDetail"));
+const ShopApprovalDetail = lazy(() =>
+  import("../pages/admin/ShopApprovalDetail")
+);
 
 const routes = [
   // Public routes
@@ -39,7 +44,10 @@ const routes = [
       </ProtectedRoute>
     ),
     children: [
-      { path: "", element: <AdminDashboard /> }, // /admin
+      { path: "", element: <AdminDashboard /> },
+      { path: "manage-shop", element: <ManageShop /> },
+      { path: "shops/:id", element: <ShopDetail /> },
+      { path: "shop-applications/:id", element: <ShopApprovalDetail /> },
     ],
   },
 
