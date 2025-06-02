@@ -30,18 +30,22 @@ export const API = {
   PRODUCT: {
     GET_ALL_PRODUCTS: "/products",
     GET_PRODUCT_BY_ID: "/products/:id",
-    CREATE_PRODUCT: "/products/create",
-    UPDATE_PRODUCT: "/products/update/:id",
-    DELETE_PRODUCT: "/products/delete/:id",
+    CREATE_PRODUCT: "/products",
+    UPDATE_PRODUCT: "/products/:id",
+    DELETE_PRODUCT: "/products/:id",
     SEARCH_PRODUCTS: "/products/search",
+    CREATE_PRODUCT_IMAGE: "/product-images/:id",
+    DELETE_PRODUCT_IMAGE: "/product-images/image/:id",
+    DELETE_PRODUCT_IMAGES: "/product-images/product/:id",
   },
   CATEGORY: {
     GET_ALL_CATEGORIES: "/categories",
     GET_CATEGORY_BY_ID: "/categories/:id",
-    CREATE_CATEGORY: "/categories/create",
-    UPDATE_CATEGORY: "/categories/update/:id",
-    DELETE_CATEGORY: "/categories/delete/:id",
+    CREATE_CATEGORY: "/categories",
+    UPDATE_CATEGORY: "/categories/:id",
+    DELETE_CATEGORY: "/categories/:id",
   },
+
   USER: {
     UPDATE_PROFILE: "/user/me",
     GET_USER_INFO: "/user/me",
@@ -60,4 +64,18 @@ export const API = {
     CREATE_APPLICATION: "/shop-applications",
     GET_APPLICATION_BY_ID: "/shop-applications/:id",
   },
+  ADDRESS: {
+    GET_ADDRESSES: "/addresses",
+    CREATE_ADDRESS: "/addresses",
+    UPDATE_ADDRESS: "/addresses/:id",
+    DELETE_ADDRESS: "/addresses/:id",
+  },
+  ORDER: {
+    CREATE_ORDER: "/orders",
+    GET_ORDERS: "/orders",
+    GET_ORDER_BY_ID: "/orders/:id",
+    UPDATE_ORDER_STATUS: "/orders/:id/status",
+    CANCEL_ORDER: "/orders/:id/cancel",
+  },
+
 };
