@@ -31,7 +31,18 @@ const ProductGrid = ({ products }) => {
               title={product.name}
               description={`${parseInt(product.price.$numberDecimal).toLocaleString()}đ`}
             />
-            <Rate disabled defaultValue={5} character={<StarFilled />} style={{ marginTop: 8 }} />
+            <div style={{ marginTop: 8 }}>
+              <Rate
+                disabled
+                allowHalf
+                value={product.averageRating || 0}
+                character={<StarFilled />}
+                style={{ fontSize: 16 }}
+              />
+              <span style={{ marginLeft: 8, fontSize: 12, color: "#888" }}>
+                {product.reviewCount || 0} đánh giá
+              </span>
+            </div>
           </Card>
         </Col>
       ))}

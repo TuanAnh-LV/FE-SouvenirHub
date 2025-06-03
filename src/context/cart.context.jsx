@@ -3,9 +3,10 @@ import { message } from "antd";
 import { OrderService } from "../services/order/order.service";
 
 export const CartStatusEnum = {
-  new: "pending",
-  waiting_paid: "waiting_paid",
-  completed: "completed",
+  pending: "pending",
+  shipped: "shipped",
+  done: "done",
+  cancelled: "cancelled",
 };
 
 const CartContext = createContext(undefined);
@@ -57,20 +58,21 @@ export const CartProvider = ({ children }) => {
   };
 
   const getCartCount = useCallback(async () => {
-  if (!token) {
-    setCartCount(0);
-    return;
-  }
-  try {
-    const response = await OrderService.getOrders();
-    const orders = response?.data || [];
-    const count = orders.length;
-    setCartCount(count);
-  } catch (error) {
-    setCartCount(0);
-    console.error("Error fetching cart count:", error);
-  }
-}, [token]);
+    if (!token) {
+      setCartCount(0);
+      return;
+    }
+    try {
+      const response = await OrderService.getOrders();
+      const orders = response?.data || [];
+      // Đếm số order có status là "pending"
+      const count = orders.filter((o) => o.status === CartStatusEnum.pending).length;
+      setCartCount(count);
+    } catch (error) {
+      setCartCount(0);
+      console.error("Error fetching cart count:", error);
+    }
+  }, [token]);
 
   const getCompletedCount = useCallback(async () => {
     if (!token) return;

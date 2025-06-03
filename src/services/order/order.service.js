@@ -32,9 +32,9 @@ export const OrderService = {
         });
     },
     
-    deleteOrder: (id) => {
-        return BaseService.delete({
-        url: API.ORDER.DELETE_ORDER.replace(":id", id),
+    cancelOrder: (id) => {
+        return BaseService.put({
+        url: API.ORDER.CANCEL_ORDER.replace(":id", id),
         isLoading: true,
         });
     },

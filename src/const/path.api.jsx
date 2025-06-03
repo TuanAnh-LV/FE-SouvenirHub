@@ -30,7 +30,7 @@ export const API = {
     FORGOT_PASSWORD: "/auth/forgot-password",
   },
   PRODUCT: {
-    GET_ALL_PRODUCTS: "/products",
+    GET_ALL_PRODUCTS: "/products/getAll",
     GET_PRODUCT_BY_ID: "/products/:id",
     CREATE_PRODUCT: "/products",
     UPDATE_PRODUCT: "/products/:id",
