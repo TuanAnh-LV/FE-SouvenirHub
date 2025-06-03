@@ -12,14 +12,30 @@ const Login = lazy(() => import("../pages/auth-pages/login"));
 const Signup = lazy(() => import("../pages/auth-pages/signup"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const SellerDashboard = lazy(() => import("../pages/seller/SellerDashboard"));
-const SellerProducts = lazy(() => import("../pages/seller/seller-product/SellerProduct"));
+const SellerProducts = lazy(() =>
+  import("../pages/seller/seller-product/SellerProduct")
+);
 const BuyerDashboard = lazy(() => import("../pages/buyer/BuyerDashboard"));
 const ProductDetail = lazy(() => import("../pages/product/ProductDetailPage"));
 const AllProductPage = lazy(() => import("../pages/product/AllProductPage"));
 const ShopProfile = lazy(() => import("../pages/shop-profile/ShopProfile"));
 const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
 const Profile = lazy(() => import("../pages/Profile"));
-const CreateProduct = lazy(() => import("../pages/seller/seller-product/CreateProduct"));
+const ManageShop = lazy(() => import("../pages/admin/ManageShop"));
+const ShopDetail = lazy(() => import("../pages/admin/ShopDetail"));
+const ShopApprovalDetail = lazy(() =>
+  import("../pages/admin/ShopApprovalDetail")
+);
+const ManagePendingProducts = lazy(() =>
+  import("../pages/admin/ManagePendingProducts")
+);
+const ProductApprovalDetail = lazy(() =>
+  import("../pages/admin/ProductApprovalDetail")
+);
+
+const CreateProduct = lazy(() =>
+  import("../pages/seller/seller-product/CreateProduct")
+);
 const BuyerCart = lazy(() => import("../pages/buyer/BuyerCart"));
 const BuyerProfilePage = lazy(() => import("../pages/buyer/BuyerProfile"));
 const routes = [
@@ -49,7 +65,18 @@ const routes = [
       </ProtectedRoute>
     ),
     children: [
-      { path: "", element: <AdminDashboard /> }, // /admin
+      { path: "", element: <AdminDashboard /> },
+      { path: "manage-shop", element: <ManageShop /> },
+      { path: "shops/:id", element: <ShopDetail /> },
+      { path: "shop-applications/:id", element: <ShopApprovalDetail /> },
+      {
+        path: "products/pending",
+        element: <ManagePendingProducts />,
+      },
+      {
+        path: "products/:id",
+        element: <ProductApprovalDetail />,
+      },
     ],
   },
 
@@ -61,10 +88,10 @@ const routes = [
         <DashboardLayout />
       </ProtectedRoute>
     ),
-    children: [{ path: "dashboard", element: <SellerDashboard /> },
-               { path: "products", element: <SellerProducts /> },      
-               { path: "create-product", element: <CreateProduct /> }
-
+    children: [
+      { path: "dashboard", element: <SellerDashboard /> },
+      { path: "products", element: <SellerProducts /> },
+      { path: "create-product", element: <CreateProduct /> },
     ],
   },
 
@@ -79,9 +106,7 @@ const routes = [
       { path: "dashboard", element: <BuyerDashboard /> },
       { path: "register-shop", element: <RegisterShop /> },
       { path: "profile", element: <BuyerProfilePage /> },
-      { path: "orders", element: <BuyerCart /> },      
-
-
+      { path: "orders", element: <BuyerCart /> },
     ],
   },
 

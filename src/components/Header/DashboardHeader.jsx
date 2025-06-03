@@ -8,18 +8,16 @@ import {
 import { Input, Badge, Avatar, Dropdown, Menu } from "antd";
 import { useAuth } from "../../context/auth.context";
 import logo from "../../assets/souvenir-hub-logo.png";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 const DashboardHeader = () => {
-  const navigate = useNavigate();
-
   const { userInfo, logout } = useAuth();
+  const navigate = useNavigate();
   const handleLogout = () => {
     logout();
     toast.success("Đăng xuất thành công!");
     navigate("/login");
-  }
+  };
   const menu = (
     <Menu>
       <Menu.Item key="profile" icon={<SettingOutlined />}>
@@ -35,7 +33,12 @@ const DashboardHeader = () => {
     <div className="flex items-center justify-between px-6 py-4 bg-[#FFE1D6] border-b border-gray-200">
       {/* Logo + Search */}
       <div className="flex items-center gap-4">
-        <img src={logo} alt="Souvenir Hub" className="h-24" />
+        <img
+          src={logo}
+          alt="Souvenir Hub"
+          className="h-24"
+          onClick={() => navigate("/")}
+        />
         <Input
           placeholder="Tìm kiếm..."
           prefix={<SearchOutlined />}
