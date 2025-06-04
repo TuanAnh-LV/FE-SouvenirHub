@@ -7,19 +7,19 @@ export const ProductService = {
       url: API.PRODUCT.GET_PRODUCT_BY_ID.replace(":id", id),
     });
   },
-  getAll(data) {
-    return BaseService.post({
+  getAll(params) {
+    return BaseService.get({
       url: API.PRODUCT.GET_ALL_PRODUCTS,
-      payload: data,
+      params,
       isLoading: true,
     });
   },
   createProduct: (data) => {
     return BaseService.post({
-        url: API.PRODUCT.CREATE_PRODUCT,
-        payload: data,
-        isLoading: true,
-    });   
+      url: API.PRODUCT.CREATE_PRODUCT,
+      payload: data,
+      isLoading: true,
+    });
   },
   updateProduct: (id, data) => {
     return BaseService.put({
@@ -37,7 +37,7 @@ export const ProductService = {
   createProductImage: (id, files) => {
     const formData = new FormData();
     // files: array of File objects
-    files.forEach(file => {
+    files.forEach((file) => {
       formData.append("images", file);
     });
 
