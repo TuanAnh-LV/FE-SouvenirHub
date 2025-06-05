@@ -87,4 +87,11 @@ export const API = {
     CLEAR_ALL_CART: "/cart/clear",
     CHECK_OUT_CART: "/cart/checkout",
   },
+  VOUCHER: {
+    GET_ALL_VOUCHERS: "/vouchers",
+    GET_VOUCHER_BY_ID: "/vouchers/:id",
+    CREATE_VOUCHER: "/vouchers",
+    UPDATE_VOUCHER: "/vouchers/:id",
+    DELETE_VOUCHER: "/vouchers/:id",
+  },
 };
