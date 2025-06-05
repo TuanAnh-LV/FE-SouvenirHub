@@ -4,22 +4,19 @@ import { ShoppingOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "../../context/auth.context";
 import { useCart } from "../../context/cart.context";
 import logo from "../../assets/souvenir-hub-logo.png";
-// import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 const Header = () => {
   const navigate = useNavigate();
   const { userInfo, logout } = useAuth();
-  const { cartCount, getCartCount } = useCart();
-
+  const { cartCount, getCartCount, cart } = useCart();
   useEffect(() => {
-    // Fetch cart count when the component mounts
     getCartCount();
   }, [getCartCount]);
 
   const handleLogout = () => {
     logout();
-    toast.success("Đăng xuất thành công!");
+    toast.success("Logged out successfully!");
     navigate("/login");
   };
 
@@ -27,7 +24,6 @@ const Header = () => {
     if (!userInfo) return [];
 
     const role = userInfo.role;
-    // const name = userInfo.name;
 
     switch (role) {
       case "admin":
@@ -37,7 +33,7 @@ const Header = () => {
             label: "Dashboard",
             onClick: () => navigate("/admin"),
           },
-          { key: "logout", label: "Đăng xuất", onClick: handleLogout },
+          { key: "logout", label: "Log out", onClick: handleLogout },
         ];
       case "seller":
         return [
@@ -46,19 +42,19 @@ const Header = () => {
             label: "Dashboard",
             onClick: () => navigate("/seller"),
           },
-          { key: "logout", label: "Đăng xuất", onClick: handleLogout },
+          { key: "logout", label: "Log out", onClick: handleLogout },
         ];
       case "buyer":
       default:
         return [
           {
             key: "profile",
-            label: "Thông tin cá nhân",
+            label: "Profile",
             onClick: () => navigate("/buyer/profile"),
           },
           {
             key: "orders",
-            label: "Đơn hàng",
+            label: "My Orders",
             onClick: () => navigate("/buyer/orders"),
           },
           {
@@ -66,7 +62,7 @@ const Header = () => {
             label: "Dashboard",
             onClick: () => navigate("/buyer/dashboard"),
           },
-          { key: "logout", label: "Đăng xuất", onClick: handleLogout },
+          { key: "logout", label: "Log out", onClick: handleLogout },
         ];
     }
   };
@@ -78,15 +74,15 @@ const Header = () => {
         className="flex items-center gap-2 cursor-pointer"
         onClick={() => navigate("/")}
       >
-        <img src={logo} alt="Souvenir Hub" className="h-24" />
+        <img src={logo} alt="Souvenir Hub" className="h-24 ml-13" />
       </div>
 
       {/* Search */}
       <div className="w-[30%] hidden md:block">
         <Input
           size="large"
-          placeholder="quà lưu khắc tên, quà tặng người thân,..."
-          prefix={<span className="text-gray-400 text-lg">🔍</span>}
+          placeholder="personalized gift, gift for loved ones..."
+          prefix={<span className="text-gray-400 text-lg"></span>}
           className="rounded-full"
         />
       </div>
@@ -94,16 +90,16 @@ const Header = () => {
       {/* Menu */}
       <nav className="hidden md:flex gap-6 text-base font-medium text-black">
         <span onClick={() => navigate("/products")} className="cursor-pointer">
-          Sản phẩm
+          Products
         </span>
         <span onClick={() => navigate("/gift-box")} className="cursor-pointer">
-          Hộp quà
+          Gift Box
         </span>
         <span onClick={() => navigate("/blogs")} className="cursor-pointer">
           Blogs
         </span>
         <span onClick={() => navigate("/contact")} className="cursor-pointer">
-          Liên hệ
+          Contact
         </span>
       </nav>
 
@@ -121,26 +117,26 @@ const Header = () => {
         ) : (
           <div className="text-sm text-gray-800 space-x-1">
             <span className="cursor-pointer" onClick={() => navigate("/login")}>
-              Đăng nhập
+              Login
             </span>
             <span>|</span>
             <span
               className="cursor-pointer"
               onClick={() => navigate("/signup")}
             >
-              Đăng ký
+              Sign Up
             </span>
           </div>
         )}
 
         <div
           className="flex items-center cursor-pointer text-brown-700 font-semibold"
-          onClick={() => navigate("/buyer/orders")}
+          onClick={() => navigate("/cart")}
         >
-          <Badge count={cartCount || 0} size="small" offset={[0, 6]}>
+          <Badge count={cart?.total_quantity || 0} size="small" offset={[0, 6]}>
             <ShoppingOutlined style={{ fontSize: 22 }} />
           </Badge>
-          <span className="ml-1">Giỏ hàng</span>
+          <span className="ml-1">Cart</span>
         </div>
       </div>
     </header>

@@ -38,6 +38,7 @@ const CreateProduct = lazy(() =>
 );
 const BuyerCart = lazy(() => import("../pages/buyer/BuyerCart"));
 const BuyerProfilePage = lazy(() => import("../pages/buyer/BuyerProfile"));
+const Cart = lazy(() => import("../pages/Cart"));
 const routes = [
   // Public routes
   {
@@ -52,6 +53,7 @@ const routes = [
       { path: ROUTER_URL.PRODUCTS.ALL, element: <AllProductPage /> },
       { path: ROUTER_URL.COMMON.SHOP_PROFILE, element: <ShopProfile /> },
       { path: ROUTER_URL.COMMON.PROFILE, element: <Profile /> },
+      { path: ROUTER_URL.COMMON.GET_CART, element: <Cart /> },
     ],
   },
 

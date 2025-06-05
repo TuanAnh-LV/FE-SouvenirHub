@@ -62,15 +62,15 @@ const handleErrorByToast = (error) => {
 
 // ✅ Service chung
 export const BaseService = {
-  get({ url, isLoading = true, payload = {}, headers = {} }) {
-    const params = { ...payload };
-    for (const key in params) {
-      if (params[key] === '' && params[key] !== 0) {
-        delete params[key];
+  get({ url, isLoading = true, params = {}, headers = {} }) {
+    const cleanedParams = { ...params };
+    for (const key in cleanedParams) {
+      if (cleanedParams[key] === '' && cleanedParams[key] !== 0) {
+        delete cleanedParams[key];
       }
     }
     checkLoading(isLoading);
-    return axiosInstance.get(url, { params, headers });
+    return axiosInstance.get(url, { params: cleanedParams, headers });
   },
 
   post({ url, isLoading = true, payload = {}, headers = {} }) {

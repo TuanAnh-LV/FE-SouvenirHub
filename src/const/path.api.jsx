@@ -30,7 +30,7 @@ export const API = {
     FORGOT_PASSWORD: "/auth/forgot-password",
   },
   PRODUCT: {
-    GET_ALL_PRODUCTS: "/products/getAll",
+    GET_ALL_PRODUCTS: "/products",
     GET_PRODUCT_BY_ID: "/products/:id",
     CREATE_PRODUCT: "/products",
     UPDATE_PRODUCT: "/products/:id",
@@ -78,5 +78,13 @@ export const API = {
     GET_ORDER_BY_ID: "/orders/:id",
     UPDATE_ORDER_STATUS: "/orders/:id/status",
     CANCEL_ORDER: "/orders/:id/cancel",
+  },
+  CART: {
+    GET_CART: "/cart",
+    ADD_TO_CART: "/cart/add",
+    UPDATE_CART: "/cart/update",
+    DELETE_CART: "/cart/remove/:id",
+    CLEAR_ALL_CART: "/cart/clear",
+    CHECK_OUT_CART: "/cart/checkout",
   },
 };
