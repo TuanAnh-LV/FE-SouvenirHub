@@ -1,10 +1,19 @@
 import { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {  Button, Typography, InputNumber, Checkbox, Image, Rate, Tag, message } from "antd";
+import {
+  Button,
+  Typography,
+  InputNumber,
+  Checkbox,
+  Image,
+  Rate,
+  Tag,
+  message,
+} from "antd";
 import { ShoppingCartOutlined, EditOutlined } from "@ant-design/icons";
 import { ProductService } from "../../services/product-service/product.service";
-import { AddressService } from "../../services/adress/address.service";
-import { OrderService } from "../../services/order/order.service";
+// import { CartService } from "../../services/cart/cart.service";
+
 import AboutShop from "./AboutShop";
 import { useCart } from "../../context/cart.context";
 
@@ -13,12 +22,10 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  // eslint-disable-next-line no-unused-vars
   const [engraving, setEngraving] = useState(false);
-
   // Add this state for main image
   const [mainImg, setMainImg] = useState(null);
-  const { getCartCount } = useCart();
+  const { getCartCount, addToCart } = useCart();
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -49,30 +56,9 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     try {
-      // 1. Lấy danh sách địa chỉ
-      const res = await AddressService.getAddresses();
-      const addresses = res?.data || [];
-      if (!addresses.length) {
-        message.error("Bạn chưa có địa chỉ giao hàng. Vui lòng thêm địa chỉ trước!");
-        return;
-      }
-      const shipping_address_id = addresses[0]._id;
-
-      // 2. Chuẩn bị data order
-      const orderData = {
-        shipping_address_id,
-        items: [
-          {
-            product_id: product._id,
-            quantity: quantity,
-          },
-        ],
-      };
-
-      // 3. Gọi API tạo order
-      await OrderService.createOrder(orderData);
+      await addToCart(product._id, quantity);
       message.success("Đã thêm vào giỏ hàng!");
-      await getCartCount(); // Cập nhật lại số lượng giỏ hàng
+      await getCartCount(); // cập nhật số lượng giỏ
     } catch (error) {
       message.error("Thêm vào giỏ hàng thất bại!");
       console.error(error);
@@ -89,10 +75,7 @@ const ProductDetail = () => {
           marginTop: "3%",
         }}
       >
-        <div
-          className="grid grid-cols-1 md:grid-cols-2"
-          style={{ gap: "5%" }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: "5%" }}>
           {/* Images */}
           <div>
             {/* Main Image */}
@@ -127,7 +110,8 @@ const ProductDetail = () => {
                 <div
                   key={idx}
                   style={{
-                    border: mainImg === img ? "2px solid #faad14" : "1px solid #ddd",
+                    border:
+                      mainImg === img ? "2px solid #faad14" : "1px solid #ddd",
                     borderRadius: 4,
                     padding: 2,
                     background: "#fff",
@@ -158,7 +142,9 @@ const ProductDetail = () => {
           </div>
           {/* Product Info */}
           <div>
-            <Title level={3} className="mb-2">{product.name}</Title>
+            <Title level={3} className="mb-2">
+              {product.name}
+            </Title>
             <div className="flex items-center gap-2 mb-2">
               <Tag color="blue">{product.category_id?.name}</Tag>
               <Tag color="green">{product.shop_id?.name}</Tag>
@@ -186,8 +172,14 @@ const ProductDetail = () => {
             >
               Khắc tên (+50.000₫)
             </Checkbox> */}
-            <Paragraph className="mt-2 mb-1 font-semibold">Mô tả sản phẩm:</Paragraph>
-            <Text type="secondary" className="block mb-2" style={{ whiteSpace: "pre-line" }}>
+            <Paragraph className="mt-2 mb-1 font-semibold">
+              Mô tả sản phẩm:
+            </Paragraph>
+            <Text
+              type="secondary"
+              className="block mb-2"
+              style={{ whiteSpace: "pre-line" }}
+            >
               {product.description}
             </Text>
             <Paragraph className="mt-2 mb-1 font-semibold">Số lượng:</Paragraph>
@@ -224,26 +216,31 @@ const ProductDetail = () => {
           </div>
         </div>
         <div className="p-4 bg-[#fff7f6] mt-4 rounded-lg shadow-md">
-        <div className="flex items-center gap-2 mb-2">
-          <EditOutlined className="text-lg text-black" />
-          <Title level={5} className="!mb-0">
-            Lưu ý từ cửa hàng
-          </Title>
+          <div className="flex items-center gap-2 mb-2">
+            <EditOutlined className="text-lg text-black" />
+            <Title level={5} className="!mb-0">
+              Lưu ý từ cửa hàng
+            </Title>
+          </div>
+
+          <Paragraph className="text-sm text-black">
+            Hãy biến chiếc ví đựng thẻ trở thành tác phẩm dành cho riêng bạn
+            bằng cách khắc tên cá nhân hóa:
+          </Paragraph>
+
+          <ul className="list-disc list-inside text-sm text-black space-y-1">
+            <li>
+              Vui lòng ghi tên mà bạn muốn khắc trên ví vào ô &quot;Lưu ý từ
+              khách hàng&quot;
+            </li>
+            <li>Độ dài tên riêng để khắc tối đa 10 ký tự</li>
+          </ul>
+
+          <Paragraph className="text-sm text-black mt-2">
+            <strong>Lưu ý:</strong> Thời gian làm có thể kéo dài từ 7–12 ngày.
+            Khách hàng có thể cân nhắc trước khi đặt.
+          </Paragraph>
         </div>
-
-        <Paragraph className="text-sm text-black">
-          Hãy biến chiếc ví đựng thẻ trở thành tác phẩm dành cho riêng bạn bằng cách khắc tên cá nhân hóa:
-        </Paragraph>
-
-        <ul className="list-disc list-inside text-sm text-black space-y-1">
-          <li>Vui lòng ghi tên mà bạn muốn khắc trên ví vào ô &quot;Lưu ý từ khách hàng&quot;</li>
-          <li>Độ dài tên riêng để khắc tối đa 10 ký tự</li>
-        </ul>
-
-        <Paragraph className="text-sm text-black mt-2">
-          <strong>Lưu ý:</strong> Thời gian làm có thể kéo dài từ 7–12 ngày. Khách hàng có thể cân nhắc trước khi đặt.
-        </Paragraph>
-      </div>
       </div>
       {/* Remove or reduce marginTop for AboutShop */}
       <div style={{ marginBottom: "5%" }}>

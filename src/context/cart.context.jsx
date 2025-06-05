@@ -1,6 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { message } from "antd";
 import { OrderService } from "../services/order/order.service";
+import { CartService } from "../services/cart/cart.service";
 
 export const CartStatusEnum = {
   pending: "pending",
@@ -16,6 +23,12 @@ export const CartProvider = ({ children }) => {
   const [cartCompletedItems, setCartCompletedItems] = useState([]);
   const [cartCount, setCartCount] = useState(0);
   const token = localStorage.getItem("token");
+  const [cart, setCart] = useState({
+    items: [],
+    total_price: 0,
+    total_quantity: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
   const updateCartItems = useCallback(
     async (status) => {
@@ -66,7 +79,9 @@ export const CartProvider = ({ children }) => {
       const response = await OrderService.getOrders();
       const orders = response?.data || [];
       // Đếm số order có status là "pending"
-      const count = orders.filter((o) => o.status === CartStatusEnum.pending).length;
+      const count = orders.filter(
+        (o) => o.status === CartStatusEnum.pending
+      ).length;
       setCartCount(count);
     } catch (error) {
       setCartCount(0);
@@ -101,6 +116,54 @@ export const CartProvider = ({ children }) => {
     initCart();
   }, [token]);
 
+  const refreshCart = async () => {
+    try {
+      setLoading(true);
+      const res = await CartService.getCart();
+      setCart(res.data);
+    } catch (err) {
+      console.error("Failed to fetch cart:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addToCart = async (productId, quantity = 1) => {
+    try {
+      const res = await CartService.addToCart({ productId, quantity });
+      setCart(res.data);
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+    }
+  };
+
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      const res = await CartService.updateCart({ productId, quantity });
+      setCart(res.data);
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
+    }
+  };
+
+  const removeItem = async (productId) => {
+    try {
+      const res = await CartService.removeItem(productId);
+      setCart(res.data);
+      message.success("Đã xoá sản phẩm khỏi giỏ hàng.");
+    } catch (err) {
+      message.error("Xoá sản phẩm thất bại.");
+      console.error(
+        "Failed to remove item:",
+        err.response?.data || err.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    refreshCart();
+  }, []);
+
   return (
     <CartContext.Provider
       value={{
@@ -112,6 +175,13 @@ export const CartProvider = ({ children }) => {
         deleteCartItem,
         getCartCount,
         getCompletedCount,
+        cart,
+        setCart,
+        refreshCart,
+        updateQuantity,
+        removeItem,
+        addToCart,
+        loading,
       }}
     >
       {children}

@@ -47,7 +47,11 @@ export default function CreateAddress({ onBack }) {
       if (data && data.address) {
         form.setFieldsValue({
           address_line: data.display_name || "",
-          city: data.address.city || data.address.town || data.address.village || "",
+          city:
+            data.address.city ||
+            data.address.town ||
+            data.address.village ||
+            "",
           district:
             data.address.district ||
             data.address.city_district ||
@@ -78,9 +82,7 @@ export default function CreateAddress({ onBack }) {
     // Kiểm tra dữ liệu gửi đi
     console.log("Data gửi lên backend:", addressData);
 
-    if (
-      (!addressData.address_line || !addressData.city || !addressData.ward)
-    ) {
+    if (!addressData.address_line || !addressData.city || !addressData.ward) {
       message.error("Vui lòng nhập đầy đủ địa chỉ hoặc chọn trên bản đồ.");
       return;
     }
@@ -100,49 +102,46 @@ export default function CreateAddress({ onBack }) {
   };
 
   // Khi check "Người nhận là tôi"
-const handleCheckMe = (e) => {
-  setIsMe(e.target.checked);
-  if (e.target.checked && userInfo.name && userInfo.phone) {
-    form.setFieldsValue({
-      recipient_name: userInfo.name,
-      phone: userInfo.phone,
-    });
-  } else if (!e.target.checked) {
-    form.setFieldsValue({
-      recipient_name: "",
-      phone: "",
-    });
-  }
-};
+  // const handleCheckMe = (e) => {
+  //   setIsMe(e.target.checked);
+  //   if (e.target.checked && userInfo.name && userInfo.phone) {
+  //     form.setFieldsValue({
+  //       recipient_name: userInfo.name,
+  //       phone: userInfo.phone,
+  //     });
+  //   } else if (!e.target.checked) {
+  //     form.setFieldsValue({
+  //       recipient_name: "",
+  //       phone: "",
+  //     });
+  //   }
+  // };
 
   return (
-    <div className="py-10 px-6 md:px-20">
-      <div className="md:col-span-1  bg-[#FFE1D6] rounded-xl shadow p-8 space-y-8">
-        {/* Nút quay lại nằm bên trái, trên tiêu đề */}
+    <div className="py-8 px-4 md:px-10">
+      <div className="bg-white rounded-xl shadow-md border p-6 space-y-6">
         {onBack && (
-          <div className="mb-2">
-            <Button
-              onClick={onBack}
-              type="text"
-              icon={<LeftOutlined />}
-              style={{
-                background: "#FFE1D6",
-                border: "none",
-                color: "#d46b08",
-                boxShadow: "none",
-                fontWeight: 500,
-                paddingLeft: 0,
-              }}
-            >
-              Quay lại
-            </Button>
-          </div>
+          <Button
+            onClick={onBack}
+            icon={<LeftOutlined />}
+            type="default"
+            size="small"
+            style={{ marginBottom: 8 }}
+          >
+            Back
+          </Button>
         )}
-        <h2 className="text-2xl font-bold">Địa chỉ</h2>
+
+        <h2 className="text-xl font-bold">
+          {typeof address !== "undefined" ? "Update Address" : "New Address"}
+        </h2>
+
         <Form
           form={form}
           layout="vertical"
-          onFinish={handleFinish}
+          onFinish={
+            typeof address !== "undefined" ? handleFinish : handleFinish
+          }
           initialValues={{
             recipient_name: "",
             phone: "",
@@ -154,93 +153,97 @@ const handleCheckMe = (e) => {
             lng: null,
           }}
         >
-          <Row gutter={32}>
-            {/* Form fields bên trái */}
-            <Col span={12}>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    label={
-                      <Row align="middle" gutter={8}>
-                        <Col>Tên người nhận</Col>
-                        <Col>
-                          <Checkbox checked={isMe} onChange={handleCheckMe}>
-                            Người nhận là tôi
-                          </Checkbox>
-                        </Col>
-                      </Row>
-                    }
-                    name="recipient_name"
-                    rules={[{ required: true, message: "Please enter recipient name" }]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    label="Số điện thoại"
-                    name="phone"
-                    rules={[{ required: true, message: "Please enter phone" }]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-              </Row>
+          <Row gutter={24}>
+            {/* LEFT: Form */}
+            <Col xs={24} md={12}>
               <Form.Item
-                label="Điạ chỉ"
-                name="address_line"
-                rules={[{ required: true, message: "Please enter address line" }]}
+                label="Recipient Name"
+                name="recipient_name"
+                rules={[
+                  { required: true, message: "Please enter recipient name" },
+                ]}
               >
-                <Input />
+                <Input placeholder="Enter full name" />
               </Form.Item>
+
               <Form.Item
-                label="Thành phố"
+                label="Phone Number"
+                name="phone"
+                rules={[
+                  { required: true, message: "Please enter phone number" },
+                ]}
+              >
+                <Input placeholder="Enter phone number" />
+              </Form.Item>
+
+              <Form.Item
+                label="Address Line"
+                name="address_line"
+                rules={[{ required: true, message: "Please enter address" }]}
+              >
+                <Input placeholder="e.g. 123 Le Loi Street" />
+              </Form.Item>
+
+              <Form.Item
+                label="City"
                 name="city"
                 rules={[{ required: true, message: "Please enter city" }]}
               >
+                <Input placeholder="e.g. Ho Chi Minh" />
+              </Form.Item>
+
+              <Form.Item label="District" name="district" hidden>
                 <Input />
               </Form.Item>
+
               <Form.Item
-                label="District"
-                name="district"
-                rules={[{ required: false, message: "Please enter district" }]}
-                hidden      
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                label="Quân / Huyện"
+                label="Ward / Commune"
                 name="ward"
                 rules={[{ required: true, message: "Please enter ward" }]}
               >
-                <Input />
+                <Input placeholder="e.g. Ward 1" />
               </Form.Item>
+
               <Form.Item>
-                <Button type="primary" htmlType="submit" loading={loading} block>
-                  Thêm địa chỉ
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={loading}
+                  block
+                >
+                  {typeof address !== "undefined"
+                    ? "Update Address"
+                    : "Save Address"}
                 </Button>
               </Form.Item>
             </Col>
-            {/* Map bên phải */}
-            <Col span={12}>
-              <Form.Item label="Location">
-                <div style={{ marginBottom: 8 }}>
+
+            {/* RIGHT: Map */}
+            <Col xs={24} md={12}>
+              <Form.Item label="Select on Map">
+                <div
+                  style={{
+                    marginBottom: 8,
+                    borderRadius: 8,
+                    overflow: "hidden",
+                  }}
+                >
                   <MapContainer
                     center={marker || center}
                     zoom={14}
-                    style={{ width: "100%", height: 350 }}
+                    style={{ width: "100%", height: 300 }}
                   >
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <LocationMarker onSelect={handleMapClick} />
                     {marker && <Marker position={marker} />}
                   </MapContainer>
                 </div>
-                <div style={{ fontSize: 12 }}>
+                <div style={{ fontSize: 12, color: "#666" }}>
                   {marker
-                    ? `Selected Location: (${marker.lat.toFixed(5)}, ${marker.lng.toFixed(5)})`
-                    : "Click on the map to select a location"}
+                    ? `Selected: (${marker.lat.toFixed(
+                        5
+                      )}, ${marker.lng.toFixed(5)})`
+                    : "Click on the map to select your delivery location"}
                 </div>
                 <Form.Item name="lat" noStyle>
                   <Input type="hidden" />
