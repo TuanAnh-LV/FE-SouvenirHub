@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   InputNumber,
-  Input,
   Tooltip,
   Checkbox,
   message,
@@ -15,6 +14,8 @@ import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "../context/cart.context";
 import { AddressService } from "../services/adress/address.service";
 import { CartService } from "../services/cart/cart.service";
+import { VoucherService } from "../services/voucher/voucher.service";
+import { OrderService } from "../services/order/order.service";
 import CreateAddress from "../pages/address/CreateAddress";
 import UpdateAddress from "../pages/address/UpdateAddress";
 
@@ -30,6 +31,10 @@ export default function CartPage() {
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
+
+  // Voucher state
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
 
   const groupedItems = cart?.groupedItems || [];
 
@@ -47,6 +52,23 @@ export default function CartPage() {
     0
   );
 
+  // Tính giảm giá dựa trên voucher đã chọn
+  const selectedVoucher = vouchers.find((v) => v._id === selectedVoucherId);
+  let discountAmount = 0;
+  if (selectedVoucher && selectedTotalPrice >= (selectedVoucher.min_order_value || 0)) {
+    if (selectedVoucher.type === "amount") {
+      discountAmount = Math.min(selectedVoucher.discount, selectedTotalPrice);
+    } else if (selectedVoucher.type === "percent") {
+      let percentDiscount = (selectedTotalPrice * selectedVoucher.discount) / 100;
+      if (selectedVoucher.max_discount && selectedVoucher.max_discount > 0) {
+        percentDiscount = Math.min(percentDiscount, selectedVoucher.max_discount);
+      }
+      discountAmount = Math.min(percentDiscount, selectedTotalPrice);
+    }
+  }
+
+  const finalTotalPrice = selectedTotalPrice - discountAmount;
+
   const fetchAddresses = async () => {
     try {
       const res = await AddressService.getAddresses();
@@ -56,8 +78,19 @@ export default function CartPage() {
     }
   };
 
+  // Lấy danh sách voucher
+  const fetchVouchers = async () => {
+    try {
+      const res = await VoucherService.getAllVouchers();
+      setVouchers(res.data || []);
+    } catch {
+      setVouchers([]);
+    }
+  };
+
   useEffect(() => {
     fetchAddresses();
+    fetchVouchers();
   }, []);
 
   useEffect(() => {
@@ -90,20 +123,66 @@ export default function CartPage() {
     );
   };
 
+  // Lọc voucher có thể sử dụng
+  const availableVouchers = vouchers.filter(
+    (v) =>
+      v.quantity > 0 &&
+      new Date(v.expires_at) > new Date() &&
+      selectedTotalPrice >= (v.min_order_value || 0)
+  );
+
   const handleCheckout = async () => {
     if (!selectedAddressId)
       return message.warning("Please select a shipping address");
     if (selectedProductIds.length === 0)
       return message.warning("Please select items to checkout");
 
+    // Kiểm tra điều kiện voucher
+    if (selectedVoucherId) {
+      if (!selectedVoucher) {
+        return message.error("Voucher không hợp lệ.");
+      }
+      if (selectedTotalPrice < (selectedVoucher.min_order_value || 0)) {
+        return message.error(
+          `Đơn hàng phải từ ${selectedVoucher.min_order_value.toLocaleString()}₫ để dùng voucher này`
+        );
+      }
+      if (selectedVoucher.quantity <= 0) {
+        return message.error("Voucher đã hết lượt sử dụng.");
+      }
+      if (new Date(selectedVoucher.expires_at) < new Date()) {
+        return message.error("Voucher đã hết hạn.");
+      }
+    }
+
+    // Chuẩn bị data cho API createOrder
+    const items = selectedItems.map((item) => ({
+      product_id: item.product._id,
+      quantity: item.quantity,
+    }));
+
     try {
-      await CartService.checkout({
+      await OrderService.createOrder({
+        items,
         shipping_address_id: selectedAddressId,
-        selectedProductIds,
+        voucher_id: selectedVoucherId,
       });
 
+      // Xoá các sản phẩm đã đặt khỏi cart
+      for (const item of selectedItems) {
+        await removeItem(item.product._id);
+      }
+
+      // Cập nhật lại cart và số lượng
+      if (typeof cart?.refreshCart === "function") {
+        await cart.refreshCart();
+      }
+      if (typeof cart?.getCartCount === "function") {
+        await cart.getCartCount();
+      }
+
       message.success("Checkout successful!");
-      navigate("/orders");
+      navigate("/buyer/orders");
     } catch (err) {
       message.error("Checkout failed.");
       console.error(err);
@@ -302,14 +381,50 @@ export default function CartPage() {
             </Select>
           </div>
 
-          <Input placeholder="Enter discount code" className="mb-2" />
-          <Button type="primary" className="mb-4 w-full">
-            Apply
-          </Button>
+          {/* Voucher select */}
+          <div className="mb-2">
+            <label className="font-medium mb-1 block">Discount code</label>
+            <Select
+              placeholder="Select voucher"
+              value={selectedVoucherId}
+              onChange={setSelectedVoucherId}
+              style={{ width: "100%" }}
+              allowClear
+              showSearch
+              optionFilterProp="label"
+              options={availableVouchers.map((v) => ({
+                value: v._id,
+                label: (
+                  <div>
+                    <span style={{ fontWeight: 600 }}>{v.code}</span>
+                    <span style={{ color: "#888", marginLeft: 8 }}>
+                      {v.type === "amount"
+                        ? `Giảm ${v.discount.toLocaleString()}₫`
+                        : `Giảm ${v.discount}%`}
+                      {v.max_discount > 0
+                        ? ` (tối đa ${v.max_discount.toLocaleString()}₫)`
+                        : ""}
+                      {v.min_order_value > 0
+                        ? ` | Đơn từ ${v.min_order_value.toLocaleString()}₫`
+                        : ""}
+                    </span>
+                  </div>
+                ),
+                description: v.description,
+              }))}
+            />
+          </div>
+
+          {/* Hiển thị giảm giá nếu có */}
+          {discountAmount > 0 && (
+            <div className="mb-2" style={{ color: "#16a34a", fontWeight: 500 }}>
+              Đã giảm: -{discountAmount.toLocaleString()}₫
+            </div>
+          )}
 
           <p className="mb-2">Total price:</p>
           <p className="text-xl font-bold mb-4">
-            {selectedTotalPrice.toLocaleString()}₫
+            {finalTotalPrice.toLocaleString()}₫
           </p>
           <Button
             onClick={handleCheckout}
