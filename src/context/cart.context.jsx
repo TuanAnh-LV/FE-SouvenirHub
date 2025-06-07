@@ -154,7 +154,7 @@ export const CartProvider = ({ children }) => {
     try {
       const res = await CartService.removeItem(productId);
       setCart(res.data);
-      message.success("Đã xoá sản phẩm khỏi giỏ hàng.");
+      // message.success("Đã xoá sản phẩm khỏi giỏ hàng.");
     } catch (err) {
       message.error("Xoá sản phẩm thất bại.");
       console.error(

@@ -250,19 +250,7 @@ const BuyerCart = () => {
                       alignItems: "center",
                     }}
                   >
-                    <InputNumber
-                      min={1}
-                      max={item.product_id.stock}
-                      value={item.quantity}
-                      onChange={(value) =>
-                        handleQuantityChange(order._id, item._id, value)
-                      }
-                      style={{
-                        width: 80,
-                        height: 40,
-                        textAlign: "center",
-                      }}
-                    />
+                    <span style={{ fontSize: 16, fontWeight: 500 }}>{item.quantity}</span>
                   </div>
                   <div
                     style={{
@@ -273,7 +261,11 @@ const BuyerCart = () => {
                       alignItems: "center",
                     }}
                   >
-                    {(item.price * item.quantity).toLocaleString()}đ
+                    {(
+                          typeof order.total_price === "object"
+                            ? parseInt(order.total_price.$numberDecimal || order.total_price, 10)
+                            : parseInt(order.total_price, 10)
+                        ).toLocaleString() + "đ"}
                   </div>
                   {/* Trạng thái */}
                   <div style={{ flex: 1, textAlign: "start" }}>
