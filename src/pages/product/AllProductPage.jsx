@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState, lazy } from "react";
 import { Checkbox, Radio, Input, Pagination } from "antd";
 import { ProductService } from "../../services/product-service/product.service";
+import { CategoryService } from "../../services/category/category.service";
 const ProductGrid = lazy(() => import("../../components/product/AllProduct"));
+import { useSearchParams } from "react-router-dom";
 
 const priceOptions = [
   { label: "Tất cả", value: "" },
@@ -12,11 +14,15 @@ const priceOptions = [
 
 const AllProductPage = () => {
   const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState(""); // tên sản phẩm
-  const [priceRange, setPriceRange] = useState(""); // giá trị radio
+  const [priceRange, setPriceRange] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(9);
-  const [total, setTotal] = useState(0); // tổng số sản phẩm từ backend
+  const [total, setTotal] = useState(0);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
+  const [searchTerm, setSearchTerm] = useState(searchQuery);
 
   // Xử lý giá trị min/max theo radio
   const getPriceFilter = (price = priceRange) => {
@@ -25,16 +31,35 @@ const AllProductPage = () => {
     if (price === ">1000") return { minPrice: 1000000, maxPrice: 0 }; // hoặc null
     return { minPrice: 0, maxPrice: 0 };
   };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await CategoryService.getAllCategories();
+        setCategories(res.data || []);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const fetchProduct = useCallback(
-    async (searchValue = search, price = priceRange, page = currentPage) => {
+    async (
+      price = priceRange,
+      page = currentPage,
+      category = selectedCategory,
+      name = searchTerm
+    ) => {
       try {
         const { minPrice, maxPrice } = getPriceFilter(price);
 
         const response = await ProductService.getAll({
-          name: searchValue,
           status: "onSale",
           minPrice: minPrice > 0 ? minPrice : undefined,
           maxPrice: maxPrice > 0 ? maxPrice : undefined,
+          category: category || undefined,
+          name: name || undefined,
           page,
           limit: pageSize,
         });
@@ -45,7 +70,7 @@ const AllProductPage = () => {
         console.error("Error fetching product data:", error);
       }
     },
-    [search, priceRange, currentPage, pageSize]
+    [priceRange, currentPage, pageSize, selectedCategory, searchTerm]
   );
 
   const handlePageChange = (page) => {
@@ -54,32 +79,38 @@ const AllProductPage = () => {
 
   // Gọi fetchProduct lần đầu khi vào trang
   useEffect(() => {
-    fetchProduct(search, priceRange, currentPage);
-  }, [currentPage]);
-
-  const handleSearch = () => {
-    fetchProduct(search, priceRange);
-  };
+    setSearchTerm(searchQuery);
+    fetchProduct(priceRange, 1, selectedCategory, searchQuery);
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   // Xử lý khi đổi filter giá
   const handlePriceChange = (e) => {
     const value = e.target.value;
     setPriceRange(value);
-    fetchProduct(search, value);
+    fetchProduct(value);
+  };
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setSelectedCategory(value);
+    fetchProduct(priceRange, 1, value);
+    setCurrentPage(1);
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 mt-12 px-6 max-w-[1400px] mx-auto ">
+    <div className="md:px-12 max-w-screen-xl mx-auto flex gap-6 mt-15">
       {/* Bộ lọc bên trái */}
-      <aside className="w-full md:w-[280px] bg-gray-50 border border-gray-200 p-5 rounded-2xl shadow-sm">
-        <h3 className="text-xl font-semibold text-gray-700 mb-4">Bộ lọc</h3>
+      <aside className="w-[260px] bg-white p-4 shadow-sm">
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+          Search Filter
+        </h3>
 
-        <div className="mb-6">
-          <h4 className="font-medium text-gray-600 mb-2">Khoảng giá</h4>
+        <div className="mb-6 text-sm">
+          <h4 className="font-semibold text-black-700 mb-2">Price</h4>
           <Radio.Group
-            className="flex flex-col gap-2 text-gray-700"
             value={priceRange}
             onChange={handlePriceChange}
+            className="flex flex-col gap-10"
           >
             {priceOptions.map((opt) => (
               <Radio key={opt.value} value={opt.value}>
@@ -88,35 +119,46 @@ const AllProductPage = () => {
             ))}
           </Radio.Group>
         </div>
+        <h3 className="font-semibold text-black-700 mb-2">Category</h3>
+        <Radio.Group
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          className="flex flex-col gap-2"
+        >
+          <Radio value="">Tất cả</Radio>
+          {categories.map((cat) => (
+            <Radio key={cat._id} value={cat.name}>
+              {cat.name}
+            </Radio>
+          ))}
+        </Radio.Group>
       </aside>
 
-      {/* Khu vực sản phẩm */}
+      {/* Khu vực sản phẩm bên phải */}
       <main className="flex-1">
-        {/* Thanh tìm kiếm */}
-        <div className="mb-6 flex justify-between items-center">
-          <Input.Search
-            placeholder="Tìm kiếm sản phẩm..."
-            allowClear
-            enterButton="Tìm"
-            size="large"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onSearch={handleSearch}
-            className="max-w-[400px]"
-          />
+        {/* Thanh tìm kiếm & sắp xếp */}
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex gap-2 text-sm">
+            <span className="font-medium text-gray-600">Sort by:</span>
+            <button className="bg-orange-500 text-white px-3 py-1 rounded">
+              Relevant
+            </button>
+            <button className="px-3 py-1 rounded border">New</button>
+            <button className="px-3 py-1 rounded border">Best Seller</button>
+          </div>
         </div>
 
         {/* Lưới sản phẩm */}
         {products.length === 0 ? (
           <div className="text-center text-gray-500 text-lg mt-20">
-            Không tìm thấy sản phẩm
+            No product found
           </div>
         ) : (
           <>
             <ProductGrid products={products} />
 
-            {/* Pagination */}
-            <div className="mt-8 flex justify-center">
+            {/* Phân trang */}
+            <div className="mt-6 flex justify-center">
               <Pagination
                 current={currentPage}
                 pageSize={pageSize}

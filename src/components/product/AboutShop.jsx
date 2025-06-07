@@ -9,6 +9,8 @@ const { Title, Text, Paragraph } = Typography;
 const AboutShop = ({ shop_id }) => {
   const [shopProfile, setShopProfile] = useState(null);
   const [showContent, setShowContent] = useState(true);
+  const [showFullDesc, setShowFullDesc] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchShopProfile = useCallback(async () => {
@@ -24,19 +26,24 @@ const AboutShop = ({ shop_id }) => {
     fetchShopProfile();
   }, [fetchShopProfile]);
 
+  const getShortDescription = (desc, maxLength = 150) => {
+    if (!desc) return "";
+    if (desc.length <= maxLength) return desc;
+    return desc.substring(0, maxLength) + "...";
+  };
+
   if (!shopProfile) return null;
 
   return (
     <div
       className="mx-auto p-4"
       style={{
-        maxWidth: "80%",
         width: "100%",
         marginTop: "3%",
       }}
     >
       <Card
-        className="bg-[#fdf7f2] rounded-md mb-6"
+        className="mb-6"
         style={{ padding: 24 }}
         title={
           <Button
@@ -86,7 +93,13 @@ const AboutShop = ({ shop_id }) => {
                 />
               </Col>
               <Col xs={24} sm={16} md={18} lg={19} xl={20}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                  }}
+                >
                   <div style={{ flex: 1 }}>
                     <Title level={4} style={{ marginBottom: 8 }}>
                       {shopProfile.name}
@@ -108,8 +121,17 @@ const AboutShop = ({ shop_id }) => {
                       <ShopOutlined style={{ fontSize: 20, marginRight: 8 }} />
                       <span className="font-semibold">50</span>
                       <span className="ml-1">Sản phẩm</span>
-                      <StarFilled style={{ color: "#faad14", fontSize: 20, marginLeft: 24, marginRight: 8 }} />
-                      <span className="font-semibold">{shopProfile.rating || 0}</span>
+                      <StarFilled
+                        style={{
+                          color: "#faad14",
+                          fontSize: 20,
+                          marginLeft: 24,
+                          marginRight: 8,
+                        }}
+                      />
+                      <span className="font-semibold">
+                        {shopProfile.rating || 0}
+                      </span>
                       <span className="ml-1">Đánh giá</span>
                     </div>
                   </div>
@@ -121,8 +143,31 @@ const AboutShop = ({ shop_id }) => {
                     Xem shop
                   </Button>
                 </div>
-                <Paragraph style={{ marginBottom: 0, fontSize: "1.1rem", fontWeight: 500 }}>
-                  {shopProfile.description}
+                <Paragraph
+                  style={{
+                    marginBottom: 0,
+                    fontSize: "1.1rem",
+                    fontWeight: 500,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {showFullDesc
+                    ? shopProfile.description
+                    : getShortDescription(shopProfile.description)}
+
+                  {shopProfile.description?.length > 150 && (
+                    <span
+                      onClick={() => setShowFullDesc((prev) => !prev)}
+                      style={{
+                        color: "black",
+                        cursor: "pointer",
+                        marginLeft: 8,
+                        fontSize: "12px",
+                      }}
+                    >
+                      {showFullDesc ? "Thu gọn" : "Xem thêm"}
+                    </span>
+                  )}
                 </Paragraph>
               </Col>
             </Row>

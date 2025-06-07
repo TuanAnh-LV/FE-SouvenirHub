@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ProductService } from "../services/product/product.service";
-import { toast } from "react-toastify";
 import assets from "../assets/assets";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
@@ -8,6 +7,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import { useNavigate } from "react-router-dom";
+import { message, Rate } from "antd";
+import { StarFilled } from "@ant-design/icons";
 const banners = [
   { src: assets.banner_1, alt: "banner 1" },
   { src: assets.banner_2, alt: "banner 2" },
@@ -42,7 +43,7 @@ const Home = () => {
         setPersonalGifts(res1.data.items || []);
         setBusinessGifts(res2.data.items || []);
       } catch (error) {
-        toast.error("Failed to load products");
+        message.error("Failed to load products");
       }
     };
 
@@ -61,17 +62,23 @@ const Home = () => {
       <img
         src={product.images?.[0] || "/default-product.png"}
         alt={product.name}
-        className="w-full h-40 object-cover rounded-md mb-3"
+        className="w-full h-65 object-cover rounded-md mb-3"
       />
       <h3 className="text-base font-semibold line-clamp-2 min-h-[48px]">
         {product.name}
       </h3>
       <p className="text-sm text-gray-600">
-        ⭐ {product.averageRating?.toFixed(1) ?? 0} ({product.reviewCount ?? 0}{" "}
-        reviews)
+        <Rate
+          disabled
+          allowHalf
+          value={product.averageRating || 0}
+          character={<StarFilled />}
+          style={{ fontSize: 16 }}
+        />
+        ({product.reviewCount ?? 0} reviews)
       </p>
-      <p className="text-orange-600 font-bold">
-        {Number(product.price?.$numberDecimal).toLocaleString()}₫
+      <p className="text-[#d0011b] text-lg font-bold mt-1">
+        {parseInt(product.price.$numberDecimal).toLocaleString()}₫
       </p>
     </div>
   );

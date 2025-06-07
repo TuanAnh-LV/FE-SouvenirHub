@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../../services/auth-service/auth.service";
 import { ROUTER_URL } from "../../const/router.const";
-// import { toast } from "antd";
+import { message } from "antd";
 import LogoImage from "../../assets/souvenir-hub-logo.png";
 import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../../utils/firebase-config";
 import { useAuth } from "../../context/auth.context";
-import { toast } from "react-toastify";
+
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -29,13 +29,13 @@ const LoginPage = () => {
       });
       if (response?.data?.token && response?.data?.user) {
         await handleLogin(response.data.token, response.data.user);
-        toast.success("Đăng nhập thành công!");
+        message.success("Login successful!");
         navigate(ROUTER_URL.COMMON.HOME);
       } else {
-        toast.error("Invalid login response.");
+        message.error("Invalid login response.");
       }
     } catch {
-      toast.error("Login failed. Please check your credentials.");
+      message.error("Login failed. Please check your credentials.");
     } finally {
       setLoading(false);
     }
@@ -46,10 +46,10 @@ const LoginPage = () => {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       await loginGoogle(idToken);
-      toast.success("Login with Google successful!");
+      message.success("Google login successful!");
       navigate(ROUTER_URL.COMMON.HOME);
     } catch {
-      toast.error("Google login failed");
+      message.error("Google login failed");
     }
   };
 
@@ -58,10 +58,8 @@ const LoginPage = () => {
       <div className="bg-white rounded-2xl shadow-lg flex max-w-5xl w-full overflow-hidden">
         {/* Left: Login Form */}
         <div className="w-full md:w-1/2 p-10">
-          <h2 className="text-2xl font-bold mb-2">Đăng nhập</h2>
-          <p className="text-gray-500 mb-6">
-            Chào mừng bạn đến với Souvenir Hub
-          </p>
+          <h2 className="text-2xl font-bold mb-2">Login</h2>
+          <p className="text-gray-500 mb-6">Welcome to Souvenir Hub</p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium">Email</label>
@@ -78,7 +76,7 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Mật khẩu"
+                  placeholder="Password"
                   value={form.password}
                   onChange={handleChange}
                   required
@@ -93,7 +91,7 @@ const LoginPage = () => {
               </div>
 
               <div className="text-sm text-right mt-1 text-blue-600 cursor-pointer hover:underline">
-                Quên mật khẩu ?
+                Forgot password?
               </div>
             </div>
             <button
@@ -101,7 +99,7 @@ const LoginPage = () => {
               disabled={loading}
               className="bg-orange-400 text-white w-full py-2 rounded-md hover:bg-orange-500 transition duration-300"
             >
-              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
@@ -114,19 +112,19 @@ const LoginPage = () => {
                 src="https://img.icons8.com/color/16/000000/google-logo.png"
                 alt="Google"
               />
-              Đăng nhập với Google
+              Login with Google
             </button>
             <button className="w-full border px-4 py-2 rounded-md flex items-center justify-center gap-2">
               <img
                 src="https://img.icons8.com/color/16/000000/facebook-new.png"
                 alt="Facebook"
               />
-              Đăng nhập với Facebook
+              Login with Facebook
             </button>
             <p className="text-center mt-4 text-sm">
-              Bạn không có tài khoản?{" "}
+              Don’t have an account?{" "}
               <span className="text-orange-500 cursor-pointer hover:underline">
-                Đăng kí
+                Sign up
               </span>
             </p>
           </div>

@@ -3,6 +3,7 @@ export const ROUTER_URL = {
   LOGIN: '/login',
   FORGOT_PASSWORD: "/forgot-password",
   SIGNUP: "/signup",
+  CHECKOUT:"/checkout",
   ADMIN: {
     DASHBOARD: "/admin",
     MANAGE_SHOP: "/admin/manage-shop",

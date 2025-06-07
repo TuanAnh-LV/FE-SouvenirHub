@@ -1,22 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  InputNumber,
-  Input,
-  Tooltip,
-  Checkbox,
-  message,
-  Select,
-  Modal,
-} from "antd";
+import { Checkbox, InputNumber, Button, message, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "../context/cart.context";
 import { AddressService } from "../services/adress/address.service";
-import { CartService } from "../services/cart/cart.service";
-import CreateAddress from "../pages/address/CreateAddress";
-import UpdateAddress from "../pages/address/UpdateAddress";
 
 const parsePrice = (priceObj) =>
   parseFloat(priceObj?.$numberDecimal || priceObj || 0);
@@ -28,22 +15,16 @@ export default function CartPage() {
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState("");
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [editingAddress, setEditingAddress] = useState(null);
 
   const groupedItems = cart?.groupedItems || [];
+  const allItems = groupedItems.flatMap((group) => group.items);
 
-  const selectedItems = groupedItems
-    .flatMap((group) => group.items)
-    .filter((item) => selectedProductIds.includes(item.product._id));
+  const selectedItems = allItems.filter((item) =>
+    selectedProductIds.includes(item.product._id)
+  );
 
   const selectedTotalPrice = selectedItems.reduce(
     (sum, item) => sum + parsePrice(item.product?.price) * item.quantity,
-    0
-  );
-
-  const selectedTotalQuantity = selectedItems.reduce(
-    (sum, item) => sum + item.quantity,
     0
   );
 
@@ -90,274 +71,137 @@ export default function CartPage() {
     );
   };
 
-  const handleCheckout = async () => {
-    if (!selectedAddressId)
-      return message.warning("Please select a shipping address");
-    if (selectedProductIds.length === 0)
-      return message.warning("Please select items to checkout");
+  const toggleSelectAll = () => {
+    const allIds = allItems.map((item) => item.product._id);
+    setSelectedProductIds(
+      selectedProductIds.length === allIds.length ? [] : allIds
+    );
+  };
 
-    try {
-      await CartService.checkout({
-        shipping_address_id: selectedAddressId,
-        selectedProductIds,
-      });
-
-      message.success("Checkout successful!");
-      navigate("/orders");
-    } catch (err) {
-      message.error("Checkout failed.");
-      console.error(err);
+  const handleCheckout = () => {
+    if (selectedProductIds.length === 0) {
+      return message.warning("Vui lòng chọn sản phẩm để thanh toán");
     }
+
+    navigate("/checkout", {
+      state: { selectedProductIds },
+    });
   };
 
   return (
-    <div className="px-8 py-4 min-h-[60vh] mt-12">
-      <h2 className="text-2xl font-semibold mb-4">Shopping Cart</h2>
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* LEFT: Cart items */}
-        <div className="flex-1">
-          <div
-            style={{
-              background: "#fff7ed",
-              borderRadius: 12,
-              marginBottom: 16,
-              fontWeight: 600,
-              fontSize: 16,
-              padding: "16px 20px",
-            }}
-          >
-            Selected items: {selectedTotalQuantity}
+    <div className="px-6 py-6 mt-10 md:px-12 max-w-screen-xl mx-auto">
+      <h2 className="text-xl font-bold border-b pb-3 mb-6">🛒 Giỏ Hàng</h2>
+
+      {allItems.length === 0 ? (
+        <div className="text-center text-gray-500 mt-12 text-lg">
+          Không có sản phẩm nào trong giỏ hàng.
+        </div>
+      ) : (
+        <>
+          <div className="hidden lg:grid grid-cols-12 text-sm text-[#999] border-b py-2 font-semibold bg-white px-4">
+            <div className="col-span-6">Sản Phẩm</div>
+            <div className="col-span-2 text-center">Đơn Giá</div>
+            <div className="col-span-2 text-center">Số Lượng</div>
+            <div className="col-span-1 text-center">Số Tiền</div>
+            <div className="col-span-1 text-center">Thao Tác</div>
           </div>
 
-          {groupedItems.length === 0 ? (
-            <div style={{ textAlign: "center", color: "#888", marginTop: 48 }}>
-              No products in cart.
-            </div>
-          ) : (
-            groupedItems.map((group) => (
-              <div key={group.shop_id} className="mb-10">
-                <h3 className="text-lg font-semibold mb-4 text-orange-600">
-                  Shop: {group.shop_name}
-                </h3>
-                {group.items.map((item) => {
-                  const price = parsePrice(item.product?.price);
-                  return (
-                    <Card
-                      key={item._id}
-                      style={{
-                        background: "#fff7ed",
-                        borderRadius: 12,
-                        marginBottom: 24,
-                        boxShadow: "0 2px 8px #0001",
-                        border: "none",
-                        padding: 0,
-                      }}
-                      bodyStyle={{
-                        display: "flex",
-                        alignItems: "center",
-                        padding: 0,
-                        minHeight: 142,
-                      }}
-                    >
-                      <div style={{ padding: "0 12px" }}>
-                        <Checkbox
-                          checked={selectedProductIds.includes(
-                            item.product._id
-                          )}
-                          onChange={() =>
-                            toggleProductSelection(item.product._id)
-                          }
-                        />
-                      </div>
-
-                      <div style={{ width: 142, textAlign: "center" }}>
-                        <img
-                          src={
-                            item.product?.image ||
-                            "https://via.placeholder.com/110"
-                          }
-                          onError={(e) =>
-                            (e.currentTarget.src =
-                              "https://via.placeholder.com/110")
-                          }
-                          alt={item.product.name}
-                          style={{
-                            width: 110,
-                            height: 110,
-                            objectFit: "cover",
-                            borderRadius: 12,
-                          }}
-                        />
-                      </div>
-
-                      <div style={{ flex: 1 }}>
-                        <Tooltip title={item.product.name}>
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              fontSize: 16,
-                              marginBottom: 4,
-                              maxWidth: 260,
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
-                          >
-                            {item.product?.name?.slice(0, 20) ||
-                              "Name not found"}
-                          </div>
-                        </Tooltip>
-                        <div style={{ color: "#666", fontSize: 13 }}>
-                          {item.product.category_id?.name || ""}
-                        </div>
-                      </div>
-
-                      <div style={{ flex: 3, display: "flex" }}>
-                        <div
-                          style={{
-                            flex: 1,
-                            textAlign: "right",
-                            paddingRight: 10,
-                          }}
-                        >
-                          {price.toLocaleString()}₫
-                        </div>
-                        <div style={{ flex: 1, textAlign: "center" }}>
-                          <InputNumber
-                            min={1}
-                            max={item.product.stock}
-                            value={item.quantity}
-                            onChange={(value) =>
-                              handleQuantityChange(item.product._id, value)
-                            }
-                            style={{ width: 80 }}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            flex: 1,
-                            textAlign: "center",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {(price * item.quantity).toLocaleString()}₫
-                        </div>
-                        <Button
-                          type="text"
-                          icon={<DeleteOutlined />}
-                          danger
-                          onClick={() => handleRemove(item.product._id)}
-                        />
-                      </div>
-                    </Card>
-                  );
-                })}
+          {groupedItems.map((group) => (
+            <div key={group.shop_id} className="mt-4 bg-white shadow-sm">
+              <div className="px-4 py-2 font-semibold text-orange-600 border-b">
+                🏪 {group.shop_name}
               </div>
-            ))
-          )}
-        </div>
 
-        {/* RIGHT: Summary & Address */}
-        <div className="w-full lg:w-80 bg-orange-100 p-4 rounded-xl h-fit self-start">
-          <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
-
-          <div className="mb-4">
-            <label className="font-medium mb-1 block">Shipping Address</label>
-            <Select
-              placeholder="Choose shipping address"
-              value={selectedAddressId}
-              onChange={setSelectedAddressId}
-              style={{ width: "100%" }}
-              dropdownRender={(menu) => (
-                <>
-                  {menu}
-                  <div className="p-2 border-t text-center">
-                    <Button
-                      type="link"
-                      onClick={() => setShowCreateModal(true)}
-                    >
-                      + Add new address
-                    </Button>
-                  </div>
-                </>
-              )}
-            >
-              {addresses.map((addr) => (
-                <Select.Option key={addr._id} value={addr._id}>
-                  {addr.recipient_name} - {addr.address_line}, {addr.ward},{" "}
-                  {addr.city}
-                  <Button
-                    type="link"
-                    size="small"
-                    style={{ float: "right" }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditingAddress(addr);
-                    }}
+              {group.items.map((item) => {
+                const price = parsePrice(item.product?.price);
+                return (
+                  <div
+                    key={item._id}
+                    className="grid grid-cols-12 items-center px-4 py-4 border-b"
                   >
-                    Edit
-                  </Button>
-                </Select.Option>
-              ))}
-            </Select>
+                    <div className="col-span-6 flex items-center gap-4">
+                      <Checkbox
+                        checked={selectedProductIds.includes(item.product._id)}
+                        onChange={() =>
+                          toggleProductSelection(item.product._id)
+                        }
+                      />
+                      <img
+                        src={
+                          item.product.image || "https://via.placeholder.com/80"
+                        }
+                        className="w-20 h-20 object-cover rounded"
+                      />
+                      <div className="flex flex-col max-w-[180px]">
+                        <Tooltip title={item.product.name}>
+                          <span className="font-semibold truncate">
+                            {item.product.name}
+                          </span>
+                        </Tooltip>
+                        <span className="text-xs text-gray-500 truncate">
+                          {item.product.category_id?.name}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="col-span-2 text-center text-[#d0011b] font-medium">
+                      {price.toLocaleString()}₫
+                    </div>
+
+                    <div className="col-span-2 text-center">
+                      <InputNumber
+                        min={1}
+                        max={item.product.stock}
+                        value={item.quantity}
+                        onChange={(value) =>
+                          handleQuantityChange(item.product._id, value)
+                        }
+                      />
+                    </div>
+
+                    <div className="col-span-1 text-center font-semibold">
+                      {(price * item.quantity).toLocaleString()}₫
+                    </div>
+
+                    <div className="col-span-1 text-center">
+                      <Button
+                        type="text"
+                        icon={<DeleteOutlined />}
+                        danger
+                        onClick={() => handleRemove(item.product._id)}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+
+          <div className="flex flex-col lg:flex-row justify-between items-center bg-white px-4 py-4 mt-4 rounded shadow-sm border">
+            <div className="flex items-center gap-2 mb-2 lg:mb-0">
+              <Checkbox
+                checked={selectedProductIds.length === allItems.length}
+                onChange={toggleSelectAll}
+              />
+              <span className="text-sm">Chọn Tất Cả ({allItems.length})</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-sm">Tổng cộng:</div>
+              <div className="text-2xl text-[#d0011b] font-bold">
+                {selectedTotalPrice.toLocaleString()}₫
+              </div>
+              <Button
+                type="primary"
+                className="bg-[#d0011b] hover:bg-red-600 text-white px-6 py-2 rounded"
+                disabled={selectedProductIds.length === 0}
+                onClick={handleCheckout}
+              >
+                Mua Hàng
+              </Button>
+            </div>
           </div>
-
-          <Input placeholder="Enter discount code" className="mb-2" />
-          <Button type="primary" className="mb-4 w-full">
-            Apply
-          </Button>
-
-          <p className="mb-2">Total price:</p>
-          <p className="text-xl font-bold mb-4">
-            {selectedTotalPrice.toLocaleString()}₫
-          </p>
-          <Button
-            onClick={handleCheckout}
-            className="w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600"
-            disabled={selectedProductIds.length === 0}
-          >
-            Proceed to Checkout
-          </Button>
-        </div>
-      </div>
-
-      {/* Create Address Modal */}
-      <Modal
-        title="Add Address"
-        open={showCreateModal}
-        onCancel={() => setShowCreateModal(false)}
-        footer={null}
-        destroyOnClose
-        width={1100}
-      >
-        <CreateAddress
-          onBack={() => {
-            setShowCreateModal(false);
-            fetchAddresses();
-          }}
-        />
-      </Modal>
-
-      {/* Update Address Modal */}
-      <Modal
-        title="Update Address"
-        open={!!editingAddress}
-        onCancel={() => setEditingAddress(null)}
-        footer={null}
-        destroyOnClose
-        width={1100}
-      >
-        {editingAddress && (
-          <UpdateAddress
-            address={editingAddress}
-            onBack={() => {
-              setEditingAddress(null);
-              fetchAddresses();
-            }}
-            onUpdated={fetchAddresses}
-          />
-        )}
-      </Modal>
+        </>
+      )}
     </div>
   );
 }

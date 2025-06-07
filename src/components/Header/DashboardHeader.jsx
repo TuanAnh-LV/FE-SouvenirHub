@@ -5,26 +5,28 @@ import {
   LogoutOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Input, Badge, Avatar, Dropdown, Menu } from "antd";
+import { Input, Badge, Avatar, Dropdown, Menu, message } from "antd";
 import { useAuth } from "../../context/auth.context";
 import logo from "../../assets/souvenir-hub-logo.png";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
 const DashboardHeader = () => {
   const { userInfo, logout } = useAuth();
   const navigate = useNavigate();
+
   const handleLogout = () => {
     logout();
-    toast.success("Đăng xuất thành công!");
+    message.success("Logged out successfully!");
     navigate("/login");
   };
+
   const menu = (
     <Menu>
       <Menu.Item key="profile" icon={<SettingOutlined />}>
-        Hồ sơ cá nhân
+        Profile
       </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
-        Đăng xuất
+        Logout
       </Menu.Item>
     </Menu>
   );
@@ -40,7 +42,7 @@ const DashboardHeader = () => {
           onClick={() => navigate("/")}
         />
         <Input
-          placeholder="Tìm kiếm..."
+          placeholder="Search..."
           prefix={<SearchOutlined />}
           className="w-80 rounded-full"
         />
@@ -54,9 +56,7 @@ const DashboardHeader = () => {
         <Dropdown overlay={menu} trigger={["click"]}>
           <div className="flex items-center gap-2 cursor-pointer">
             <Avatar icon={<UserOutlined />} src={userInfo?.avatar || null} />
-            <span className="font-medium">
-              {userInfo?.name || "Người dùng"}
-            </span>
+            <span className="font-medium">{userInfo?.name || "User"}</span>
           </div>
         </Dropdown>
       </div>

@@ -9,9 +9,12 @@ import {
   Rate,
   Tag,
   message,
+  Tabs,
 } from "antd";
 import { ShoppingCartOutlined, EditOutlined } from "@ant-design/icons";
 import { ProductService } from "../../services/product-service/product.service";
+import { ReviewService } from "../../services/review/review.service";
+import ReviewPage from "../../pages/ReviewPage";
 // import { CartService } from "../../services/cart/cart.service";
 
 import AboutShop from "./AboutShop";
@@ -20,6 +23,9 @@ import { useCart } from "../../context/cart.context";
 const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
+  const { id: productId } = useParams();
+  console.log("Product ID:", productId);
+
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [engraving, setEngraving] = useState(false);
@@ -62,6 +68,19 @@ const ProductDetail = () => {
     } catch (error) {
       message.error("Thêm vào giỏ hàng thất bại!");
       console.error(error);
+    }
+  };
+  // Cuối file ProductDetail.jsx, sau đoạn useEffect và handleAddToCart
+  const scrollToSection = (id, offset = 80) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -161,9 +180,9 @@ const ProductDetail = () => {
                 </span>
               </div>
             </div>
-            <Title level={3} className="text-red-500 mb-2">
+            <div className="text-[#d0011b] font-bold text-2xl mb-2">
               {totalPrice.toLocaleString()}₫
-            </Title>
+            </div>
             {/* <Checkbox
               checked={engraving}
               onChange={(e) => setEngraving(e.target.checked)}
@@ -241,10 +260,67 @@ const ProductDetail = () => {
             Khách hàng có thể cân nhắc trước khi đặt.
           </Paragraph>
         </div>
-      </div>
-      {/* Remove or reduce marginTop for AboutShop */}
-      <div style={{ marginBottom: "5%" }}>
-        <AboutShop shop_id={product.shop_id._id} />
+        <div className="flex justify-center gap-12 mt-6 sticky top-[64px] z-10 py-2 border-b">
+          <button
+            onClick={() => scrollToSection("specs", 150)}
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Specifications
+          </button>
+          <button
+            onClick={() => scrollToSection("desc", 150)}
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Description
+          </button>
+          <button
+            onClick={() => scrollToSection("brand", 150)}
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            About brand
+          </button>
+          <button
+            onClick={() => scrollToSection("reviews", 300)}
+            className="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Reviews
+          </button>
+        </div>
+
+        <div id="specs" className="mt-10">
+          <Title level={5} className="text-black">
+            Specifications
+          </Title>
+          <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
+            {product.specifications
+              ?.split("\n")
+              .filter((line) => line.trim())
+              .map((line, index) => (
+                <li key={index}>{line.replace(/^- /, "").trim()}</li>
+              ))}
+          </ul>
+        </div>
+
+        <div id="desc" className="mt-10">
+          <Title level={5}>Description</Title>
+          <Text
+            type="secondary"
+            style={{ whiteSpace: "pre-line" }}
+            className="text-sm text-gray-700"
+          >
+            {product.description}
+          </Text>
+        </div>
+
+        <div id="brand" className="mt-10">
+          <Title level={5}>About brand</Title>
+          <AboutShop shop_id={product.shop_id._id} />
+        </div>
+
+        <div id="reviews" className="mt-10">
+          <Title level={5}>Đánh giá sản phẩm</Title>
+          <ReviewPage />
+        </div>
       </div>
     </>
   );

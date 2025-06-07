@@ -39,6 +39,11 @@ const CreateProduct = lazy(() =>
 const BuyerCart = lazy(() => import("../pages/buyer/BuyerCart"));
 const BuyerProfilePage = lazy(() => import("../pages/buyer/BuyerProfile"));
 const Cart = lazy(() => import("../pages/Cart"));
+const EmailVerificationPage = lazy(() =>
+  import("../pages/EmailVerificationPage")
+);
+const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
+const ReviewPage = lazy(() => import("../pages/ReviewPage"));
 const routes = [
   // Public routes
   {
@@ -54,6 +59,9 @@ const routes = [
       { path: ROUTER_URL.COMMON.SHOP_PROFILE, element: <ShopProfile /> },
       { path: ROUTER_URL.COMMON.PROFILE, element: <Profile /> },
       { path: ROUTER_URL.COMMON.GET_CART, element: <Cart /> },
+      { path: "/verify-email", element: <EmailVerificationPage /> },
+      { path: "/checkout", element: <CheckoutPage /> },
+      { path: "/products/:id/reviews", element: <ReviewPage /> },
     ],
   },
 
@@ -101,12 +109,12 @@ const routes = [
     path: "/buyer",
     element: (
       <ProtectedRoute allowedRoles={["buyer"]}>
-        <DashboardLayout />
+        <MainLayout />
       </ProtectedRoute>
     ),
     children: [
       { path: "dashboard", element: <BuyerDashboard /> },
-      { path: "register-shop", element: <RegisterShop /> },
+      // { path: "register-shop", element: <RegisterShop /> },
       { path: "profile", element: <BuyerProfilePage /> },
       { path: "orders", element: <BuyerCart /> },
     ],

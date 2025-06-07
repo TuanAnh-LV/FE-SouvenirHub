@@ -35,7 +35,6 @@ export const CartProvider = ({ children }) => {
       if (!token) return;
       try {
         const response = await OrderService.getOrders();
-        // Filter orders by status (pending = cart)
         const orders = response?.data || [];
         const filtered = orders.filter((o) => o.status === status);
         setCartItems(filtered);
@@ -47,6 +46,7 @@ export const CartProvider = ({ children }) => {
   );
 
   const updateCartStatus = async (orderIds, status) => {
+    if (!token) return;
     try {
       const idsArray = Array.isArray(orderIds) ? orderIds : [orderIds];
       await Promise.all(
@@ -60,6 +60,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const deleteCartItem = async (orderId) => {
+    if (!token) return;
     try {
       await OrderService.deleteOrder(orderId);
       updateCartItems(CartStatusEnum.new);
@@ -78,7 +79,6 @@ export const CartProvider = ({ children }) => {
     try {
       const response = await OrderService.getOrders();
       const orders = response?.data || [];
-      // Đếm số order có status là "pending"
       const count = orders.filter(
         (o) => o.status === CartStatusEnum.pending
       ).length;
@@ -117,6 +117,7 @@ export const CartProvider = ({ children }) => {
   }, [token]);
 
   const refreshCart = async () => {
+    if (!token) return;
     try {
       setLoading(true);
       const res = await CartService.getCart();
@@ -129,6 +130,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = async (productId, quantity = 1) => {
+    if (!token) return;
     try {
       const res = await CartService.addToCart({ productId, quantity });
       setCart(res.data);
@@ -138,6 +140,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = async (productId, quantity) => {
+    if (!token) return;
     try {
       const res = await CartService.updateCart({ productId, quantity });
       setCart(res.data);
@@ -147,6 +150,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeItem = async (productId) => {
+    if (!token) return;
     try {
       const res = await CartService.removeItem(productId);
       setCart(res.data);

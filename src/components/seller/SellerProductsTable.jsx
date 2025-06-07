@@ -1,15 +1,30 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState, useCallback } from "react";
-import { Table, Image, message, Tag, Button, Modal, Form, Input, InputNumber, Select } from "antd";
+import {
+  Table,
+  Image,
+  message,
+  Tag,
+  Button,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+} from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { ProductService } from "../../services/shop-service/shop.service";
-import { ProductStatusLabel, ProductStatusColor } from "../../const/enum/ProductStatusEnum";
+import {
+  ProductStatusLabel,
+  ProductStatusColor,
+} from "../../const/enum/ProductStatusEnum";
 import { ProductService as ProductApi } from "../../services/product-service/product.service";
 import { CategoryService } from "../../services/category/category.service";
 
 const DEFAULT_IMG = "https://via.placeholder.com/60x60?text=No+Image";
 
-const truncate = (str, n) => (str && str.length > n ? str.slice(0, n) + "..." : str);
+const truncate = (str, n) =>
+  str && str.length > n ? str.slice(0, n) + "..." : str;
 
 const STATUS_OPTIONS = [
   { value: "onSale", label: "Đang bán" },
@@ -30,7 +45,8 @@ const SellerProductsTable = () => {
     try {
       const response = await ProductService.getShopById(id);
       const arr =
-        Array.isArray(response.data.products) && response.data.products.length > 0
+        Array.isArray(response.data.products) &&
+        response.data.products.length > 0
           ? response.data.products
           : [];
       setProducts(arr);
@@ -130,7 +146,11 @@ const SellerProductsTable = () => {
       key: "image",
       render: (images) => (
         <Image
-          src={images && images.length > 0 && images[0] !== "string" ? images[0] : DEFAULT_IMG}
+          src={
+            images && images.length > 0 && images[0] !== "string"
+              ? images[0]
+              : DEFAULT_IMG
+          }
           alt="product"
           width={48}
           height={48}
@@ -162,9 +182,7 @@ const SellerProductsTable = () => {
       title: "Giá",
       dataIndex: ["price", "$numberDecimal"],
       key: "price",
-      render: (price) => (
-        <span>{parseInt(price, 10).toLocaleString()}đ</span>
-      ),
+      render: (price) => <span>{parseInt(price, 10).toLocaleString()}đ</span>,
       align: "left",
     },
     {
@@ -204,7 +222,14 @@ const SellerProductsTable = () => {
   ];
 
   return (
-    <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", margin: "24px 0" }}>
+    <div
+      style={{
+        background: "#fff",
+        borderRadius: 12,
+        overflow: "hidden",
+        margin: "24px 0",
+      }}
+    >
       <Table
         columns={columns}
         dataSource={products.map((item) => ({ ...item, key: item._id }))}
@@ -258,7 +283,11 @@ const SellerProductsTable = () => {
             name="price"
             rules={[
               { required: true, message: "Vui lòng nhập giá" },
-              { type: "number", min: 0, message: "Giá phải lớn hơn hoặc bằng 0" },
+              {
+                type: "number",
+                min: 0,
+                message: "Giá phải lớn hơn hoặc bằng 0",
+              },
             ]}
           >
             <InputNumber style={{ width: "100%" }} min={0} />
@@ -278,21 +307,12 @@ const SellerProductsTable = () => {
             name="status"
             rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
           >
-            <Select
-              options={STATUS_OPTIONS}
-              placeholder="Chọn trạng thái"
-            />
+            <Select options={STATUS_OPTIONS} placeholder="Chọn trạng thái" />
           </Form.Item>
-          <Form.Item
-            label="Thông số kỹ thuật"
-            name="specifications"
-          >
+          <Form.Item label="Thông số kỹ thuật" name="specifications">
             <Input.TextArea rows={2} />
           </Form.Item>
-          <Form.Item
-            label="Ghi chú đặc biệt"
-            name="specialNotes"
-          >
+          <Form.Item label="Ghi chú đặc biệt" name="specialNotes">
             <Input.TextArea rows={2} />
           </Form.Item>
         </Form>
@@ -327,7 +347,7 @@ const SellerProductsTable = () => {
             max-width: 180px;
             min-width: 120px;
             white-space: nowrap;
-            overflow: hidden;
+            // overflow: hidden;
             text-overflow: ellipsis;
           }
         `}
