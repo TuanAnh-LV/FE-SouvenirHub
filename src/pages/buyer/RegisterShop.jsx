@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { ProductService } from "../../services/shop-service/shop.service";
+import { message } from "antd";
 
 export default function RegisterShop() {
   const [step, setStep] = useState(1);
@@ -32,12 +32,12 @@ export default function RegisterShop() {
       try {
         const res = await ProductService.getCurrentShop();
         if (res?.data?._id) {
-          toast.info("Bạn đã đăng ký shop. Chuyển sang bước 2.");
+          message.info("You already registered a shop. Proceeding to step 2.");
           setApplication((prev) => ({ ...prev, shop_id: res.data._id }));
           setStep(2);
         }
       } catch {
-        toast.error("Chưa có shop, cần đăng ký mới.");
+        message.warning("No shop found. Please register a new one.");
       } finally {
         setLoading(false);
       }
@@ -49,19 +49,17 @@ export default function RegisterShop() {
   const handleShopSubmit = async () => {
     try {
       const res = await ProductService.createShop(shopInfo);
-      toast.success("Đăng ký shop thành công!");
+      message.success("Shop registered successfully!");
       setApplication((prev) => ({ ...prev, shop_id: res.data.shop._id }));
       setStep(2);
     } catch (error) {
-      toast.error(error.response?.data?.error || "Lỗi đăng ký shop");
+      message.error(error.response?.data?.error || "Failed to register shop.");
     }
   };
 
   const handleApplicationSubmit = async () => {
     try {
       const formData = new FormData();
-
-      // Append string fields
       const stringFields = [
         "shop_id",
         "business_name",
@@ -80,7 +78,6 @@ export default function RegisterShop() {
         }
       });
 
-      // Append files if valid
       if (application.logo_file instanceof File) {
         formData.append("logo_file", application.logo_file);
       }
@@ -95,25 +92,27 @@ export default function RegisterShop() {
       }
 
       await ProductService.createShopApplication(formData);
-      toast.success("Nộp hồ sơ doanh nghiệp thành công!");
+      message.success("Business application submitted successfully!");
     } catch (error) {
-      toast.error(error.response?.data?.error || "Lỗi nộp hồ sơ");
+      message.error(
+        error.response?.data?.error || "Application submission failed."
+      );
     }
   };
 
-  if (loading) return <div className="text-center py-10">Đang tải...</div>;
+  if (loading) return <div className="text-center py-10">Loading...</div>;
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-6">
       <div className="bg-white rounded-xl shadow-lg p-8 space-y-10">
         <h2 className="text-3xl font-bold text-center text-gray-800">
           {step === 1
-            ? "🛍️ Bước 1: Đăng ký Shop"
-            : "📄 Bước 2: Nộp hồ sơ doanh nghiệp"}
+            ? "🛍️ Step 1: Register Your Shop"
+            : "📄 Step 2: Submit Business Application"}
         </h2>
 
         <div className="flex justify-center gap-4 mb-6">
-          {["1. Đăng ký shop", "2. Hồ sơ doanh nghiệp"].map((label, index) => (
+          {["1. Shop Info", "2. Business Application"].map((label, index) => (
             <div
               key={label}
               className={`px-4 py-2 rounded-full font-semibold ${
@@ -128,11 +127,11 @@ export default function RegisterShop() {
         {step === 1 ? (
           <div className="space-y-4">
             <label className="block">
-              <span className="font-medium">Tên shop *</span>
+              <span className="font-medium">Shop Name *</span>
               <input
                 type="text"
                 required
-                placeholder="Nhập tên shop của bạn"
+                placeholder="Enter your shop name"
                 value={shopInfo.name}
                 onChange={(e) =>
                   setShopInfo({ ...shopInfo, name: e.target.value })
@@ -142,9 +141,9 @@ export default function RegisterShop() {
             </label>
 
             <label className="block">
-              <span className="font-medium">Mô tả shop</span>
+              <span className="font-medium">Shop Description</span>
               <textarea
-                placeholder="Mô tả ngắn về shop"
+                placeholder="Brief description of your shop"
                 value={shopInfo.description}
                 onChange={(e) =>
                   setShopInfo({ ...shopInfo, description: e.target.value })
@@ -158,16 +157,14 @@ export default function RegisterShop() {
               className="btn btn-primary w-full text-lg"
               disabled={!shopInfo.name}
             >
-              Tiếp tục
+              Continue
             </button>
           </div>
         ) : (
           <div className="space-y-10">
             {/* Supplier Info */}
             <div>
-              <h3 className="text-xl font-semibold mb-4">
-                Thông tin nhà cung cấp
-              </h3>
+              <h3 className="text-xl font-semibold mb-4">Supplier Info</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <label className="block">
                   <span className="font-medium">Logo *</span>
@@ -193,10 +190,10 @@ export default function RegisterShop() {
                 </label>
 
                 <label className="block">
-                  <span className="font-medium">Tên nhà cung cấp *</span>
+                  <span className="font-medium">Business Name *</span>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({
                         ...application,
@@ -207,10 +204,10 @@ export default function RegisterShop() {
                 </label>
 
                 <label className="block">
-                  <span className="font-medium">Danh mục kinh doanh *</span>
+                  <span className="font-medium">Business Category *</span>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({
                         ...application,
@@ -224,13 +221,13 @@ export default function RegisterShop() {
 
             {/* Contact Info */}
             <div>
-              <h3 className="text-xl font-semibold mb-4">Thông tin liên hệ</h3>
+              <h3 className="text-xl font-semibold mb-4">Contact Info</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <label className="block">
-                  <span className="font-medium">Người đại diện *</span>
+                  <span className="font-medium">Representative *</span>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({
                         ...application,
@@ -241,10 +238,10 @@ export default function RegisterShop() {
                 </label>
 
                 <label className="block">
-                  <span className="font-medium">Email Doanh Nghiệp *</span>
+                  <span className="font-medium">Business Email *</span>
                   <input
                     type="email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({ ...application, email: e.target.value })
                     }
@@ -252,10 +249,10 @@ export default function RegisterShop() {
                 </label>
 
                 <label className="block">
-                  <span className="font-medium">Số điện thoại *</span>
+                  <span className="font-medium">Phone Number *</span>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({ ...application, phone: e.target.value })
                     }
@@ -264,7 +261,7 @@ export default function RegisterShop() {
 
                 <label className="block md:col-span-2">
                   <span className="font-medium">
-                    Địa chỉ của Kho hoặc Trụ sở *
+                    Warehouse or Office Address *
                   </span>
                   <textarea
                     className="textarea textarea-bordered w-full mt-1"
@@ -281,13 +278,13 @@ export default function RegisterShop() {
 
             {/* Legal Info */}
             <div>
-              <h3 className="text-xl font-semibold mb-4">Thông tin pháp lý</h3>
+              <h3 className="text-xl font-semibold mb-4">Legal Info</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <label className="block">
-                  <span className="font-medium">Mã số thuế (MST) *</span>
+                  <span className="font-medium">Tax ID *</span>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({ ...application, tax_id: e.target.value })
                     }
@@ -296,11 +293,11 @@ export default function RegisterShop() {
 
                 <label className="block">
                   <span className="font-medium">
-                    CMND/CCCD của người đại diện *
+                    Representative's ID/Passport *
                   </span>
                   <input
                     type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    className="input input-bordered w-full"
                     onChange={(e) =>
                       setApplication({
                         ...application,
@@ -311,7 +308,7 @@ export default function RegisterShop() {
                 </label>
 
                 <label className="block">
-                  <span className="font-medium">Ảnh mặt trước CCCD</span>
+                  <span className="font-medium">Front of ID card</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -327,14 +324,14 @@ export default function RegisterShop() {
                   {previewFront && (
                     <img
                       src={previewFront}
-                      alt="CCCD trước"
+                      alt="Front ID"
                       className="mt-2 max-h-20 rounded border"
                     />
                   )}
                 </label>
 
                 <label className="block">
-                  <span className="font-medium">Ảnh mặt sau CCCD</span>
+                  <span className="font-medium">Back of ID card</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -350,7 +347,7 @@ export default function RegisterShop() {
                   {previewBack && (
                     <img
                       src={previewBack}
-                      alt="CCCD sau"
+                      alt="Back ID"
                       className="mt-2 max-h-20 rounded border"
                     />
                   )}
@@ -358,7 +355,7 @@ export default function RegisterShop() {
 
                 <label className="block md:col-span-2">
                   <span className="font-medium">
-                    Giấy phép kinh doanh (PDF/Ảnh) *
+                    Business License (PDF/Image) *
                   </span>
                   <input
                     type="file"
@@ -374,7 +371,7 @@ export default function RegisterShop() {
                   />
                   {previewLicense && (
                     <span className="mt-2 block text-sm text-gray-600">
-                      Đã chọn: {application.license_file?.name}
+                      Selected: {application.license_file?.name}
                     </span>
                   )}
                 </label>
@@ -386,7 +383,7 @@ export default function RegisterShop() {
                 onClick={handleApplicationSubmit}
                 className="btn btn-success w-full text-lg"
               >
-                Nộp hồ sơ
+                Submit Application
               </button>
             </div>
           </div>

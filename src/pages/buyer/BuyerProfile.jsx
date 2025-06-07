@@ -1,17 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { Input, Select, Button, message, Avatar, Upload, Card } from "antd";
-import { UploadOutlined, EditOutlined } from "@ant-design/icons";
+import { Input, Radio, Button, message, Avatar, Upload } from "antd";
 import { useAuth } from "../../context/auth.context";
 import { AuthService } from "../../services/auth-service/auth.service";
-import { AddressService } from "../../services/adress/address.service";
-import CreateAddress from "../address/CreateAddress";
-import UpdateAddress from "../address/UpdateAddress";
-
-const { Option } = Select;
-
-const BuyerProfilePage = () => {
+const BuyerProfilePage = ({ setActiveKey }) => {
   const { userInfo, setUserInfo } = useAuth();
+  const [editingEmail, setEditingEmail] = useState(false);
+  const [editingPhone, setEditingPhone] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -22,10 +17,6 @@ const BuyerProfilePage = () => {
     avatar: "",
   });
   const [file, setFile] = useState(null);
-  const [addresses, setAddresses] = useState([]);
-  const [showCreateAddress, setShowCreateAddress] = useState(false);
-  const [showUpdateAddress, setShowUpdateAddress] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -40,34 +31,12 @@ const BuyerProfilePage = () => {
     }
   }, [userInfo]);
 
-  const fetchAddresses = async () => {
-    try {
-      const res = await AddressService.getAddresses();
-      setAddresses(res.data || []);
-    } catch (err) {
-      setAddresses([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSelectChange = (value) => {
-    setForm({ ...form, gender: value });
-  };
-
   const handleUpload = ({ file }) => {
     setFile(file);
-  };
-
-  const handleEditAddress = (address) => {
-    setSelectedAddress(address);
-    setShowUpdateAddress(true);
   };
 
   const handleSubmit = async () => {
@@ -77,156 +46,162 @@ const BuyerProfilePage = () => {
       if (file) formData.append("avatar", file);
 
       const res = await AuthService.updateProfile(formData);
-      setUserInfo(res.data);
-      message.success("Cập nhật hồ sơ thành công!");
+      const updated = res.data;
+
+      // Nếu thay đổi email, KHÔNG cập nhật ngay email vào userInfo
+      const emailChanged = form.email && form.email !== userInfo.email;
+
+      if (emailChanged) {
+        setUserInfo((prev) => ({
+          ...prev,
+          ...updated,
+          email: userInfo.email, // giữ lại email cũ để tránh mất session
+        }));
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            ...updated,
+            email: userInfo.email,
+          })
+        );
+        message.success("Profile updated! Please verify your new email.");
+        if (setActiveKey) setActiveKey("verifyEmail");
+      } else {
+        setUserInfo(updated);
+        localStorage.setItem("userInfo", JSON.stringify(updated));
+        message.success("Profile updated successfully!");
+      }
     } catch (err) {
       console.error("Update failed:", err);
-      message.error("Cập nhật thất bại!");
+      message.error("Profile update failed!");
     }
   };
 
-  if (showCreateAddress) {
-    return (
-      <CreateAddress onBack={() => setShowCreateAddress(false)} />
-    );
-  }
-
-  if (showUpdateAddress && selectedAddress) {
-    return (
-      <UpdateAddress
-        address={selectedAddress}
-        onBack={() => setShowUpdateAddress(false)}
-        onUpdated={fetchAddresses}
-      />
-    );
-  }
-
   return (
-    <div className="py-10 px-6 md:px-20">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Form */}
-        <div className="md:col-span-3  bg-[#FFE1D6] rounded-xl shadow p-8 space-y-8">
-          <h2 className="text-2xl font-bold">Hồ sơ</h2>
+    <div className="flex flex-col md:flex-row gap-10 justify-center p-6 ">
+      {/* Form */}
+      <div className="flex-1 space-y-5 pr-10 border-r border-gray-300">
+        <div className="flex items-center">
+          {/* <div className="w-40 font-medium text-gray-600">Tên đăng nhập</div> */}
+          <div className="text-black font-semibold">{userInfo?.username}</div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="block font-medium">Ảnh đại diện</label>
-                <div className="flex items-center gap-4">
-                  <Avatar size={100} src={form.avatar || null} />
-                  <Upload
-                    showUploadList={false}
-                    beforeUpload={() => false}
-                    onChange={handleUpload}
-                  >
-                    <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
-                  </Upload>
-                </div>
-              </div>
+        <div className="flex items-center">
+          <div className="w-40 font-medium text-gray-600 ">Tên</div>
+          <Input
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            className="flex-1"
+          />
+        </div>
 
-              <div className="space-y-2">
-                <label className="block font-medium">Tên hồ sơ *</label>
-                <Input name="name" value={form.name} onChange={handleChange} />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block font-medium">Giới tính</label>
-                <Select
-                  value={form.gender}
-                  onChange={handleSelectChange}
-                  className="w-full"
+        <div className="flex items-center">
+          <div className="w-40 font-medium text-gray-600">Email</div>
+          <div className="flex-1 text-black font-semibold text-[14px]">
+            {editingEmail ? (
+              <Input
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full"
+              />
+            ) : (
+              <>
+                {form.email.replace(
+                  /(.{2})(.*)(@.*)/,
+                  (_, a, b, c) => `${a}${"*".repeat(b.length)}${c}`
+                )}
+                <span
+                  className="text-[#d35400] cursor-pointer ml-2 text-[13px]"
+                  onClick={() => setEditingEmail(true)}
                 >
-                  <Option value="Nam">Nam</Option>
-                  <Option value="Nữ">Nữ</Option>
-                  <Option value="Khác">Khác</Option>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block font-medium">Ngày sinh</label>
-                <Input
-                  name="birthday"
-                  type="date"
-                  value={form.birthday}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            {/* Right */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="block font-medium">Số điện thoại *</label>
-                <Input
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block font-medium">Email *</label>
-                <Input
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  disabled
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block font-medium">Mật khẩu *</label>
-                <div className="flex gap-2">
-                  <Input.Password value="************" disabled />
-                  <Button>Thay đổi</Button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-right">
-            <Button type="primary" onClick={handleSubmit}>
-              Lưu thay đổi
-            </Button>
-          </div>
-
-          {/* Hiển thị địa chỉ */}
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold">Địa chỉ giao hàng</h3>
-              <Button type="primary" onClick={() => setShowCreateAddress(true)}>
-                Thêm địa chỉ
-              </Button>
-            </div>
-            {addresses.length === 0 && (
-              <div className="text-gray-500">Chưa có địa chỉ nào.</div>
+                  Thay Đổi
+                </span>
+              </>
             )}
-            {addresses.map((address) => (
-              <Card
-                key={address._id}
-                className="mb-4"
-                style={{ background: "#fff", marginBottom: "16px" }}
-              >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                  <div>
-                    <div className="font-medium">{address.recipient_name} - {address.phone}</div>
-                    <div className="text-gray-700">{address.address_line}</div>
-                    <div className="text-gray-500 text-sm">
-                      {address.ward}, {address.district}, {address.city}
-                    </div>
-                  </div>
-                  <Button
-                    icon={<EditOutlined />}
-                    onClick={() => handleEditAddress(address)}
-                  >
-                    Chỉnh sửa
-                  </Button>
-                </div>
-              </Card>
-            ))}
           </div>
         </div>
+
+        <div className="flex items-center">
+          <div className="w-40 font-medium text-gray-600">Số điện thoại</div>
+          <div className="flex-1 text-black font-semibold text-[14px]">
+            {editingPhone ? (
+              <Input
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                className="w-full"
+              />
+            ) : (
+              <>
+                {form.phone.replace(/(\d{3})(\d{3})(\d{2})$/, "*******$3")}
+                <span
+                  className="text-[#d35400] cursor-pointer ml-2 text-[13px]"
+                  onClick={() => setEditingPhone(true)}
+                >
+                  Thay Đổi
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center">
+          <div className="w-40 font-medium text-gray-600">Giới tính</div>
+          <Radio.Group
+            onChange={(e) => setForm({ ...form, gender: e.target.value })}
+            value={form.gender}
+          >
+            <Radio value="Nam">Nam</Radio>
+            <Radio value="Nữ">Nữ</Radio>
+            <Radio value="Khác">Khác</Radio>
+          </Radio.Group>
+        </div>
+
+        <div className="flex items-center">
+          <div className="w-40 font-medium text-gray-600">Ngày sinh</div>
+          <div className="flex-1 text-black font-semibold text-[14px]">
+            {form.birthday
+              ? form.birthday
+                  .replace(/\d{2}$/, "**")
+                  .replace(/\d{2}(?=-)/, "**")
+              : "**/**/****"}
+            <span className="text-[#d35400] cursor-pointer ml-2 text-[13px]">
+              Thay Đổi
+            </span>
+          </div>
+        </div>
+
+        <div className="pl-40">
+          <button
+            className="bg-[#ee4d2d] hover:bg-[#d53a1a] px-10 h-10"
+            onClick={handleSubmit}
+          >
+            Lưu
+          </button>
+        </div>
+      </div>
+
+      {/* Avatar */}
+      <div className="w-52 flex flex-col items-center pl-10">
+        <Avatar
+          size={96}
+          src={form.avatar || null}
+          className="mb-4 border-4 rounded-full border-gradient-instagram"
+        />
+        <Upload
+          showUploadList={false}
+          beforeUpload={() => false}
+          onChange={handleUpload}
+        >
+          <Button>Chọn Ảnh</Button>
+        </Upload>
+        <p className="text-sm text-gray-500 mt-2 text-center leading-tight">
+          Dung lượng file tối đa 1 MB
+          <br />
+          Định dạng:.JPEG, .PNG
+        </p>
       </div>
     </div>
   );

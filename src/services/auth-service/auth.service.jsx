@@ -38,4 +38,28 @@ export const AuthService = {
       isAuth: true,
     });
   },
+  verifyEmailCode: (payload) => {
+    return BaseService.post({
+      url: API.AUTH.VERIFY_NEW_EMAIL,
+      payload,
+      isLoading: true,
+      isAuth: true,
+    });
+  },
+
+  resendEmailCode: () => {
+    return BaseService.post({
+      url: API.AUTH.RESEND_VERIFICATION_CODE,
+      isLoading: true,
+      isAuth: true,
+    });
+  },
+  changePassword: (payload) => {
+    return BaseService.put({
+      url: API.AUTH.CHANGE_PASSWORD,
+      payload,
+      isAuth: true,
+      isLoading: true,
+    });
+  },
 };

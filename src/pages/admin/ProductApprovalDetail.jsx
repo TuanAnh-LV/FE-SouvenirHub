@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AdminService } from "../../services/admin/admin.service";
-import { toast } from "react-toastify";
-import { Button, Modal, Input, Image } from "antd";
+import { Button, Modal, Input, Image, message } from "antd";
 
 const ProductApprovalDetail = () => {
   const { id } = useParams();
@@ -17,31 +16,31 @@ const ProductApprovalDetail = () => {
       const res = await AdminService.getProductById(id);
       setProduct(res.data);
     } catch {
-      toast.error("Không thể tải thông tin sản phẩm");
+      message.error("Failed to load product information");
     }
   };
 
   const handleApprove = async () => {
     try {
       await AdminService.productApproved(id);
-      toast.success("Sản phẩm đã được duyệt");
+      message.success("Product approved successfully");
       navigate("/admin/products/pending");
     } catch {
-      toast.error("Duyệt sản phẩm thất bại");
+      message.error("Product approval failed");
     }
   };
 
   const handleReject = async () => {
     if (!rejectReason.trim()) {
-      toast.warning("Vui lòng nhập lý do từ chối");
+      message.warning("Please enter a rejection reason");
       return;
     }
     try {
       await AdminService.rejectProduct(id, rejectReason);
-      toast.success("Đã từ chối sản phẩm");
+      message.success("Product rejected successfully");
       navigate("/admin/products/pending");
     } catch {
-      toast.error("Từ chối thất bại");
+      message.error("Product rejection failed");
     } finally {
       setRejectModalVisible(false);
     }
@@ -51,11 +50,11 @@ const ProductApprovalDetail = () => {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div className="p-6">Đang tải dữ liệu...</div>;
+  if (!product) return <div className="p-6">Loading product data...</div>;
 
   return (
     <div className="p-6 bg-white rounded-lg">
-      <h1 className="text-2xl font-bold mb-4">Chi tiết sản phẩm</h1>
+      <h1 className="text-2xl font-bold mb-4">Product Details</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
@@ -75,49 +74,49 @@ const ProductApprovalDetail = () => {
 
         <div className="space-y-3">
           <div>
-            <b>Tên sản phẩm:</b>
+            <b>Product Name:</b>
             <p>{product.name}</p>
           </div>
           <div>
-            <b>Nhà cung cấp:</b>
-            <p>{product.shop_id?.name || "Không rõ"}</p>
+            <b>Supplier:</b>
+            <p>{product.shop_id?.name || "Unknown"}</p>
           </div>
           <div>
-            <b>Giá:</b>
-            <p>{product.price.toLocaleString()} đ</p>
+            <b>Price:</b>
+            <p>{product.price.toLocaleString()} ₫</p>
           </div>
           <div>
-            <b>Số lượng:</b>
+            <b>Stock:</b>
             <p>{product.stock}</p>
           </div>
           <div>
-            <b>Mô tả:</b>
-            <p>{product.description || "(Không có)"}</p>
+            <b>Description:</b>
+            <p>{product.description || "(No description)"}</p>
           </div>
           <div>
-            <b>Thông số kỹ thuật:</b>
-            <p>{product.specifications || "(Không có)"}</p>
+            <b>Specifications:</b>
+            <p>{product.specifications || "(No specifications)"}</p>
           </div>
           <div className="flex gap-4 mt-6">
             <Button type="primary" onClick={handleApprove}>
-              Duyệt sản phẩm
+              Approve Product
             </Button>
             <Button danger onClick={() => setRejectModalVisible(true)}>
-              Từ chối
+              Reject
             </Button>
           </div>
         </div>
       </div>
 
       <Modal
-        title="Từ chối sản phẩm"
+        title="Reject Product"
         open={rejectModalVisible}
         onCancel={() => setRejectModalVisible(false)}
         onOk={handleReject}
-        okText="Xác nhận"
-        cancelText="Hủy"
+        okText="Confirm Rejection"
+        cancelText="Cancel"
       >
-        <p>Vui lòng nhập lý do từ chối:</p>
+        <p>Please enter the reason for rejection:</p>
         <Input.TextArea
           rows={4}
           value={rejectReason}

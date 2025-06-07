@@ -28,6 +28,8 @@ export const API = {
     CHANGE_PASSWORD: "/auth/change-password",
     RESET_PASSWORD: "/auth/reset-password",
     FORGOT_PASSWORD: "/auth/forgot-password",
+    VERIFY_NEW_EMAIL: "/auth/verify-new-email",
+    RESEND_VERIFICATION_CODE: "/auth/resend-verification-code",
   },
   PRODUCT: {
     GET_ALL_PRODUCTS: "/products",
@@ -88,10 +90,21 @@ export const API = {
     CHECK_OUT_CART: "/cart/checkout",
   },
   VOUCHER: {
-    GET_ALL_VOUCHERS: "/vouchers",
-    GET_VOUCHER_BY_ID: "/vouchers/:id",
-    CREATE_VOUCHER: "/vouchers",
+    GET_VOUCHER: "/vouchers",
+    ADD_VOUCHER: "/vouchers",
     UPDATE_VOUCHER: "/vouchers/:id",
+    GET_VOUCHER_BY_ID: "/vouchers/:id",
     DELETE_VOUCHER: "/vouchers/:id",
+  },
+  PAYMENT: {
+    MOCK: "/payments/mock",
+    ONLINE: "/payments/online",
+    MOMO_CREATE: "/payments/momo-create",
+    MOMO_RETURN: "/payments/momo-return",
+    MOMO_NOTIFY: "/payments/momo-notify",
+  },
+  REVIEW: {
+    CREATE_REVIEW: "/reviews",
+    GET_REVIEWS_BY_PRODUCT_ID: "/reviews/:productId",
   },
 };

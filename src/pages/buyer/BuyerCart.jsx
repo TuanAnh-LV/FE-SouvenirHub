@@ -27,13 +27,13 @@ const BuyerCart = () => {
         // Đảm bảo đồng bộ: fetch từng product tuần tự
         for (const order of allOrders) {
           for (const item of order.items) {
+            if (!item.product_id || typeof item.product_id !== "object")
+              continue;
             if (!item.product_id.images) {
-              const productId =
-                typeof item.product_id === "string"
-                  ? item.product_id
-                  : item.product_id._id;
               try {
-                const productRes = await ProductService.getByid(productId);
+                const productRes = await ProductService.getByid(
+                  item.product_id._id
+                );
                 item.product_id = productRes.data;
               } catch {
                 item.product_id.images = [];
@@ -187,7 +187,8 @@ const BuyerCart = () => {
                 >
                   <img
                     src={
-                      item.product_id.images && item.product_id.images.length > 0
+                      item.product_id.images &&
+                      item.product_id.images.length > 0
                         ? item.product_id.images[0]
                         : "https://via.placeholder.com/80"
                     }
@@ -284,7 +285,6 @@ const BuyerCart = () => {
                     </Tag>
                   </div>
                 </div>
-                
               </Card>
             ))
           )

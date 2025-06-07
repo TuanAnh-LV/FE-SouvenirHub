@@ -19,7 +19,7 @@ L.Icon.Default.mergeOptions({
 
 const center = { lat: 10.762622, lng: 106.660172 }; // Default to HCM
 
-function LocationMarker({ onSelect }) {
+function LocationMarker({ onSelect, onBack }) {
   useMapEvents({
     click(e) {
       onSelect(e.latlng);
@@ -93,7 +93,8 @@ export default function CreateAddress({ onBack }) {
       message.success("Tạo địa chỉ thành công!");
       form.resetFields();
       setMarker(null);
-      setIsMe(false); // Reset trạng thái checkbox "Người nhận là tôi"
+      setIsMe(false);
+      if (onBack) onBack();
     } catch (err) {
       message.error("Tạo địa chỉ thất bại.");
       console.error("Error creating address:", err);

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { toast } from "antd";
-import { toast } from "react-toastify";
+import { message } from "antd";
 import LogoImage from "../../assets/souvenir-hub-logo.png";
 import { AuthService } from "../../services/auth-service/auth.service";
 import { ROUTER_URL } from "../../const/router.const";
@@ -21,13 +20,13 @@ const Signup = () => {
     try {
       const res = await AuthService.register(form);
       if (res?.data?.token) {
-        toast.success("Signup successful!");
+        message.success("Signup successful!");
         navigate(ROUTER_URL.LOGIN);
       } else {
-        toast.error("Signup failed.");
+        message.error("Signup failed.");
       }
     } catch {
-      toast.error("An error occurred during signup.");
+      message.error("An error occurred during signup.");
     } finally {
       setLoading(false);
     }
@@ -38,14 +37,14 @@ const Signup = () => {
       <div className="bg-white rounded-2xl shadow-lg flex max-w-5xl w-full overflow-hidden">
         {/* Left: Form */}
         <div className="w-full md:w-1/2 p-10">
-          <h2 className="text-2xl font-bold mb-2">Đăng ký</h2>
-          <p className="text-gray-500 mb-6">Hãy tạo tài khoản của bạn</p>
+          <h2 className="text-2xl font-bold mb-2">Sign Up</h2>
+          <p className="text-gray-500 mb-6">Create your account</p>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <input
                 type="text"
                 name="name"
-                placeholder="Tên của bạn"
+                placeholder="Your name"
                 required
                 onChange={handleChange}
                 className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-orange-300"
@@ -67,7 +66,7 @@ const Signup = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="Mật khẩu"
+                placeholder="Password"
                 required
                 onChange={handleChange}
                 className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring focus:ring-orange-300"
@@ -81,14 +80,15 @@ const Signup = () => {
             </div>
 
             <p className="text-xs text-center text-gray-500">
-              Bạn đồng ý với{" "}
+              By signing up, you agree to our{" "}
               <span className="text-orange-500 cursor-pointer hover:underline">
-                Điều khoản dịch vụ
+                Terms of Service
               </span>{" "}
-              và{" "}
+              and{" "}
               <span className="text-orange-500 cursor-pointer hover:underline">
-                Chính sách bảo mật
+                Privacy Policy
               </span>
+              .
             </p>
 
             <button
@@ -96,16 +96,16 @@ const Signup = () => {
               disabled={loading}
               className="bg-orange-400 text-white w-full py-2 rounded-md hover:bg-orange-500 transition duration-300"
             >
-              {loading ? "Đang xử lý..." : "Đăng ký"}
+              {loading ? "Processing..." : "Sign Up"}
             </button>
 
             <p className="text-sm text-center">
-              Đã có tài khoản?{" "}
+              Already have an account?{" "}
               <span
                 className="text-orange-500 cursor-pointer hover:underline"
                 onClick={() => navigate(ROUTER_URL.LOGIN)}
               >
-                Đăng nhập
+                Log in
               </span>
             </p>
           </form>
