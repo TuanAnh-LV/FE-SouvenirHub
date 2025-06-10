@@ -109,7 +109,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="px-6 py-6 mt-10 md:px-12 max-w-screen-xl mx-auto">
+    <div className="px-6 py-6 mt-10 md:px-12 min-h-screen max-w-screen-xl mx-auto">
       <h2 className="text-xl font-bold border-b pb-3 mb-6">🛒 Giỏ Hàng</h2>
 
       {allItems.length === 0 ? (

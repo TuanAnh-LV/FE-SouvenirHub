@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
-import { Button, Card, Typography } from 'antd';
-import { BlogService } from '../../../services/blog/blog.service';
-import BlogList from '../../../components/blog-mng/BlogList';
-import CreateBlog from './CreateBlog';
-import UpdateBlog from './UpdateBlog';
+import { useEffect, useState } from "react";
+import { Button, Card, Typography } from "antd";
+import { BlogService } from "../../../services/blog/blog.service";
+import BlogList from "../../../components/blog-mng/BlogList";
+import CreateBlog from "./CreateBlog";
+import UpdateBlog from "./UpdateBlog";
 
 const { Title } = Typography;
 
@@ -19,7 +19,7 @@ const BlogManager = () => {
       const response = await BlogService.getMyBlogs();
       setBlogs(response.data);
     } catch (error) {
-      console.error('Failed to fetch blogs:', error);
+      console.error("Failed to fetch blogs:", error);
     }
   };
 
@@ -33,11 +33,10 @@ const BlogManager = () => {
   };
 
   const handleEdit = (blogId) => {
-  setCurrentBlog(blogId);
-  setIsUpdating(true);
-  setIsCreating(false);
-};
-
+    setCurrentBlog(blogId);
+    setIsUpdating(true);
+    setIsCreating(false);
+  };
 
   const handleBack = () => {
     setIsCreating(false);
