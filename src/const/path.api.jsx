@@ -107,4 +107,17 @@ export const API = {
     CREATE_REVIEW: "/reviews",
     GET_REVIEWS_BY_PRODUCT_ID: "/reviews/:productId",
   },
+  BLOG: {
+    CREATE_BLOG: "/blogs",
+    GET_BLOGS: "/blogs",
+    GET_BLOG_BY_ID: "/blogs/:id",
+    GET_MY_BLOGS: "/blogs/my",
+    UPDATE_BLOG: "/blogs/:id",
+    DELETE_BLOG: "/blogs/:id",
+  },
+  BLOG_IMAGE: {
+    CREATE_BLOG_IMAGE: "/blog-images/:id",
+    DELETE_BLOG_IMAGE: "/blog-images/image/:id",
+    DELETE_BLOG_IMAGES: "/blog-images/blog/:id",
+  },
 };

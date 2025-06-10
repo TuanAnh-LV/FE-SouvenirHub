@@ -97,7 +97,7 @@ export const AdminService = {
         });
       },
     deleteShop: (id) => {
-        return BaseService.delete({
+        return BaseService.remove({
             url: API.ADMIN.DELETE_SHOP.replace(":id", id),
             isLoading: true,
         });

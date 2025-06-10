@@ -23,7 +23,7 @@ export const AddressService = {
         });
     },
     deleteAddress: (id) => {
-        return BaseService.delete({
+        return BaseService.remove({
             url: API.ADDRESS.DELETE_ADDRESS.replace(":id", id),
             isLoading: true,
         });

@@ -23,7 +23,7 @@ export const CategoryService = {
         });
     },
     deleteCategory: (id) => {
-        return BaseService.delete({
+        return BaseService.remove({
             url: API.CATEGORY.DELETE_CATEGORY.replace(":id", id),
             isLoading: true,
         });

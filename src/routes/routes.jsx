@@ -23,6 +23,8 @@ const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
 const Profile = lazy(() => import("../pages/Profile"));
 const ManageShop = lazy(() => import("../pages/admin/ManageShop"));
 const ShopDetail = lazy(() => import("../pages/admin/ShopDetail"));
+const BlogManager = lazy(() => import("../pages/seller/blogManager/BlogManager"));
+const BlogUpdate = lazy(() => import("../pages/seller/blogManager/UpdateBlog"));
 const ShopApprovalDetail = lazy(() =>
   import("../pages/admin/ShopApprovalDetail")
 );
@@ -102,6 +104,9 @@ const routes = [
       { path: "dashboard", element: <SellerDashboard /> },
       { path: "products", element: <SellerProducts /> },
       { path: "create-product", element: <CreateProduct /> },
+      { path: "blogs", element: <BlogManager /> },
+      { path: "blogs/update/:id", element: <BlogManager /> },
+
     ],
   },
 
