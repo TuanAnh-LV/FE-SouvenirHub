@@ -265,44 +265,51 @@ const ProductDetail = () => {
             onClick={() => scrollToSection("specs", 150)}
             className="text-sm font-medium text-blue-600 hover:underline"
           >
-            Specifications
+            Thông số kỹ thuật
           </button>
           <button
             onClick={() => scrollToSection("desc", 150)}
             className="text-sm font-medium text-blue-600 hover:underline"
           >
-            Description
+            Mô tả
           </button>
+          {product.specifications && product.specifications.trim() && (
+            <button
+              onClick={() => scrollToSection("specation", 150)}
+              className="text-sm font-medium text-blue-600 hover:underline"
+            >
+              Lưu ý đặc biệt
+            </button>
+          )}
           <button
             onClick={() => scrollToSection("brand", 150)}
             className="text-sm font-medium text-blue-600 hover:underline"
           >
-            About brand
+            Về thương hiệu
           </button>
           <button
             onClick={() => scrollToSection("reviews", 300)}
             className="text-sm font-medium text-blue-600 hover:underline"
           >
-            Reviews
+            Đánh giá
           </button>
         </div>
 
         <div id="specs" className="mt-10">
-          <Title level={5} className="text-black">
-            Specifications
-          </Title>
-          <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
-            {product.specifications
-              ?.split("\n")
-              .filter((line) => line.trim())
-              .map((line, index) => (
-                <li key={index}>{line.replace(/^- /, "").trim()}</li>
-              ))}
-          </ul>
+          <Title level={5}>Lưu ý đặc biệt</Title>
+          <Text
+            type="secondary"
+            style={{ whiteSpace: "pre-line" }}
+            className="text-sm text-gray-700"
+          >
+            {product.specialNotes}
+          </Text>
         </div>
 
         <div id="desc" className="mt-10">
-          <Title level={5}>Description</Title>
+          <Title level={5} className="text-black">
+            Mô tả
+          </Title>
           <Text
             type="secondary"
             style={{ whiteSpace: "pre-line" }}
@@ -311,9 +318,21 @@ const ProductDetail = () => {
             {product.description}
           </Text>
         </div>
+        {product.specifications && product.specifications.trim() && (
+          <div id="specation" className="mt-10">
+            <Title level={5}>Lưu ý đặc biệt</Title>
+            <Text
+              type="secondary"
+              style={{ whiteSpace: "pre-line" }}
+              className="text-sm text-black"
+            >
+              {product.specifications}
+            </Text>
+          </div>
+        )}
 
         <div id="brand" className="mt-10">
-          <Title level={5}>About brand</Title>
+          <Title level={5}>Về thương hiệu</Title>
           <AboutShop shop_id={product.shop_id._id} />
         </div>
 

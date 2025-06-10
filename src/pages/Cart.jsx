@@ -4,7 +4,7 @@ import { Checkbox, InputNumber, Button, message, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useCart } from "../context/cart.context";
 import { AddressService } from "../services/adress/address.service";
-
+import { CartService } from "../services/cart/cart.service";
 const parsePrice = (priceObj) =>
   parseFloat(priceObj?.$numberDecimal || priceObj || 0);
 
@@ -78,14 +78,34 @@ export default function CartPage() {
     );
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (selectedProductIds.length === 0) {
       return message.warning("Vui lòng chọn sản phẩm để thanh toán");
     }
 
-    navigate("/checkout", {
-      state: { selectedProductIds },
-    });
+    if (!selectedAddressId) {
+      return message.warning("Vui lòng chọn địa chỉ giao hàng");
+    }
+
+    try {
+      const res = await CartService.checkout({
+        shipping_address_id: selectedAddressId,
+        selectedProductIds,
+      });
+      const orderId = res?.data?.order_id;
+
+      if (!orderId) {
+        return message.error("Không nhận được order_id từ server");
+      }
+
+      // ✅ Chuyển sang trang Checkout kèm theo orderId
+      navigate("/checkout", {
+        state: { orderId },
+      });
+    } catch (err) {
+      console.error(err);
+      message.error("Đặt hàng thất bại");
+    }
   };
 
   return (

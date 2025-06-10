@@ -9,6 +9,8 @@ import "swiper/css/effect-fade";
 import { useNavigate } from "react-router-dom";
 import { message, Rate } from "antd";
 import { StarFilled } from "@ant-design/icons";
+import { motion } from "framer-motion";
+
 const banners = [
   { src: assets.banner_1, alt: "banner 1" },
   { src: assets.banner_2, alt: "banner 2" },
@@ -18,10 +20,13 @@ const banners = [
 const Home = () => {
   const [personalGifts, setPersonalGifts] = useState([]);
   const [businessGifts, setBusinessGifts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const [res1, res2] = await Promise.all([
           ProductService.getFilteredProducts({
             category: "Quà tặng cá nhân hóa",
@@ -42,32 +47,36 @@ const Home = () => {
         ]);
         setPersonalGifts(res1.data.items || []);
         setBusinessGifts(res2.data.items || []);
+        setLoading(false);
       } catch (error) {
         message.error("Failed to load products");
+        setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   const handleCardClick = (id) => {
     navigate(`/products/${id}`);
   };
+
   const renderProductCard = (product) => (
-    <div
+    <motion.div
       key={product._id}
-      className="bg-white rounded-xl shadow-md hover:shadow-lg transition p-4"
+      className="bg-white rounded-[10px] shadow-md hover:shadow-lg transition duration-300 transform hover:-translate-y-2 hover:scale-[1.02] cursor-pointer"
       onClick={() => handleCardClick(product._id)}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
     >
       <img
         src={product.images?.[0] || "/default-product.png"}
         alt={product.name}
-        className="w-full h-65 object-cover rounded-md mb-3"
+        className="w-full h-65 object-cover mb-3 rounded-t-[10px] transition-transform duration-500"
       />
-      <h3 className="text-base font-semibold line-clamp-2 min-h-[48px]">
+      <h3 className="text-base font-semibold line-clamp-2 min-h-[48px] pl-4">
         {product.name}
       </h3>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-gray-600 pl-4">
         <Rate
           disabled
           allowHalf
@@ -77,15 +86,24 @@ const Home = () => {
         />
         ({product.reviewCount ?? 0} reviews)
       </p>
-      <p className="text-[#d0011b] text-lg font-bold mt-1">
+      <p className="text-[#d0011b] text-lg font-bold mt-1 pl-4">
         {parseInt(product.price.$numberDecimal).toLocaleString()}₫
       </p>
-    </div>
+    </motion.div>
+  );
+
+  const renderSkeletonCard = (_, idx) => (
+    <div key={idx} className="h-80 bg-gray-100 rounded-lg animate-pulse"></div>
   );
 
   return (
-    <div className="mt-20 px-4 md:px-12 max-w-screen-xl mx-auto">
-      {/* Banner */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+      className="mt-20 px-4 md:px-12 max-w-screen-xl mx-auto"
+    >
       <Swiper
         modules={[Autoplay, Pagination, EffectFade]}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -99,75 +117,112 @@ const Home = () => {
             <img
               src={banner.src}
               alt={banner.alt}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-700 ease-in-out hover:scale-105"
             />
           </SwiperSlide>
         ))}
       </Swiper>
 
       {/* Category Highlights */}
-      <section className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Personal Gifts */}
+      <motion.section
+        className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="relative rounded-xl overflow-hidden">
           <div className="absolute top-0 left-0 w-full bg-[#fff7ed] bg-opacity-90 text-black text-center py-2 z-10">
-            Personal Gifts
+            Quà tặng cá nhân hóa
           </div>
           <img
             src={assets.privates}
-            alt="Personal Gifts"
+            alt="Quà tặng cá nhân hóa"
             className="w-full h-64 object-cover"
           />
         </div>
-
-        {/* Business Gifts */}
         <div className="relative rounded-xl overflow-hidden">
           <div className="absolute top-0 left-0 w-full bg-[#fff7ed] bg-opacity-90 text-black text-center py-2 z-10">
-            Business Gifts
+            Quà tặng doanh nghiệp
           </div>
           <img
             src={assets.business}
-            alt="Business Gifts"
+            alt="Quà tặng doanh nghiệp"
             className="w-full h-64 object-cover"
           />
         </div>
-      </section>
+      </motion.section>
 
       {/* Personalized Products */}
-      <section className="mt-12">
+      <motion.section
+        className="mt-12"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <h2 className="text-2xl font-semibold mb-4 text-center">
-          Personalized Gifts
+          Quà tặng cá nhân hóa
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {personalGifts.map(renderProductCard)}
+          {loading
+            ? Array(4).fill().map(renderSkeletonCard)
+            : personalGifts.map(renderProductCard)}
         </div>
         <div className="text-center mt-4">
-          <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600">
-            Explore More
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition duration-300"
+          >
+            Xem thêm
+          </motion.button>
         </div>
-      </section>
+      </motion.section>
 
       {/* Business Products */}
-      <section className="mt-12">
+      <motion.section
+        className="mt-12"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <h2 className="text-2xl font-semibold mb-4 text-center">
-          Business Gifts
+          Quà tặng doanh nghiệp
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {businessGifts.map(renderProductCard)}
+          {loading
+            ? Array(4).fill().map(renderSkeletonCard)
+            : businessGifts.map(renderProductCard)}
         </div>
         <div className="text-center mt-4">
-          <button className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600">
-            Explore More
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition duration-300"
+          >
+            Xem thêm
+          </motion.button>
         </div>
-      </section>
+      </motion.section>
 
       {/* Blog Section */}
-      <section className="mt-16 mb-16">
+      <motion.section
+        className="mt-16 mb-16"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <h2 className="text-2xl font-semibold mb-4 text-center">Blog</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white rounded-xl shadow p-4">
+            <motion.div
+              key={i}
+              className="bg-white rounded-xl shadow p-4 hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
+              whileHover={{ scale: 1.02 }}
+            >
               <img
                 src={`/blog-${i}.jpg`}
                 alt="Blog"
@@ -178,11 +233,11 @@ const Home = () => {
                 A brief description of blog content related to products, trends,
                 or gift tips...
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 };
 

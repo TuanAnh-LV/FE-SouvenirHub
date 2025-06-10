@@ -68,21 +68,21 @@ export default function Foter() {
         </div>
 
         <div>
-          <div>About us</div>
-          <div>Contact us</div>
+          <div>Về chúng tôi</div>
+          <div>Liên hệ</div>
           <div>Blog</div>
         </div>
 
         <div>
-          <div>Social</div>
+          <div>Mạng xã hội</div>
           <FacebookOutlined style={{ fontSize: "20px", marginRight: "10px" }} />
           <TwitterOutlined style={{ fontSize: "20px", marginRight: "10px" }} />
           <InstagramOutlined style={{ fontSize: "20px" }} />
         </div>
 
         <div>
-          <div>Personal AI Manager</div>
-          <div>AI Business Writer</div>
+          <div>Quản lý AI cá nhân</div>
+          <div>AI hỗ trợ kinh doanh</div>
         </div>
       </div>
     </Footer>

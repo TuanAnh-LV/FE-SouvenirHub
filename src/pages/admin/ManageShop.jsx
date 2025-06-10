@@ -12,47 +12,46 @@ const ManageShop = () => {
       const res = await AdminService.getAllShops();
       setShops(res.data);
     } catch (error) {
-      message.error("Failed to load the list of shops.");
+      message.error("Không thể tải danh sách cửa hàng.");
     }
   };
 
   const confirmDelete = async (shopId) => {
-    if (window.confirm("Are you sure you want to delete this shop?")) {
+    if (window.confirm("Bạn có chắc muốn xoá cửa hàng này?")) {
       try {
-        console.log("Deleting shop with ID:", shopId);
         await AdminService.deleteShop(shopId);
-        message.success("Shop deleted successfully!");
+        message.success("Xoá cửa hàng thành công!");
         fetchShops();
       } catch (error) {
-        message.error("Failed to delete the shop.");
+        message.error("Xoá cửa hàng thất bại.");
       }
     }
   };
 
   const columns = [
     {
-      title: "Shop Name",
+      title: "Tên cửa hàng",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Address",
+      title: "Địa chỉ",
       dataIndex: "address",
       key: "address",
     },
     {
-      title: "Total Products",
+      title: "Tổng sản phẩm",
       dataIndex: "productCount",
       key: "productCount",
     },
     {
-      title: "Status",
+      title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: "Pending", value: "pending" },
-        { text: "Approved", value: "approved" },
-        { text: "Rejected", value: "rejected" },
+        { text: "Chờ duyệt", value: "pending" },
+        { text: "Đã duyệt", value: "approved" },
+        { text: "Đã từ chối", value: "rejected" },
       ],
       onFilter: (value, record) => record.status === value,
       render: (status) => {
@@ -62,11 +61,17 @@ const ManageShop = () => {
             : status === "pending"
             ? "orange"
             : "red";
-        return <Tag color={color}>{status}</Tag>;
+        const label =
+          status === "approved"
+            ? "Đã duyệt"
+            : status === "pending"
+            ? "Chờ duyệt"
+            : "Đã từ chối";
+        return <Tag color={color}>{label}</Tag>;
       },
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       render: (_, record) => (
         <div className="flex gap-2">
@@ -75,7 +80,7 @@ const ManageShop = () => {
             size="small"
             onClick={() => navigate(`/admin/shops/${record._id}`)}
           >
-            Details
+            Chi tiết
           </Button>
 
           {record.status === "pending" && (
@@ -88,7 +93,7 @@ const ManageShop = () => {
           )}
 
           <Button danger size="small" onClick={() => confirmDelete(record._id)}>
-            Delete
+            Xoá
           </Button>
         </div>
       ),

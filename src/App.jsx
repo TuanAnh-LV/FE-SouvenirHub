@@ -10,7 +10,7 @@ function AppRoutes() {
 }
 
 function App() {
-  const isLoading = useSelector((state) => state.loading.isLoading);
+  const isLoading = useSelector((state) => state.loading);
 
   return (
     <Router>

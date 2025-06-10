@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AdminService } from "../../services/admin/admin.service";
@@ -40,7 +39,7 @@ const ShopDetail = () => {
       setShop(res.data);
       setProducts(res.data.products || []);
     } catch (err) {
-      message.error("Failed to load shop details.");
+      message.error("Không thể tải thông tin cửa hàng.");
     }
   };
 
@@ -59,7 +58,7 @@ const ShopDetail = () => {
 
   const productColumns = [
     {
-      title: "Product",
+      title: "Sản phẩm",
       dataIndex: "name",
       key: "name",
       render: (text, record) => (
@@ -76,7 +75,7 @@ const ShopDetail = () => {
       ),
     },
     {
-      title: "Price",
+      title: "Giá",
       dataIndex: "price",
       key: "price",
       render: (price) =>
@@ -85,12 +84,12 @@ const ShopDetail = () => {
           : `${price.toLocaleString()}₫`,
     },
     {
-      title: "Sold",
+      title: "Đã bán",
       dataIndex: "sold",
       key: "sold",
     },
     {
-      title: "In Stock",
+      title: "Tồn kho",
       dataIndex: "stock",
       key: "stock",
     },
@@ -99,13 +98,13 @@ const ShopDetail = () => {
   return (
     <div className="p-6 bg-[#fffaf7] min-h-screen">
       <Button onClick={() => navigate(-1)} className="mb-4">
-        ← Back
+        ← Quay lại
       </Button>
 
       {shop && (
         <>
           <Title level={2} className="mb-4">
-            Shop Information
+            Thông tin cửa hàng
           </Title>
 
           <Row gutter={24} className="mb-6">
@@ -120,9 +119,9 @@ const ShopDetail = () => {
                   />
                   <div>
                     <Title level={4}>{shop.name}</Title>
-                    <Text>{shop.address || "No address provided"}</Text>
+                    <Text>{shop.address || "Không có địa chỉ"}</Text>
                     <div className="mt-2 text-gray-500">
-                      {products.length} products
+                      {products.length} sản phẩm
                     </div>
                   </div>
                 </div>
@@ -132,7 +131,7 @@ const ShopDetail = () => {
                 <Col span={6}>
                   <Card>
                     <Statistic
-                      title="Revenue"
+                      title="Doanh thu"
                       value={shop.totalRevenue || 0}
                       precision={0}
                       valueStyle={{ color: "#1890ff" }}
@@ -143,7 +142,7 @@ const ShopDetail = () => {
                 <Col span={6}>
                   <Card>
                     <Statistic
-                      title="Total Orders"
+                      title="Đơn hàng"
                       value={shop.totalOrders || 0}
                       valueStyle={{ color: "#3f8600" }}
                     />
@@ -152,7 +151,7 @@ const ShopDetail = () => {
                 <Col span={6}>
                   <Card>
                     <Statistic
-                      title="Cancelled Orders"
+                      title="Đơn huỷ"
                       value={shop.totalCancelled || 0}
                       valueStyle={{ color: "#cf1322" }}
                     />
@@ -161,7 +160,7 @@ const ShopDetail = () => {
                 <Col span={6}>
                   <Card>
                     <Statistic
-                      title="Rating"
+                      title="Đánh giá"
                       value={shop.rating || 0}
                       suffix="/ 5"
                     />
@@ -171,9 +170,9 @@ const ShopDetail = () => {
             </Col>
 
             <Col xs={24} md={8}>
-              <Card className="rounded-2xl shadow-sm" title="Overview">
+              <Card className="rounded-2xl shadow-sm" title="Tổng quan">
                 <p>
-                  <strong>Address:</strong>
+                  <strong>Địa chỉ:</strong>
                   <br />
                   {shop.address || "—"}
                 </p>
@@ -183,7 +182,7 @@ const ShopDetail = () => {
                   {shop.user_id?.email}
                 </p>
                 <p>
-                  <strong>Phone:</strong>
+                  <strong>Số điện thoại:</strong>
                   <br />
                   +84 345678912 {/* placeholder */}
                 </p>
@@ -193,7 +192,10 @@ const ShopDetail = () => {
 
           <Row gutter={24} className="mt-10 mb-10">
             <Col xs={24} md={16}>
-              <Card title="Revenue by Month" className="rounded-2xl shadow-sm">
+              <Card
+                title="Doanh thu theo tháng"
+                className="rounded-2xl shadow-sm"
+              >
                 {revenueData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={revenueData}>
@@ -210,16 +212,13 @@ const ShopDetail = () => {
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p>No data available</p>
+                  <p>Không có dữ liệu</p>
                 )}
               </Card>
             </Col>
 
             <Col xs={24} md={8}>
-              <Card
-                title="Top Selling Products"
-                className="rounded-2xl shadow-sm"
-              >
+              <Card title="Sản phẩm bán chạy" className="rounded-2xl shadow-sm">
                 {topProducts.length > 0 ? (
                   <ul className="space-y-2">
                     {topProducts.map((item, idx) => (
@@ -227,18 +226,21 @@ const ShopDetail = () => {
                         <strong>
                           {idx + 1}. {item.name}
                         </strong>{" "}
-                        — {item.quantity_sold} sold
+                        — {item.quantity_sold} đã bán
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p>No data available</p>
+                  <p>Không có dữ liệu</p>
                 )}
               </Card>
             </Col>
           </Row>
 
-          <Card className="rounded-2xl shadow-sm mt-10" title="Products">
+          <Card
+            className="rounded-2xl shadow-sm mt-10"
+            title="Danh sách sản phẩm"
+          >
             <Table
               columns={productColumns}
               dataSource={shop.products?.filter((p) => p.status === "onSale")}

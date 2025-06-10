@@ -16,7 +16,7 @@ import { useLocation } from "react-router-dom";
 const Header = () => {
   const navigate = useNavigate();
   const { userInfo, logout } = useAuth();
-  const { cartCount, getCartCount, cart } = useCart();
+  const { getCartCount, cart } = useCart();
   const [options, setOptions] = useState([]);
   const [searchText, setSearchText] = useState("");
   const location = useLocation();
@@ -32,7 +32,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    message.success("Logged out successfully!");
+    message.success("Đăng xuất thành công!");
     navigate("/login");
   };
   const fetchSuggestions = async (value) => {
@@ -53,7 +53,9 @@ const Header = () => {
           {
             value: "",
             label: (
-              <span className="text-gray-400 italic">No products found</span>
+              <span className="text-gray-400 italic">
+                Không tìm thấy sản phẩm nào
+              </span>
             ),
             disabled: true,
           },
@@ -77,7 +79,7 @@ const Header = () => {
           value: "",
           label: (
             <span className="text-red-400 italic">
-              Error while searching. Please try again!
+              Có lỗi khi tìm kiếm. Vui lòng thử lại!
             </span>
           ),
           disabled: true,
@@ -136,11 +138,13 @@ const Header = () => {
       {/* Topbar */}
       <div className="bg-[#010002] text-white text-xs py-1 px-6 flex justify-between items-center">
         <div className="space-x-4">
-          <span className="cursor-pointer">Seller Center</span>
-          <span className="cursor-pointer">🌐 English ▼</span>
+          <span className="cursor-pointer">Trung tâm Người bán</span>
+          <span className="cursor-pointer">🌐 Tiếng Việt ▼</span>
         </div>
         <div className="space-x-4 hidden md:block">
-          <span className="cursor-pointer">FREE SHIPPING - 30K NEW MEMBER</span>
+          <span className="cursor-pointer">
+            MIỄN PHÍ VẬN CHUYỂN - 30K CHO THÀNH VIÊN MỚI
+          </span>
         </div>
       </div>
       {/* Main header */}
@@ -155,7 +159,7 @@ const Header = () => {
           </div>
 
           {/* Search*/}
-          <div className="flex-1 mx-8 max-w-3xl mt-2">
+          <div className="flex-1 mx-8 max-w-3xl mt-8">
             <AutoComplete
               options={
                 loading
@@ -185,7 +189,7 @@ const Header = () => {
               style={{ width: "100%" }}
             >
               <Search
-                placeholder="Search for gifts, boxes, and more..."
+                placeholder="Tìm kiếm quà tặng, hộp quà, và nhiều hơn nữa..."
                 allowClear
                 enterButton
                 size="large"
@@ -202,28 +206,19 @@ const Header = () => {
                 className="cursor-pointer hover:text-white"
                 onClick={() => navigate("/products")}
               >
-                Personalized Gifts
+                Quà tặng cá nhân hóa
               </span>
               <span
                 className="cursor-pointer hover:text-white"
                 onClick={() => navigate("/gift-box")}
               >
-                Gift Box
+                Hộp quà
               </span>
               <span
                 className="cursor-pointer hover:text-white"
                 onClick={() => navigate("/blogs")}
               >
                 Blogs
-              </span>
-              <span
-                className="cursor-pointer hover:text-white"
-                onClick={() => navigate("/contact")}
-              >
-                Contact
-              </span>
-              <span className="cursor-pointer hover:text-white">
-                Vietnamese Souvenirs
               </span>
               <span className="cursor-pointer hover:text-white">
                 People Buy Now
@@ -255,14 +250,14 @@ const Header = () => {
                   className="cursor-pointer"
                   onClick={() => navigate("/login")}
                 >
-                  Login
+                  Đăng nhập
                 </span>
                 <span>|</span>
                 <span
                   className="cursor-pointer"
                   onClick={() => navigate("/signup")}
                 >
-                  Register
+                  Đăng ký
                 </span>
               </div>
             )}

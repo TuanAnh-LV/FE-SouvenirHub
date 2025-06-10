@@ -37,7 +37,7 @@ export const CartService = {
 
   checkout: (payload) =>
     BaseService.post({
-      url: API.CART.CHECKOUT,
+      url: API.CART.CHECK_OUT_CART,
       payload,
       isLoading: true,
     }),

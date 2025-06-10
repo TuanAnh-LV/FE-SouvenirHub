@@ -6,6 +6,7 @@ import { CartService } from "../services/cart/cart.service";
 import { VoucherService } from "../services/voucher/voucher.service";
 import { PaymentService } from "../services/payment/payment.service";
 import { AddressService } from "../services/adress/address.service";
+import { OrderService } from "../services/order/order.service";
 
 import CreateAddress from "../pages/address/CreateAddress";
 import UpdateAddress from "../pages/address/UpdateAddress";
@@ -22,8 +23,10 @@ const parsePrice = (priceObj) =>
 
 export default function CheckoutPage() {
   const location = useLocation();
+  const orderId = location.state?.orderId;
+
   const navigate = useNavigate();
-  const selectedProductIds = location.state?.selectedProductIds || [];
+  // const selectedProductIds = location.state?.selectedProductIds || [];
 
   const [editingAddress, setEditingAddress] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -37,28 +40,51 @@ export default function CheckoutPage() {
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
 
   const shippingFee = 16500;
+  function groupItemsByShop(items) {
+    const groupMap = {};
+
+    for (const item of items) {
+      const shop = item.product_id.shop_id;
+      const shopId = typeof shop === "object" ? shop._id : shop;
+      const shopName = typeof shop === "object" ? shop.name : "Shop";
+
+      if (!groupMap[shopId]) {
+        groupMap[shopId] = {
+          shop_id: shopId,
+          shop_name: shopName,
+          items: [],
+        };
+      }
+
+      groupMap[shopId].items.push({
+        product: item.product_id,
+        quantity: item.quantity,
+      });
+    }
+
+    return Object.values(groupMap);
+  }
 
   // 📦 Lấy danh sách sản phẩm đã chọn theo từng shop
   useEffect(() => {
-    async function fetchSelectedItems() {
-      const res = await CartService.getCart();
-      const grouped = res?.data?.groupedItems || [];
+    async function fetchOrder() {
+      try {
+        const res = await OrderService.getOrderById(orderId);
+        const order = res.data;
 
-      const filteredGroups = grouped
-        .map((group) => ({
-          shop_id: group.shop_id,
-          shop_name: group.shop_name,
-          items: group.items.filter((item) =>
-            selectedProductIds.includes(item.product._id)
-          ),
-        }))
-        .filter((group) => group.items.length > 0);
+        const grouped = groupItemsByShop(order.items);
+        setSelectedGroups(grouped);
 
-      setSelectedGroups(filteredGroups);
+        setSelectedAddressId(order.shipping_address_id);
+      } catch (err) {
+        message.error("Không thể tải thông tin đơn hàng");
+      }
     }
 
-    fetchSelectedItems();
-  }, [selectedProductIds]);
+    if (orderId) {
+      fetchOrder();
+    }
+  }, [orderId]);
 
   // 🧾 Tính tổng tiền sản phẩm
   const totalProductPrice = selectedGroups.reduce((sum, group) => {
@@ -93,26 +119,23 @@ export default function CheckoutPage() {
       ]);
       const addressesData = addressRes.data || [];
       setAddresses(addressesData);
-      if (addressesData.length > 0) setSelectedAddressId(addressesData[0]._id);
+
+      if (addressesData.length > 0) {
+        setSelectedAddressId((prev) => prev || addressesData[0]._id);
+      }
+
       setVoucherList(voucherRes.data || []);
     }
+
     fetchInitialData();
   }, []);
 
   const handleSubmit = async () => {
-    if (!selectedAddressId || selectedGroups.length === 0) {
-      return message.warning("Vui lòng chọn địa chỉ và sản phẩm");
+    if (!orderId) {
+      return message.warning("Không tìm thấy order_id để thanh toán");
     }
 
     try {
-      const res = await CartService.checkout({
-        shipping_address_id: selectedAddressId,
-        selectedProductIds,
-        voucher_id: selectedVoucherId,
-      });
-
-      const orderId = res?.data?.order_id;
-
       if (paymentMethod === "momo") {
         const payRes = await PaymentService.createMomo({ order_id: orderId });
         window.location.href = payRes.data.payUrl;
@@ -122,9 +145,10 @@ export default function CheckoutPage() {
         navigate("/orders");
       }
     } catch (err) {
-      message.error("Đặt hàng thất bại");
+      message.error("Thanh toán thất bại");
     }
   };
+
   const getVoucherDiscount = () => {
     const selectedVoucher = voucherList.find(
       (v) => v._id === selectedVoucherId
