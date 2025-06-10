@@ -208,9 +208,6 @@ const Header = () => {
               >
                 Blogs
               </span>
-              <span className="cursor-pointer hover:text-white">
-                People Buy Now
-              </span>
             </nav>
           </div>
 
