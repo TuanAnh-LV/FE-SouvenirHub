@@ -29,7 +29,7 @@ export const ProductService = {
         });
     },
     deleteShop: (id) => {
-        return BaseService.delete({
+        return BaseService.remove({
             url: API.SHOP.DELETE_SHOP.replace(':id', id),
             isLoading: true,
         });

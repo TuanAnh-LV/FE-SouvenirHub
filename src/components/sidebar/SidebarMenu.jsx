@@ -62,6 +62,11 @@ const SidebarMenu = () => {
       label: "Quản lý đơn hàng",
       icon: <ShoppingCartOutlined />,
     },
+    {
+      path: "/seller/blogs",
+      label: "Blogs",
+      icon: <ShoppingCartOutlined />,
+    },
   ];
 
   const admin = [
