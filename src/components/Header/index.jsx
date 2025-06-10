@@ -135,31 +135,19 @@ const Header = () => {
 
   return (
     <header className=" fixed w-full z-50">
-      {/* Topbar */}
-      <div className="bg-[#010002] text-white text-xs py-1 px-6 flex justify-between items-center">
-        <div className="space-x-4">
-          <span className="cursor-pointer">Trung tâm Người bán</span>
-          <span className="cursor-pointer">🌐 Tiếng Việt ▼</span>
-        </div>
-        <div className="space-x-4 hidden md:block">
-          <span className="cursor-pointer">
-            MIỄN PHÍ VẬN CHUYỂN - 30K CHO THÀNH VIÊN MỚI
-          </span>
-        </div>
-      </div>
       {/* Main header */}
-      <div className="bg-[#F4C7AB] shadow-sm w-full text-[#5C3D2E]">
+      <div className="bg-[#F3B5A0] shadow-sm w-full text-[#5C3D2E]">
         <div className="max-w-screen-xl mx-auto px-10 flex items-center justify-between">
           {/* Logo + hamburger */}
           <div
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <img src={logo} alt="Souvenir Hub" className="h-24" />
+            <img src={logo} alt="Souvenir Hub" className="h-20" />
           </div>
 
           {/* Search*/}
-          <div className="flex-1 mx-8 max-w-3xl mt-8">
+          <div className="flex-1 mx-8 max-w-3xl mt-14">
             <AutoComplete
               options={
                 loading
@@ -216,7 +204,7 @@ const Header = () => {
               </span>
               <span
                 className="cursor-pointer hover:text-white"
-                onClick={() => navigate("/blogs")}
+                onClick={() => navigate("/blog")}
               >
                 Blogs
               </span>
@@ -227,7 +215,7 @@ const Header = () => {
           </div>
 
           {/* Auth + Cart */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 mt-7">
             {userInfo ? (
               <Dropdown
                 menu={{ items: getMenuItems() }}

@@ -112,7 +112,7 @@ const Signup = () => {
         </div>
 
         {/* Bên phải: Logo */}
-        <div className="hidden md:flex w-1/2 bg-[#FECFC2] items-center justify-center">
+        <div className="hidden md:flex w-1/2 bg-[#F3B5A0] items-center justify-center">
           <img
             src={LogoImage}
             alt="Souvenir Hub"

@@ -23,7 +23,9 @@ const RegisterShop = lazy(() => import("../pages/buyer/RegisterShop"));
 const Profile = lazy(() => import("../pages/Profile"));
 const ManageShop = lazy(() => import("../pages/admin/ManageShop"));
 const ShopDetail = lazy(() => import("../pages/admin/ShopDetail"));
-const BlogManager = lazy(() => import("../pages/seller/blogManager/BlogManager"));
+const BlogManager = lazy(() =>
+  import("../pages/seller/blogManager/BlogManager")
+);
 const BlogUpdate = lazy(() => import("../pages/seller/blogManager/UpdateBlog"));
 const ShopApprovalDetail = lazy(() =>
   import("../pages/admin/ShopApprovalDetail")
@@ -46,6 +48,8 @@ const EmailVerificationPage = lazy(() =>
 );
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const ReviewPage = lazy(() => import("../pages/ReviewPage"));
+const BlogPage = lazy(() => import("../pages/blog/BlogPage"));
+const BlogDetailPage = lazy(() => import("../pages/blog/BlogDetailPage"));
 const routes = [
   // Public routes
   {
@@ -64,6 +68,8 @@ const routes = [
       { path: "/verify-email", element: <EmailVerificationPage /> },
       { path: "/checkout", element: <CheckoutPage /> },
       { path: "/products/:id/reviews", element: <ReviewPage /> },
+      { path: "/blog", element: <BlogPage /> },
+      { path: "/blog/:id", element: <BlogDetailPage /> },
     ],
   },
 
@@ -106,7 +112,6 @@ const routes = [
       { path: "create-product", element: <CreateProduct /> },
       { path: "blogs", element: <BlogManager /> },
       { path: "blogs/update/:id", element: <BlogManager /> },
-
     ],
   },
 
