@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, lazy } from "react";
-import { Checkbox, Radio, Input, Pagination } from "antd";
+import { Radio, Pagination } from "antd";
 import { ProductService } from "../../services/product-service/product.service";
 import { CategoryService } from "../../services/category/category.service";
 const ProductGrid = lazy(() => import("../../components/product/AllProduct"));
@@ -28,9 +28,10 @@ const AllProductPage = () => {
   const getPriceFilter = (price = priceRange) => {
     if (price === "100-400") return { minPrice: 100000, maxPrice: 400000 };
     if (price === "400-1000") return { minPrice: 400000, maxPrice: 1000000 };
-    if (price === ">1000") return { minPrice: 1000000, maxPrice: 0 }; // hoặc null
+    if (price === ">1000") return { minPrice: 1000000, maxPrice: 0 };
     return { minPrice: 0, maxPrice: 0 };
   };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -44,56 +45,50 @@ const AllProductPage = () => {
     fetchCategories();
   }, []);
 
-  const fetchProduct = useCallback(
-    async (
-      price = priceRange,
-      page = currentPage,
-      category = selectedCategory,
-      name = searchTerm
-    ) => {
-      try {
-        const { minPrice, maxPrice } = getPriceFilter(price);
+  const fetchProduct = useCallback(async () => {
+    try {
+      const { minPrice, maxPrice } = getPriceFilter();
 
-        const response = await ProductService.getAll({
-          status: "onSale",
-          minPrice: minPrice > 0 ? minPrice : undefined,
-          maxPrice: maxPrice > 0 ? maxPrice : undefined,
-          category: category || undefined,
-          name: name || undefined,
-          page,
-          limit: pageSize,
-        });
+      const response = await ProductService.getAll({
+        status: "onSale",
+        minPrice: minPrice > 0 ? minPrice : undefined,
+        maxPrice: maxPrice > 0 ? maxPrice : undefined,
+        category: selectedCategory || undefined,
+        name: searchTerm || undefined,
+        page: currentPage,
+        limit: pageSize,
+      });
 
-        setProducts(response.data.items || []);
-        setTotal(response.data.total || 0);
-      } catch (error) {
-        console.error("Error fetching product data:", error);
-      }
-    },
-    [priceRange, currentPage, pageSize, selectedCategory, searchTerm]
-  );
+      setProducts(response.data.items || []);
+      setTotal(response.data.total || 0);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
+  }, [priceRange, currentPage, pageSize, selectedCategory, searchTerm]);
+
+  useEffect(() => {
+    setSearchTerm(searchQuery);
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Gọi fetchProduct khi page/filter/searchTerm đổi
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  // Gọi fetchProduct lần đầu khi vào trang
-  useEffect(() => {
-    setSearchTerm(searchQuery);
-    fetchProduct(priceRange, 1, selectedCategory, searchQuery);
-    setCurrentPage(1);
-  }, [searchQuery]);
-
-  // Xử lý khi đổi filter giá
   const handlePriceChange = (e) => {
     const value = e.target.value;
     setPriceRange(value);
-    fetchProduct(value);
+    setCurrentPage(1);
   };
+
   const handleCategoryChange = (e) => {
     const value = e.target.value;
     setSelectedCategory(value);
-    fetchProduct(priceRange, 1, value);
     setCurrentPage(1);
   };
 
@@ -136,7 +131,6 @@ const AllProductPage = () => {
 
       {/* Khu vực sản phẩm bên phải */}
       <main className="flex-1">
-        {/* Thanh tìm kiếm & sắp xếp */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2 text-sm">
             <span className="font-medium text-gray-600">Sort by:</span>
@@ -148,7 +142,6 @@ const AllProductPage = () => {
           </div>
         </div>
 
-        {/* Lưới sản phẩm */}
         {products.length === 0 ? (
           <div className="text-center text-gray-500 text-lg mt-20">
             No product found
@@ -157,7 +150,6 @@ const AllProductPage = () => {
           <>
             <ProductGrid products={products} />
 
-            {/* Phân trang */}
             <div className="mt-6 flex justify-center">
               <Pagination
                 current={currentPage}

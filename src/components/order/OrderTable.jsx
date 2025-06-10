@@ -9,7 +9,6 @@ const OrderTable = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Lấy danh sách order có status pending và bổ sung ảnh nếu thiếu
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -17,7 +16,7 @@ const OrderTable = () => {
       let pendingOrders = [];
       if (res && Array.isArray(res.data)) {
         pendingOrders = res.data.filter((order) => order.status === "pending");
-        // Đảm bảo đồng bộ: fetch từng product tuần tự
+
         for (const order of pendingOrders) {
           for (const item of order.items) {
             if (!item.product_id.images) {

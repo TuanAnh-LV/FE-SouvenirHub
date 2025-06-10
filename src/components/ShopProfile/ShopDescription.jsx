@@ -27,7 +27,7 @@ const ShopDescripton = ({ shop }) => {
         </Col>
         <Col xs={24} sm={16} md={18} lg={19} xl={20}>
           <Title level={2} style={{ marginBottom: 8 }}>
-            {shop.user_id?.name || shop.name}
+            {shop.name}
           </Title>
           <Text
             strong
@@ -37,12 +37,9 @@ const ShopDescripton = ({ shop }) => {
               marginBottom: 8,
             }}
           >
-            Địa chỉ: Khu phố 2, Hiệp Bình Chánh, Thủ Đức, TP.HCM
+            Địa chỉ: {shop.address}
           </Text>
-          <div
-            className="flex items-center mb-1"
-            style={{ marginBottom: 8 }}
-          >
+          <div className="flex items-center mb-1" style={{ marginBottom: 8 }}>
             <Rate
               disabled
               defaultValue={shop.rating}
@@ -50,17 +47,14 @@ const ShopDescripton = ({ shop }) => {
               style={{ fontSize: 20, color: "#faad14" }}
             />
             <span className="ml-2 font-semibold">{shop.rating}</span>
-            <span className="ml-1 text-gray-500 text-sm">
-              (200 đánh giá)
-            </span>
+            {/* <span className="ml-1 text-gray-500 text-sm">(200 đánh giá)</span> */}
           </div>
-          <Text
-            type="secondary"
-            style={{ display: "block", marginBottom: 8 }}
-          >
+          <Text type="secondary" style={{ display: "block", marginBottom: 8 }}>
             Thời gian tham gia: {joinDate}
           </Text>
-          <Paragraph style={{ marginBottom: 0, fontSize: "1rem", fontWeight: 350 }}>
+          <Paragraph
+            style={{ marginBottom: 0, fontSize: "1rem", fontWeight: 350 }}
+          >
             {shop.description}
           </Paragraph>
         </Col>

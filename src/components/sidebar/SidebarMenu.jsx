@@ -26,17 +26,17 @@ const SidebarMenu = () => {
   const buyer = [
     {
       path: "/buyer/dashboard",
-      label: "Dashboard",
+      label: "Trang chủ",
       icon: <HomeOutlined />,
     },
     {
       path: "/buyer/register-shop",
-      label: "Register Shop",
+      label: "Đăng kí shop",
       icon: <ShopOutlined />,
     },
     {
       path: "/buyer/orders",
-      label: "My Orders",
+      label: "Đơn hàng",
       icon: <ShoppingCartOutlined />,
     },
     {
@@ -49,17 +49,17 @@ const SidebarMenu = () => {
   const seller = [
     {
       path: "/seller/dashboard",
-      label: "Dashboard",
+      label: "Trang chủ",
       icon: <HomeOutlined />,
     },
     {
       path: "/seller/products",
-      label: "Products",
+      label: "Quản lý sản phẩmphẩm",
       icon: <AppstoreOutlined />,
     },
     {
       path: "/seller/orders",
-      label: "Orders",
+      label: "Quản lý đơn hàng",
       icon: <ShoppingCartOutlined />,
     },
   ];
@@ -67,17 +67,17 @@ const SidebarMenu = () => {
   const admin = [
     {
       path: "/admin",
-      label: "Dashboard",
+      label: "Trang chủ",
       icon: <HomeOutlined />,
     },
     {
       path: "/admin/manage-shop",
-      label: "Shop Management",
+      label: "Quản lý shop",
       icon: <ShopOutlined />,
     },
     {
       path: "/admin/products/pending",
-      label: "Pending Products",
+      label: "Trạng thái sản phẩm",
       icon: <ShopOutlined />,
     },
   ];

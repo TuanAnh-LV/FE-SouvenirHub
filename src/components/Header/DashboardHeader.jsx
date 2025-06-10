@@ -16,17 +16,17 @@ const DashboardHeader = () => {
 
   const handleLogout = () => {
     logout();
-    message.success("Logged out successfully!");
+    message.success("Đăng xuất thành công!");
     navigate("/login");
   };
 
   const menu = (
     <Menu>
       <Menu.Item key="profile" icon={<SettingOutlined />}>
-        Profile
+        Hồ sơ cá nhân
       </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
-        Logout
+        Đăng xuất
       </Menu.Item>
     </Menu>
   );
@@ -42,7 +42,7 @@ const DashboardHeader = () => {
           onClick={() => navigate("/")}
         />
         <Input
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
           prefix={<SearchOutlined />}
           className="w-80 rounded-full"
         />
@@ -56,7 +56,9 @@ const DashboardHeader = () => {
         <Dropdown overlay={menu} trigger={["click"]}>
           <div className="flex items-center gap-2 cursor-pointer">
             <Avatar icon={<UserOutlined />} src={userInfo?.avatar || null} />
-            <span className="font-medium">{userInfo?.name || "User"}</span>
+            <span className="font-medium">
+              {userInfo?.name || "Người dùng"}
+            </span>
           </div>
         </Dropdown>
       </div>

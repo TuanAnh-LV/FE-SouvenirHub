@@ -7,7 +7,7 @@ import { Form, Input, Button, message, Checkbox, Row, Col } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import "leaflet/dist/leaflet.css";
 
-// Fix default marker icon for leaflet
+// Fix icon marker cho leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -18,7 +18,7 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-const center = { lat: 10.762622, lng: 106.660172 }; // Default to HCM
+const center = { lat: 10.762622, lng: 106.660172 }; // Mặc định TP.HCM
 
 function LocationMarker({ onSelect }) {
   useMapEvents({
@@ -32,14 +32,11 @@ function LocationMarker({ onSelect }) {
 export default function UpdateAddress({ address, onBack, onUpdated }) {
   const [form] = Form.useForm();
   const [marker, setMarker] = useState(
-    address && address.lat && address.lng
-      ? { lat: address.lat, lng: address.lng }
-      : null
+    address?.lat && address?.lng ? { lat: address.lat, lng: address.lng } : null
   );
   const [loading, setLoading] = useState(false);
   const [isMe, setIsMe] = useState(false);
 
-  // Lấy userInfo từ localStorage
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 
   useEffect(() => {
@@ -54,10 +51,13 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
         lat: address.lat || null,
         lng: address.lng || null,
       });
-      if (address.lat && address.lng) {
-        setMarker({ lat: address.lat, lng: address.lng });
-      }
-      // Tự động tick nếu trùng userInfo
+
+      setMarker(
+        address.lat && address.lng
+          ? { lat: address.lat, lng: address.lng }
+          : null
+      );
+
       if (
         userInfo &&
         address.recipient_name === userInfo.name &&
@@ -70,14 +70,13 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
     }
   }, [address, form, userInfo]);
 
-  // Lấy địa chỉ từ lat/lng bằng Nominatim
   const fetchAddressFromLatLng = async (lat, lng) => {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=vi`
       );
       const data = await response.json();
-      if (data && data.address) {
+      if (data?.address) {
         form.setFieldsValue({
           address_line: data.display_name || "",
           city:
@@ -97,7 +96,7 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
       }
     } catch (err) {
       message.error("Không thể lấy địa chỉ từ bản đồ.");
-      console.error("Error fetching address:", err);
+      console.error("Lỗi khi lấy địa chỉ:", err);
     }
   };
 
@@ -109,6 +108,7 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
 
   const handleFinish = async (values) => {
     const { lat, lng, ...addressData } = values;
+
     if (!addressData.address_line || !addressData.city || !addressData.ward) {
       message.error("Vui lòng nhập đầy đủ địa chỉ hoặc chọn trên bản đồ.");
       return;
@@ -118,16 +118,15 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
     try {
       await AddressService.updateAddress(address._id, addressData);
       message.success("Cập nhật địa chỉ thành công!");
-      if (onUpdated) onUpdated(); // gọi callback fetch lại data
+      if (onUpdated) onUpdated();
       if (onBack) onBack();
     } catch (err) {
       message.error("Cập nhật địa chỉ thất bại.");
-      console.error("Error updating address:", err);
+      console.error("Lỗi cập nhật địa chỉ:", err);
     }
     setLoading(false);
   };
 
-  // Khi check "Người nhận là tôi"
   const handleCheckMe = (e) => {
     setIsMe(e.target.checked);
     if (e.target.checked && userInfo.name && userInfo.phone) {
@@ -135,7 +134,7 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
         recipient_name: userInfo.name,
         phone: userInfo.phone,
       });
-    } else if (!e.target.checked) {
+    } else {
       form.setFieldsValue({
         recipient_name: "",
         phone: "",
@@ -154,20 +153,16 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
             size="small"
             style={{ marginBottom: 8 }}
           >
-            Back
+            Trở lại
           </Button>
         )}
 
-        <h2 className="text-xl font-bold">
-          {typeof address !== "undefined" ? "Update Address" : "New Address"}
-        </h2>
+        <h2 className="text-xl font-bold">Cập nhật địa chỉ</h2>
 
         <Form
           form={form}
           layout="vertical"
-          onFinish={
-            typeof address !== "undefined" ? handleFinish : handleFinish
-          }
+          onFinish={handleFinish}
           initialValues={{
             recipient_name: "",
             phone: "",
@@ -180,54 +175,63 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
           }}
         >
           <Row gutter={24}>
-            {/* LEFT: Form */}
             <Col xs={24} md={12}>
               <Form.Item
-                label="Recipient Name"
+                label="Họ và tên người nhận"
                 name="recipient_name"
-                rules={[
-                  { required: true, message: "Please enter recipient name" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
               >
-                <Input placeholder="Enter full name" />
+                <Input placeholder="Nhập họ tên đầy đủ" />
               </Form.Item>
 
               <Form.Item
-                label="Phone Number"
+                label="Số điện thoại"
                 name="phone"
                 rules={[
-                  { required: true, message: "Please enter phone number" },
+                  { required: true, message: "Vui lòng nhập số điện thoại" },
                 ]}
               >
-                <Input placeholder="Enter phone number" />
+                <Input placeholder="Nhập số điện thoại" />
               </Form.Item>
 
               <Form.Item
-                label="Address Line"
+                label="Địa chỉ cụ thể"
                 name="address_line"
-                rules={[{ required: true, message: "Please enter address" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập địa chỉ cụ thể" },
+                ]}
               >
-                <Input placeholder="e.g. 123 Le Loi Street" />
+                <Input placeholder="VD: 123 đường Lê Lợi, phường 7, quận 3" />
               </Form.Item>
 
               <Form.Item
-                label="City"
+                label="Thành phố / Tỉnh"
                 name="city"
-                rules={[{ required: true, message: "Please enter city" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập thành phố / tỉnh" },
+                ]}
               >
-                <Input placeholder="e.g. Ho Chi Minh" />
+                <Input placeholder="VD: TP. Hồ Chí Minh" />
               </Form.Item>
 
-              <Form.Item label="District" name="district" hidden>
+              <Form.Item label="Quận / Huyện" name="district" hidden>
                 <Input />
               </Form.Item>
 
               <Form.Item
-                label="Ward / Commune"
+                label="Phường / Xã"
                 name="ward"
-                rules={[{ required: true, message: "Please enter ward" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập phường / xã" },
+                ]}
               >
-                <Input placeholder="e.g. Ward 1" />
+                <Input placeholder="VD: Phường 1" />
+              </Form.Item>
+
+              <Form.Item>
+                <Checkbox checked={isMe} onChange={handleCheckMe}>
+                  Người nhận là tôi
+                </Checkbox>
               </Form.Item>
 
               <Form.Item>
@@ -237,16 +241,13 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
                   loading={loading}
                   block
                 >
-                  {typeof address !== "undefined"
-                    ? "Update Address"
-                    : "Save Address"}
+                  Cập nhật địa chỉ
                 </Button>
               </Form.Item>
             </Col>
 
-            {/* RIGHT: Map */}
             <Col xs={24} md={12}>
-              <Form.Item label="Select on Map">
+              <Form.Item label="Chọn vị trí trên bản đồ">
                 <div
                   style={{
                     marginBottom: 8,
@@ -266,10 +267,10 @@ export default function UpdateAddress({ address, onBack, onUpdated }) {
                 </div>
                 <div style={{ fontSize: 12, color: "#666" }}>
                   {marker
-                    ? `Selected: (${marker.lat.toFixed(
+                    ? `Đã chọn: (${marker.lat.toFixed(5)}, ${marker.lng.toFixed(
                         5
-                      )}, ${marker.lng.toFixed(5)})`
-                    : "Click on the map to select your delivery location"}
+                      )})`
+                    : "Bấm vào bản đồ để chọn vị trí giao hàng"}
                 </div>
                 <Form.Item name="lat" noStyle>
                   <Input type="hidden" />

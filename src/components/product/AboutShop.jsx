@@ -18,7 +18,7 @@ const AboutShop = ({ shop_id }) => {
       const response = await ProductService.getShopById(shop_id);
       setShopProfile(response.data.shop);
     } catch (error) {
-      console.error("Error fetching product data:", error);
+      console.error("Lỗi khi lấy dữ liệu shop:", error);
     }
   }, [shop_id]);
 
@@ -112,7 +112,7 @@ const AboutShop = ({ shop_id }) => {
                         marginBottom: 8,
                       }}
                     >
-                      Địa chỉ: Khu phố 2, Hiệp Bình Chánh, Thủ Đức, TP.HCM
+                      {shopProfile.address}
                     </Text>
                     <div
                       className="flex items-center mb-1"

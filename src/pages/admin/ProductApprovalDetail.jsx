@@ -16,31 +16,31 @@ const ProductApprovalDetail = () => {
       const res = await AdminService.getProductById(id);
       setProduct(res.data);
     } catch {
-      message.error("Failed to load product information");
+      message.error("Không thể tải thông tin sản phẩm.");
     }
   };
 
   const handleApprove = async () => {
     try {
       await AdminService.productApproved(id);
-      message.success("Product approved successfully");
+      message.success("Phê duyệt sản phẩm thành công.");
       navigate("/admin/products/pending");
     } catch {
-      message.error("Product approval failed");
+      message.error("Phê duyệt sản phẩm thất bại.");
     }
   };
 
   const handleReject = async () => {
     if (!rejectReason.trim()) {
-      message.warning("Please enter a rejection reason");
+      message.warning("Vui lòng nhập lý do từ chối.");
       return;
     }
     try {
       await AdminService.rejectProduct(id, rejectReason);
-      message.success("Product rejected successfully");
+      message.success("Từ chối sản phẩm thành công.");
       navigate("/admin/products/pending");
     } catch {
-      message.error("Product rejection failed");
+      message.error("Từ chối sản phẩm thất bại.");
     } finally {
       setRejectModalVisible(false);
     }
@@ -50,16 +50,16 @@ const ProductApprovalDetail = () => {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div className="p-6">Loading product data...</div>;
+  if (!product) return <div className="p-6">Đang tải dữ liệu sản phẩm...</div>;
 
   return (
     <div className="p-6 bg-white rounded-lg">
-      <h1 className="text-2xl font-bold mb-4">Product Details</h1>
+      <h1 className="text-2xl font-bold mb-4">Chi tiết sản phẩm</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
           <Image
-            width={"100%"}
+            width="100%"
             height={300}
             src={product.images?.[0] || "/no-image.png"}
             alt="main"
@@ -74,49 +74,49 @@ const ProductApprovalDetail = () => {
 
         <div className="space-y-3">
           <div>
-            <b>Product Name:</b>
+            <b>Tên sản phẩm:</b>
             <p>{product.name}</p>
           </div>
           <div>
-            <b>Supplier:</b>
-            <p>{product.shop_id?.name || "Unknown"}</p>
+            <b>Nhà cung cấp:</b>
+            <p>{product.shop_id?.name || "Không rõ"}</p>
           </div>
           <div>
-            <b>Price:</b>
+            <b>Giá:</b>
             <p>{product.price.toLocaleString()} ₫</p>
           </div>
           <div>
-            <b>Stock:</b>
+            <b>Số lượng còn lại:</b>
             <p>{product.stock}</p>
           </div>
           <div>
-            <b>Description:</b>
-            <p>{product.description || "(No description)"}</p>
+            <b>Mô tả:</b>
+            <p>{product.description || "(Không có mô tả)"}</p>
           </div>
           <div>
-            <b>Specifications:</b>
-            <p>{product.specifications || "(No specifications)"}</p>
+            <b>Thông số kỹ thuật:</b>
+            <p>{product.specifications || "(Không có thông số)"}</p>
           </div>
           <div className="flex gap-4 mt-6">
             <Button type="primary" onClick={handleApprove}>
-              Approve Product
+              Duyệt sản phẩm
             </Button>
             <Button danger onClick={() => setRejectModalVisible(true)}>
-              Reject
+              Từ chối
             </Button>
           </div>
         </div>
       </div>
 
       <Modal
-        title="Reject Product"
+        title="Từ chối sản phẩm"
         open={rejectModalVisible}
         onCancel={() => setRejectModalVisible(false)}
         onOk={handleReject}
-        okText="Confirm Rejection"
-        cancelText="Cancel"
+        okText="Xác nhận từ chối"
+        cancelText="Huỷ"
       >
-        <p>Please enter the reason for rejection:</p>
+        <p>Vui lòng nhập lý do từ chối sản phẩm:</p>
         <Input.TextArea
           rows={4}
           value={rejectReason}

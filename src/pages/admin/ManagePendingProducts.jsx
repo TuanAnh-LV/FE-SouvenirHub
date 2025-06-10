@@ -19,7 +19,7 @@ const ManagePendingProducts = () => {
       setProducts(res.data);
       setFiltered(res.data);
     } catch (err) {
-      message.error("Failed to load products");
+      message.error("Không thể tải danh sách sản phẩm.");
     }
   };
 
@@ -35,10 +35,10 @@ const ManagePendingProducts = () => {
   const handleApprove = async (id) => {
     try {
       await AdminService.productApproved(id);
-      message.success("Product approved successfully");
+      message.success("Phê duyệt sản phẩm thành công.");
       setFiltered((prev) => prev.filter((p) => p._id !== id));
     } catch (err) {
-      message.error("Failed to approve product");
+      message.error("Phê duyệt sản phẩm thất bại.");
     }
   };
 
@@ -50,16 +50,16 @@ const ManagePendingProducts = () => {
 
   const handleReject = async () => {
     if (!rejectReason.trim()) {
-      message.warning("Please provide a rejection reason");
+      message.warning("Vui lòng nhập lý do từ chối.");
       return;
     }
 
     try {
       await AdminService.rejectProduct(rejectingProductId, rejectReason);
-      message.success("Product rejected successfully");
+      message.success("Từ chối sản phẩm thành công.");
       setFiltered((prev) => prev.filter((p) => p._id !== rejectingProductId));
     } catch (err) {
-      message.error("Failed to reject product");
+      message.error("Từ chối sản phẩm thất bại.");
     } finally {
       setRejectModalVisible(false);
     }
@@ -71,11 +71,13 @@ const ManagePendingProducts = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-semibold mb-4">Manage Pending Products</h1>
+      <h1 className="text-2xl font-semibold mb-4">
+        Quản lý sản phẩm chờ duyệt
+      </h1>
 
       <div className="flex justify-between items-center mb-4">
         <Input
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
           value={search}
           onChange={handleSearch}
           className="w-1/3"
@@ -85,22 +87,22 @@ const ManagePendingProducts = () => {
       <table className="min-w-full table-auto border rounded-lg overflow-hidden">
         <thead className="bg-[#FFF1E6] text-left">
           <tr>
-            <th className="p-3">Product Name</th>
-            <th className="p-3">Supplier</th>
-            <th className="p-3">Price</th>
-            <th className="p-3">Status</th>
-            <th className="p-3 text-center">Actions</th>
+            <th className="p-3">Tên sản phẩm</th>
+            <th className="p-3">Nhà cung cấp</th>
+            <th className="p-3">Giá</th>
+            <th className="p-3">Trạng thái</th>
+            <th className="p-3 text-center">Hành động</th>
           </tr>
         </thead>
         <tbody>
           {filtered.map((product) => (
             <tr key={product._id} className="border-b">
               <td className="p-3">{product.name}</td>
-              <td className="p-3">{product.shop_id?.name || "Unknown"}</td>
+              <td className="p-3">{product.shop_id?.name || "Không rõ"}</td>
               <td className="p-3">{product.price.toLocaleString()} ₫</td>
               <td className="p-3">
                 <span className="text-sm px-2 py-1 rounded bg-yellow-100 text-yellow-800">
-                  {product.status === "pendingApproval" && "Pending Approval"}
+                  {product.status === "pendingApproval" && "Chờ duyệt"}
                 </span>
               </td>
               <td className="p-3 text-center space-x-2">
@@ -108,16 +110,16 @@ const ManagePendingProducts = () => {
                   type="primary"
                   onClick={() => handleApprove(product._id)}
                 >
-                  Approve
+                  Duyệt
                 </Button>
                 <Button danger onClick={() => openRejectModal(product._id)}>
-                  Reject
+                  Từ chối
                 </Button>
                 <Button
                   type="default"
                   onClick={() => navigate(`/admin/products/${product._id}`)}
                 >
-                  Details
+                  Chi tiết
                 </Button>
               </td>
             </tr>
@@ -125,28 +127,27 @@ const ManagePendingProducts = () => {
           {filtered.length === 0 && (
             <tr>
               <td colSpan={5} className="text-center p-4 text-gray-400">
-                No products found.
+                Không tìm thấy sản phẩm.
               </td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Reject Modal */}
       <Modal
-        title="Reject Product"
+        title="Từ chối sản phẩm"
         open={rejectModalVisible}
         onOk={handleReject}
         onCancel={() => setRejectModalVisible(false)}
-        okText="Confirm Rejection"
-        cancelText="Cancel"
+        okText="Xác nhận từ chối"
+        cancelText="Huỷ"
       >
-        <p>Please provide a reason for rejecting this product:</p>
+        <p>Vui lòng nhập lý do từ chối sản phẩm:</p>
         <Input.TextArea
           value={rejectReason}
           onChange={(e) => setRejectReason(e.target.value)}
           rows={4}
-          placeholder="E.g., Invalid image, missing details..."
+          placeholder="Ví dụ: Hình ảnh không hợp lệ, thiếu thông tin..."
         />
       </Modal>
     </div>

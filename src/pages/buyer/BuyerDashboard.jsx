@@ -85,8 +85,8 @@ export default function BuyerDashboardSidebar() {
       : null);
 
   return (
-    <div className="min-h-60 flex justify-center bg-[#f5f5f5] py-10 px-2">
-      <div className="w-full max-w-6xl flex bg-white shadow rounded-xl overflow-hidden">
+    <div className="min-h-60 flex justify-center bg-[#f5f5f5] py-10 px-2 mt-5">
+      <div className="w-full max-w-6xl flex bg-white shadow overflow-hidden">
         {/* Sidebar */}
         <aside className="w-70 p-5 border-r border-gray-200">
           <ul className="space-y-2">

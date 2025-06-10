@@ -16,7 +16,11 @@ const Loading = ({ timeout = 20000 }) => {
     <>
       {showTimeout && (
         <div className="loading-container">
-          <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className="wheel-and-hamster">
+          <div
+            aria-label="Orange and tan hamster running in a metal wheel"
+            role="img"
+            className="wheel-and-hamster"
+          >
             <div className="wheel"></div>
             <div className="hamster">
               <div className="hamster__body">
