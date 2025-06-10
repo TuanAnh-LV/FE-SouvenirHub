@@ -62,6 +62,11 @@ const SidebarMenu = () => {
       label: "Orders",
       icon: <ShoppingCartOutlined />,
     },
+    {
+      path: "/seller/blogs",
+      label: "Blogs",
+      icon: <ShoppingCartOutlined />,
+    },
   ];
 
   const admin = [
