@@ -73,19 +73,20 @@ const BuyerCart = () => {
               <div key={item._id} className="order-item">
                 <img
                   src={
-                    item.product_id.images?.[0] ||
-                    "https://via.placeholder.com/80"
+                    item.product_id && item.product_id.images?.[0]
+                    ? item.product_id.images[0]
+                    : "https://via.placeholder.com/80"
                   }
-                  alt={item.product_id.name}
+                  alt={item.product_id?.name || "Product image"}
                 />
                 <div className="item-info">
-                  <div className="title">{item.product_id.name}</div>
+                  <div className="title">{item.product_id?.name || "Sản phẩm không xác định"}</div>
                   <div className="category">
-                    {item.product_id.category_id?.name}
+                    {item.product_id?.category_id?.name || ""}
                   </div>
                 </div>
                 <div className="item-price">
-                  {parseInt(item.price.$numberDecimal).toLocaleString()}₫
+                  {parseInt(item.product_id?.price.$numberDecimal).toLocaleString()}₫
                 </div>
                 <div className="item-quantity">x{item.quantity}</div>
               </div>
