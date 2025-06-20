@@ -4,6 +4,7 @@ import {
   ShoppingCartOutlined,
   AppstoreOutlined,
   UserOutlined,
+  ReadOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.const";
@@ -65,7 +66,7 @@ const SidebarMenu = () => {
     {
       path: "/seller/blogs",
       label: "Blogs",
-      icon: <ShoppingCartOutlined />,
+      icon: <ReadOutlined />,
     },
   ];
 
@@ -84,6 +85,11 @@ const SidebarMenu = () => {
       path: "/admin/products/pending",
       label: "Trạng thái sản phẩm",
       icon: <ShopOutlined />,
+    },
+    {
+      path: "/admin/blogs",
+      label: "Quản lý blog",
+      icon: <ReadOutlined />,
     },
   ];
 

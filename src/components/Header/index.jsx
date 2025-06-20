@@ -189,7 +189,7 @@ const Header = () => {
               />
             </AutoComplete>
 
-            <nav className="flex justify-center items-center gap-6 text-sm font-medium text-gray-700 h-10 ml-10">
+            <nav className="flex justify-center items-center gap-6 text-sm font-medium text-gray-700 h-10 ml-5">
               <span
                 className="cursor-pointer hover:text-white"
                 onClick={() => navigate("/products")}
