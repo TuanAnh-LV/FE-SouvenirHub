@@ -38,4 +38,11 @@ export const OrderService = {
         isLoading: true,
         });
     },
+    confirmReceived: (id) => {
+        return BaseService.put({
+          url: API.ORDER.CONFIRM_RECEIVED.replace(":id", id),
+          isLoading: true,
+        });
+      },
+      
 }

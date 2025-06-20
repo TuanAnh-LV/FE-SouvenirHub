@@ -16,12 +16,14 @@ export const BlogService = {
             isLoading: true,
         });
     },
-    getBlogs: () => {
+    getBlogs: (params = {}) => {
+        const queryString = new URLSearchParams(params).toString();
         return BaseService.get({
-            url: API.BLOG.GET_BLOGS,
+            url: `${API.BLOG.GET_BLOGS}?${queryString}`,
             isLoading: true,
         });
-    },
+    }
+,    
 
     getBlogById: (id) => {
         return BaseService.get({
@@ -60,13 +62,13 @@ export const BlogService = {
     },
 
     deleteBlogImage: (imageId) => {
-        return BaseService.delete({
+        return BaseService.remove({
             url: API.BLOG_IMAGE.DELETE_BLOG_IMAGE.replace(":id", imageId),
             isLoading: true,
         });
     },
     deleteAllBlogImages: (blogId) => {
-        return BaseService.delete({
+        return BaseService.remove({
             url: API.BLOG_IMAGE.DELETE_BLOG_IMAGES.replace(":id", blogId),
             isLoading: true,
         });

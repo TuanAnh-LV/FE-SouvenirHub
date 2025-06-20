@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import { BlogService } from "../../services/blog/blog.service";
 import { useNavigate } from "react-router-dom";
-import { Card, Spin } from "antd";
+import { Card, Spin, Pagination } from "antd";
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
-    BlogService.getBlogs()
-      .then((res) => setBlogs(res.data))
+    setLoading(true);
+    BlogService.getBlogs({ page, limit: 6 })
+      .then((res) => {
+        setBlogs(res.data.items || []);
+        setTotal(res.data.total || 0);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [page]);
 
   if (loading) {
     return (
@@ -31,19 +37,30 @@ export default function BlogPage() {
             key={blog._id}
             hoverable
             cover={
-              blog.thumbnail && (
-                <img
-                  alt="thumbnail"
-                  src={blog.thumbnail}
-                  className="h-48 object-cover"
-                />
-              )
+              <img
+                src={
+                  blog.images?.[0]?.url || blog.thumbnail || "/default-blog.jpg"
+                }
+                alt={blog.title}
+                className="w-full h-40 object-cover rounded-md mb-3"
+              />
             }
             onClick={() => navigate(`/blog/${blog._id}`)}
           >
-            <Card.Meta title={blog.title} description={blog.excerpt} />
+            <Card.Meta
+              title={blog.title}
+              description={blog.summary || "Không có tóm tắt"}
+            />
           </Card>
         ))}
+      </div>
+      <div className="flex justify-center mt-6">
+        <Pagination
+          current={page}
+          pageSize={6}
+          total={total}
+          onChange={(p) => setPage(p)}
+        />
       </div>
     </div>
   );

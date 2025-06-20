@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProductService } from "../services/product/product.service";
+import { BlogService } from "../services/blog/blog.service";
 import assets from "../assets/assets";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
@@ -20,11 +21,12 @@ const banners = [
 const Home = () => {
   const [personalGifts, setPersonalGifts] = useState([]);
   const [businessGifts, setBusinessGifts] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAll = async () => {
       try {
         setLoading(true);
         const [res1, res2] = await Promise.all([
@@ -45,17 +47,21 @@ const Home = () => {
             sortOrder: "asc",
           }),
         ]);
+
+        const res3 = await BlogService.getBlogs({ page: 1, limit: 3 });
+
         setPersonalGifts(res1.data.items || []);
         setBusinessGifts(res2.data.items || []);
-        setLoading(false);
+        setBlogs(res3.data.items || []);
       } catch (error) {
-        message.error("Failed to load products");
+        message.error("Failed to load data");
+      } finally {
         setLoading(false);
       }
     };
-    fetchData();
-  }, []);
 
+    fetchAll();
+  }, []);
   const handleCardClick = (id) => {
     navigate(`/products/${id}`);
   };
@@ -95,7 +101,9 @@ const Home = () => {
   const renderSkeletonCard = (_, idx) => (
     <div key={idx} className="h-80 bg-gray-100 rounded-lg animate-pulse"></div>
   );
-
+  const handleBlogClick = (id) => {
+    navigate(`/blog/${id}`);
+  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -169,15 +177,6 @@ const Home = () => {
             ? Array(4).fill().map(renderSkeletonCard)
             : personalGifts.map(renderProductCard)}
         </div>
-        <div className="text-center mt-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition duration-300"
-          >
-            Xem thêm
-          </motion.button>
-        </div>
       </motion.section>
 
       {/* Business Products */}
@@ -196,15 +195,6 @@ const Home = () => {
             ? Array(4).fill().map(renderSkeletonCard)
             : businessGifts.map(renderProductCard)}
         </div>
-        <div className="text-center mt-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-orange-500 text-white px-6 py-2 rounded-full hover:bg-orange-600 transition duration-300"
-          >
-            Xem thêm
-          </motion.button>
-        </div>
       </motion.section>
 
       {/* Blog Section */}
@@ -215,26 +205,27 @@ const Home = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <h2 className="text-2xl font-semibold mb-4 text-center">Blog</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">Blogs</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <motion.div
-              key={i}
-              className="bg-white rounded-xl shadow p-4 hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
-              whileHover={{ scale: 1.02 }}
-            >
-              <img
-                src={`/blog-${i}.jpg`}
-                alt="Blog"
-                className="w-full h-40 object-cover rounded-md mb-3"
-              />
-              <h3 className="text-lg font-bold mb-1">Blog Title {i}</h3>
-              <p className="text-sm text-gray-600 line-clamp-3">
-                A brief description of blog content related to products, trends,
-                or gift tips...
-              </p>
-            </motion.div>
-          ))}
+          {blogs.length === 0 && !loading ? (
+            <p className="text-center col-span-3">Không có dữ liệu</p>
+          ) : (
+            blogs.slice(0, 3).map((blog) => (
+              <motion.div
+                key={blog._id}
+                className="bg-white rounded-xl shadow p-4 hover:shadow-xl transition duration-300 transform hover:-translate-y-1"
+                whileHover={{ scale: 1.02 }}
+                onClick={() => handleBlogClick(blog._id)}
+              >
+                <img
+                  src={blog.images?.[0]?.url || "/default-blog.jpg"}
+                  alt={blog.title}
+                  className="w-full h-40 object-cover rounded-md mb-3"
+                />
+                <h3 className="text-lg font-bold mb-1">{blog.title}</h3>
+              </motion.div>
+            ))
+          )}
         </div>
       </motion.section>
     </motion.div>

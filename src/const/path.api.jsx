@@ -80,6 +80,7 @@ export const API = {
     GET_ORDER_BY_ID: "/orders/:id",
     UPDATE_ORDER_STATUS: "/orders/:id/status",
     CANCEL_ORDER: "/orders/:id/cancel",
+    CONFIRM_RECEIVED: "orders/:id/confirm-received",
   },
   CART: {
     GET_CART: "/cart",
