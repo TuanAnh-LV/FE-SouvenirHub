@@ -50,6 +50,8 @@ const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const ReviewPage = lazy(() => import("../pages/ReviewPage"));
 const BlogPage = lazy(() => import("../pages/blog/BlogPage"));
 const BlogDetailPage = lazy(() => import("../pages/blog/BlogDetailPage"));
+const AdminBlogManager = lazy(() => import("../pages/admin/Blog"));
+
 const routes = [
   // Public routes
   {
@@ -95,6 +97,7 @@ const routes = [
         path: "products/:id",
         element: <ProductApprovalDetail />,
       },
+      { path: "blogs", element: <AdminBlogManager /> },
     ],
   },
 

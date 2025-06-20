@@ -47,6 +47,15 @@ const BuyerCart = () => {
     }
     setLoading(false);
   };
+  const handleConfirmReceived = async (orderId) => {
+    try {
+      await OrderService.confirmReceived(orderId);
+      message.success("Bạn đã xác nhận đã nhận hàng");
+      fetchOrders();
+    } catch (err) {
+      message.error("Xác nhận nhận hàng thất bại");
+    }
+  };
 
   useEffect(() => {
     fetchOrders();
@@ -119,6 +128,14 @@ const BuyerCart = () => {
                     onClick={() => handleDeleteItem(order._id)}
                   >
                     Hủy
+                  </Button>
+                )}
+                {order.status === "processing" && (
+                  <Button
+                    type="primary"
+                    onClick={() => handleConfirmReceived(order._id)}
+                  >
+                    Đã nhận hàng
                   </Button>
                 )}
               </div>
