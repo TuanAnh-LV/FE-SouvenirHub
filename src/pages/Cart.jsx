@@ -9,7 +9,7 @@ const parsePrice = (priceObj) =>
   parseFloat(priceObj?.$numberDecimal || priceObj || 0);
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeItem } = useCart();
+  const { cart, updateQuantity, removeItem, updateCartItems } = useCart();
   const navigate = useNavigate();
 
   const [selectedProductIds, setSelectedProductIds] = useState([]);
@@ -88,20 +88,22 @@ export default function CartPage() {
     }
 
     try {
-      const res = await CartService.checkout({
+      await CartService.checkout({
         shipping_address_id: selectedAddressId,
         selectedProductIds,
       });
-      const orderId = res?.data?.order_id;
+      message.success("Tạo đơn hàng thành công, vui lòng vào dashboard -> đơn hàng -> thanh toán!")
+      await updateCartItems("pending");
+      // window.location.reload();
+      // const orderId = res?.data?.order_id;
 
-      if (!orderId) {
-        return message.error("Không nhận được order_id từ server");
-      }
+      // if (!orderId) {
+      //   return message.error("Không nhận được order_id từ server");
+      // }
 
       // ✅ Chuyển sang trang Checkout kèm theo orderId
-      navigate("/checkout", {
-        state: { orderId },
-      });
+      navigate("/dashboard");
+      
     } catch (err) {
       console.error(err);
       message.error("Đặt hàng thất bại");

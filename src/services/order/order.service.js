@@ -43,6 +43,18 @@ export const OrderService = {
           url: API.ORDER.CONFIRM_RECEIVED.replace(":id", id),
           isLoading: true,
         });
-      },
-      
+    },  
+    updateOrder : (id, data) => {
+        return BaseService.put({
+            url: API.ORDER.UPDATE_ORDER.replace(":id", id),
+            payload: data,
+            isLoading: true,
+        });
+    },
+    getShopOrders : () => {
+        return BaseService.get({
+            url : API.ORDER.MY_SHOP_ORDERS,
+            isLoading: true,
+        })
+    }
 }

@@ -136,13 +136,20 @@ export default function CheckoutPage() {
     }
 
     try {
+      // Cập nhật shipping_address_id và voucher_id trước khi thanh toán
+      await OrderService.updateOrder(orderId, {
+        shipping_address_id: selectedAddressId,
+        voucher_id: selectedVoucherId,
+      });
+
       if (paymentMethod === "momo") {
         const payRes = await PaymentService.createMomo({ order_id: orderId });
         window.location.href = payRes.data.payUrl;
       } else {
         await PaymentService.mockPay({ order_id: orderId });
         message.success("Đặt hàng thành công!");
-        navigate("/orders");
+        navigate("/dashboard/orders");
+        // window.location.reload(); // Bỏ comment nếu muốn reload lại trang
       }
     } catch (err) {
       message.error("Thanh toán thất bại");

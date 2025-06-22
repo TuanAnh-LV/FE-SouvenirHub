@@ -4,6 +4,7 @@ import { Card, message, Tag, Button } from "antd";
 import { OrderService } from "../../services/order/order.service";
 import { ProductService } from "../../services/product-service/product.service";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const statusColor = {
   pending: "orange",
@@ -16,6 +17,7 @@ const statusColor = {
 const BuyerCart = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -122,14 +124,23 @@ const BuyerCart = () => {
                     : order.status}
                 </Tag>
                 {order.status === "pending" && (
-                  <Button
-                    icon={<DeleteOutlined />}
-                    danger
-                    type="text"
-                    onClick={() => handleDeleteItem(order._id)}
-                  >
-                    Hủy
-                  </Button>
+                  <>
+                    <Button
+                      icon={<DeleteOutlined />}
+                      danger
+                      type="text"
+                      onClick={() => handleDeleteItem(order._id)}
+                    >
+                      Hủy
+                    </Button>
+                    <Button
+                      type="primary"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => navigate("/checkout", { state: { orderId: order._id } })}
+                    >
+                      Thanh toán
+                    </Button>
+                  </>
                 )}
                 {order.status === "processing" && (
                   <Button

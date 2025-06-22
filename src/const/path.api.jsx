@@ -70,6 +70,7 @@ export const API = {
   },
   ADDRESS: {
     GET_ADDRESSES: "/addresses",
+    GET_ADDRESSES_BY_ID: "/addresses/:id",
     CREATE_ADDRESS: "/addresses",
     UPDATE_ADDRESS: "/addresses/:id",
     DELETE_ADDRESS: "/addresses/:id",
@@ -81,6 +82,8 @@ export const API = {
     UPDATE_ORDER_STATUS: "/orders/:id/status",
     CANCEL_ORDER: "/orders/:id/cancel",
     CONFIRM_RECEIVED: "orders/:id/confirm-received",
+    UPDATE_ORDER: "/orders/:id",
+    MY_SHOP_ORDERS: "/orders/myorders",
   },
   CART: {
     GET_CART: "/cart",

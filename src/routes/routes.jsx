@@ -51,7 +51,7 @@ const ReviewPage = lazy(() => import("../pages/ReviewPage"));
 const BlogPage = lazy(() => import("../pages/blog/BlogPage"));
 const BlogDetailPage = lazy(() => import("../pages/blog/BlogDetailPage"));
 const AdminBlogManager = lazy(() => import("../pages/admin/Blog"));
-
+const OrderManage = lazy(() => import("../pages/seller/seller-order/OrderManage"))
 const routes = [
   // Public routes
   {
@@ -115,6 +115,8 @@ const routes = [
       { path: "create-product", element: <CreateProduct /> },
       { path: "blogs", element: <BlogManager /> },
       { path: "blogs/update/:id", element: <BlogManager /> },
+      { path: "orders", element: <OrderManage /> },
+
     ],
   },
 
