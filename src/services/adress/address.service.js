@@ -15,6 +15,12 @@ export const AddressService = {
             isLoading: true,
         });
     },
+    getAddressesById: (id) => {
+        return BaseService.get({
+            url: API.ADDRESS.GET_ADDRESSES_BY_ID.replace(":id", id),
+            isLoading: true,
+        });
+    },
     updateAddress: (id, data) => {
         return BaseService.put({
             url: API.ADDRESS.UPDATE_ADDRESS.replace(":id", id),

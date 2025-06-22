@@ -4,6 +4,7 @@ import { Card, message, Tag, Button } from "antd";
 import { OrderService } from "../../services/order/order.service";
 import { ProductService } from "../../services/product-service/product.service";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const statusColor = {
   pending: "orange",
@@ -16,6 +17,7 @@ const statusColor = {
 const BuyerCart = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -82,19 +84,20 @@ const BuyerCart = () => {
               <div key={item._id} className="order-item">
                 <img
                   src={
-                    item.product_id.images?.[0] ||
-                    "https://via.placeholder.com/80"
+                    item.product_id && item.product_id.images?.[0]
+                    ? item.product_id.images[0]
+                    : "https://via.placeholder.com/80"
                   }
-                  alt={item.product_id.name}
+                  alt={item.product_id?.name || "Product image"}
                 />
                 <div className="item-info">
-                  <div className="title">{item.product_id.name}</div>
+                  <div className="title">{item.product_id?.name || "Sản phẩm không xác định"}</div>
                   <div className="category">
-                    {item.product_id.category_id?.name}
+                    {item.product_id?.category_id?.name || ""}
                   </div>
                 </div>
                 <div className="item-price">
-                  {parseInt(item.price.$numberDecimal).toLocaleString()}₫
+                  {parseInt(item.product_id?.price.$numberDecimal).toLocaleString()}₫
                 </div>
                 <div className="item-quantity">x{item.quantity}</div>
               </div>
@@ -121,14 +124,23 @@ const BuyerCart = () => {
                     : order.status}
                 </Tag>
                 {order.status === "pending" && (
-                  <Button
-                    icon={<DeleteOutlined />}
-                    danger
-                    type="text"
-                    onClick={() => handleDeleteItem(order._id)}
-                  >
-                    Hủy
-                  </Button>
+                  <>
+                    <Button
+                      icon={<DeleteOutlined />}
+                      danger
+                      type="text"
+                      onClick={() => handleDeleteItem(order._id)}
+                    >
+                      Hủy
+                    </Button>
+                    <Button
+                      type="primary"
+                      style={{ marginLeft: 8 }}
+                      onClick={() => navigate("/checkout", { state: { orderId: order._id } })}
+                    >
+                      Thanh toán
+                    </Button>
+                  </>
                 )}
                 {order.status === "processing" && (
                   <Button
