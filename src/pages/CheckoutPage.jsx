@@ -146,7 +146,7 @@ export default function CheckoutPage() {
       } else {
         await PaymentService.mockPay({ order_id: orderId });
         message.success("Đặt hàng thành công!");
-        navigate("/dashboard/orders");
+        navigate("/buyer/dashboard");
       }
     } catch (err) {
       console.error(err);

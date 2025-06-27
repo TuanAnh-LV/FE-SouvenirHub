@@ -23,7 +23,7 @@ import { useCart } from "../../context/cart.context";
 const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
-  const { id: productId } = useParams();
+  // const { id: productId } = useParams();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -301,14 +301,14 @@ const ProductDetail = () => {
           >
             Mô tả
           </button>
-          {/* {product.specifications && product.specifications.trim() && (
+          {product.specifications && product.specifications.trim() && (
             <button
               onClick={() => scrollToSection("specation", 150)}
               className="text-sm font-medium text-blue-600 hover:underline"
             >
               Lưu ý đặc biệt
             </button>
-          )} */}
+          )}
           <button
             onClick={() => scrollToSection("brand", 150)}
             className="text-sm font-medium text-blue-600 hover:underline"
@@ -322,17 +322,18 @@ const ProductDetail = () => {
             Đánh giá
           </button>
         </div>
-
-        {/* <div id="specs" className="mt-10">
-          <Title level={5}>Lưu ý đặc biệt</Title>
-          <Text
-            type="secondary"
-            style={{ whiteSpace: "pre-line" }}
-            className="text-sm text-gray-700"
-          >
-            {product.specialNotes}
-          </Text>
-        </div> */}
+        {product.specifications && product.specifications.trim() && (
+          <div id="specation" className="mt-10">
+            <Title level={5}>Thông số kỹ thuật</Title>
+            <Text
+              type="secondary"
+              style={{ whiteSpace: "pre-line" }}
+              className="text-sm text-black"
+            >
+              {product.specifications.replace(/\\n/g, "\n")}
+            </Text>
+          </div>
+        )}
 
         <div id="desc" className="mt-10">
           <Title level={5} className="text-black">
@@ -343,34 +344,21 @@ const ProductDetail = () => {
             style={{ whiteSpace: "pre-line" }}
             className="text-sm text-gray-700"
           >
-            {product.description}
+            {product.description.replace(/\\n/g, "\n")}
           </Text>
         </div>
-        <div id="specation" className="mt-10">
+        {product.specialNotes && product.specialNotes.trim() && (
+          <div id="specs" className="mt-10">
             <Title level={5}>Lưu ý đặc biệt</Title>
             <Text
               type="secondary"
-              // style={{ whiteSpace: "pre-line" }}
-              className="text-base text-black"
-            >
-              <div dangerouslySetInnerHTML={{ __html: product.specialNotes}} />
-            </Text>
-            
-        </div>
-        
-        <div id="notes" className="mt-10">
-          <Title level={5} className="text-black">
-            Thông số kỹ thuật
-          </Title>
-          <Text
-              type="secondary"
               style={{ whiteSpace: "pre-line" }}
-              className="text-sm text-black"
+              className="text-sm text-gray-700"
             >
-              {product.specifications}
+              {product.specialNotes}
             </Text>
-        </div>
-
+          </div>
+        )}
         <div id="brand" className="mt-10">
           <Title level={5}>Về thương hiệu</Title>
           <AboutShop shop_id={product.shop_id._id} />

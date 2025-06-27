@@ -143,11 +143,11 @@ const Header = () => {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <img src={logo} alt="Souvenir Hub" className="h-20" />
+            <img src={logo} alt="Souvenir Hub" className="h-18" />
           </div>
 
           {/* Search*/}
-          <div className="flex-1 mx-8 max-w-3xl mt-14">
+          <div className="flex-1 mx-8 max-w-3xl mt-10">
             <AutoComplete
               options={
                 loading
@@ -212,7 +212,7 @@ const Header = () => {
           </div>
 
           {/* Auth + Cart */}
-          <div className="flex items-center gap-6 mt-7">
+          <div className="flex items-center gap-6 mt-4">
             {userInfo ? (
               <Dropdown
                 menu={{ items: getMenuItems() }}
