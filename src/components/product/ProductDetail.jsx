@@ -23,7 +23,7 @@ import { useCart } from "../../context/cart.context";
 const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
-  const { id: productId } = useParams();
+  // const { id: productId } = useParams();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
