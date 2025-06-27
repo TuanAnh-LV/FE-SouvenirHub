@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { ProductService as ProductApi } from "../../../services/product-service/product.service";
 import { CategoryService } from "../../../services/category/category.service";
+import { Editor } from "@tinymce/tinymce-react";
 
 const STATUS_OPTIONS = [
   { value: "onSale", label: "Đang bán" },
@@ -25,6 +26,7 @@ export default function SellerProductEditPage() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
+  const [specialNotes, setSpecialNotes] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +37,7 @@ export default function SellerProductEditPage() {
         ]);
         const product = productRes.data;
         setCategories(categoryRes.data || []);
+        setSpecialNotes(product.specialNotes || "");
         form.setFieldsValue({
           name: product.name,
           description: product.description,
@@ -45,7 +48,7 @@ export default function SellerProductEditPage() {
           specifications: product.specifications,
           specialNotes: product.specialNotes,
         });
-      } catch (err) {
+      } catch {
         message.error("Không thể tải thông tin sản phẩm");
         navigate(-1);
       } finally {
@@ -55,8 +58,13 @@ export default function SellerProductEditPage() {
     fetchData();
   }, [id, form, navigate]);
 
+  useEffect(() => {
+    form.setFieldsValue({ specialNotes });
+  }, [specialNotes, form]);
+
   const handleSubmit = async (values) => {
     try {
+      values.specialNotes = specialNotes;
       await ProductApi.updateProduct(id, values);
       message.success("Cập nhật sản phẩm thành công");
       navigate("/seller/products");
@@ -138,7 +146,25 @@ export default function SellerProductEditPage() {
           <Input.TextArea rows={2} />
         </Form.Item>
         <Form.Item label="Ghi chú đặc biệt" name="specialNotes">
-          <Input.TextArea rows={2} />
+          <Editor
+            apiKey="r317wer69jgeks8pv43lmnj19b5oodhdcv7jt86gwuyilw5c"
+            value={specialNotes}
+            init={{
+              height: 180,
+              menubar: false,
+              plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table paste code help wordcount",
+              ],
+              toolbar:
+                "undo redo | formatselect | " +
+                "bold italic backcolor | alignleft aligncenter " +
+                "alignright alignjustify | bullist numlist outdent indent | " +
+                "removeformat | help",
+            }}
+            onEditorChange={setSpecialNotes}
+          />
         </Form.Item>
         <Form.Item>
           <div className="flex justify-end gap-2">

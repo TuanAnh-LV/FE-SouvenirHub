@@ -14,16 +14,20 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useState, useCallback, useEffect } from "react";
 import { CategoryService } from "../../../services/category/category.service";
 import { ProductService } from "../../../services/product-service/product.service";
+import { useNavigate } from "react-router-dom";
+import { Editor } from "@tinymce/tinymce-react";
 const { TextArea } = Input;
 
 const CreateProduct = () => {
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
   const [fileList, setFileList] = useState([]);
-
+  const [specialNotes, setSpecialNotes] = useState("");
+  const navigate = useNavigate();
   const handleFinish = async () => {
     try {
       const values = await form.validateFields();
+      values.specialNotes = specialNotes;
       // Gọi API tạo sản phẩm trước
       const response = await ProductService.createProduct(values);
       if (response && response.data) {
@@ -49,6 +53,10 @@ const CreateProduct = () => {
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
+
+  useEffect(() => {
+    form.setFieldsValue({ specialNotes });
+  }, [specialNotes, form]);
 
   // Upload change handler
   const handleChange = ({ fileList: newFileList }) => {
@@ -80,6 +88,7 @@ const CreateProduct = () => {
       await ProductService.createProductImage(productId, images);
       message.success("Tải ảnh thành công!");
       setFileList([]);
+      navigate("/seller/products");
     } catch (error) {
       message.error("Tải ảnh thất bại!", error);
     }
@@ -149,9 +158,24 @@ const CreateProduct = () => {
                 />
               </Form.Item>
               <Form.Item label="Ghi chú đặc biệt" name="specialNotes">
-                <TextArea
-                  rows={2}
-                  placeholder="Ghi chú đặc biệt cho sản phẩm (nếu có)"
+                <Editor
+                  apiKey="r317wer69jgeks8pv43lmnj19b5oodhdcv7jt86gwuyilw5c"
+                  value={specialNotes}
+                  init={{
+                    height: 180,
+                    menubar: false,
+                    plugins: [
+                      "advlist autolink lists link image charmap print preview anchor",
+                      "searchreplace visualblocks code fullscreen",
+                      "insertdatetime media table paste code help wordcount",
+                    ],
+                    toolbar:
+                      "undo redo | formatselect | " +
+                      "bold italic backcolor | alignleft aligncenter " +
+                      "alignright alignjustify | bullist numlist outdent indent | " +
+                      "removeformat | help",
+                  }}
+                  onEditorChange={setSpecialNotes}
                 />
               </Form.Item>
               <Form.Item label="Thông số kỹ thuật" name="specifications">
