@@ -322,17 +322,18 @@ const ProductDetail = () => {
             Đánh giá
           </button>
         </div>
-
-        <div id="specs" className="mt-10">
-          <Title level={5}>Lưu ý đặc biệt</Title>
-          <Text
-            type="secondary"
-            style={{ whiteSpace: "pre-line" }}
-            className="text-sm text-gray-700"
-          >
-            {product.specialNotes}
-          </Text>
-        </div>
+        {product.specifications && product.specifications.trim() && (
+          <div id="specation" className="mt-10">
+            <Title level={5}>Thông số kỹ thuật</Title>
+            <Text
+              type="secondary"
+              style={{ whiteSpace: "pre-line" }}
+              className="text-sm text-black"
+            >
+              {product.specifications.replace(/\\n/g, "\n")}
+            </Text>
+          </div>
+        )}
 
         <div id="desc" className="mt-10">
           <Title level={5} className="text-black">
@@ -343,22 +344,21 @@ const ProductDetail = () => {
             style={{ whiteSpace: "pre-line" }}
             className="text-sm text-gray-700"
           >
-            {product.description}
+            {product.description.replace(/\\n/g, "\n")}
           </Text>
         </div>
-        {product.specifications && product.specifications.trim() && (
-          <div id="specation" className="mt-10">
+        {product.specialNotes && product.specialNotes.trim() && (
+          <div id="specs" className="mt-10">
             <Title level={5}>Lưu ý đặc biệt</Title>
             <Text
               type="secondary"
               style={{ whiteSpace: "pre-line" }}
-              className="text-sm text-black"
+              className="text-sm text-gray-700"
             >
-              {product.specifications}
+              {product.specialNotes}
             </Text>
           </div>
         )}
-
         <div id="brand" className="mt-10">
           <Title level={5}>Về thương hiệu</Title>
           <AboutShop shop_id={product.shop_id._id} />
