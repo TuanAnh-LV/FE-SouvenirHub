@@ -1,4 +1,15 @@
-import { Form, Input, InputNumber, Button, Select, Card, Row, Col, Upload, message } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Select,
+  Card,
+  Row,
+  Col,
+  Upload,
+  message,
+} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState, useCallback, useEffect } from "react";
 import { CategoryService } from "../../../services/category/category.service";
@@ -23,7 +34,7 @@ const CreateProduct = () => {
     } catch (error) {
       message.error("Tạo sản phẩm hoặc tải ảnh thất bại!", error);
     }
-  }
+  };
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -70,13 +81,16 @@ const CreateProduct = () => {
       message.success("Tải ảnh thành công!");
       setFileList([]);
     } catch (error) {
-      message.error("Tải ảnh thất bại!",error);
+      message.error("Tải ảnh thất bại!", error);
     }
   };
 
   return (
     <>
-      <Card title="Tạo sản phẩm mới" style={{ maxWidth: "90%", margin: "0 auto" }}>
+      <Card
+        title="Tạo sản phẩm mới"
+        style={{ maxWidth: "90%", margin: "0 auto" }}
+      >
         <Form
           form={form}
           layout="vertical"
@@ -96,7 +110,9 @@ const CreateProduct = () => {
               <Form.Item
                 label="Tên sản phẩm"
                 name="name"
-                rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập tên sản phẩm" },
+                ]}
               >
                 <Input />
               </Form.Item>
@@ -132,19 +148,13 @@ const CreateProduct = () => {
                   placeholder="thêm thông tin chi tiết liên quan đến sản phẩm"
                 />
               </Form.Item>
-              <Form.Item
-                label="Ghi chú đặc biệt"
-                name="specialNotes"
-              >
+              <Form.Item label="Ghi chú đặc biệt" name="specialNotes">
                 <TextArea
                   rows={2}
                   placeholder="Ghi chú đặc biệt cho sản phẩm (nếu có)"
                 />
               </Form.Item>
-              <Form.Item
-                label="Thông số kỹ thuật"
-                name="specifications"
-              >
+              <Form.Item label="Thông số kỹ thuật" name="specifications">
                 <TextArea
                   rows={2}
                   placeholder="Thông số kỹ thuật của sản phẩm"
@@ -197,29 +207,29 @@ const CreateProduct = () => {
         }}
       >
         <Button
-  style={{
-    background: "#fff",
-    color: "#F99600",
-    border: "1px solid #F99600",
-    transition: "all 0.2s",
-  }}
-  onMouseEnter={e => {
-    e.target.style.background = "#D93B14";
-    e.target.style.color = "#fff";
-    e.target.style.border = "1px solid #D93B14";
-  }}
-  onMouseLeave={e => {
-    e.target.style.background = "#fff";
-    e.target.style.color = "#F99600";
-    e.target.style.border = "1px solid #F99600";
-  }}
-  onClick={() => {
-    form.resetFields();
-    setFileList([]);
-  }}
->
-  Hủy
-</Button>
+          style={{
+            background: "#fff",
+            color: "#F99600",
+            border: "1px solid #F99600",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = "#D93B14";
+            e.target.style.color = "#fff";
+            e.target.style.border = "1px solid #D93B14";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "#fff";
+            e.target.style.color = "#F99600";
+            e.target.style.border = "1px solid #F99600";
+          }}
+          onClick={() => {
+            form.resetFields();
+            setFileList([]);
+          }}
+        >
+          Hủy
+        </Button>
         <Button
           type="primary"
           style={{
@@ -228,12 +238,12 @@ const CreateProduct = () => {
             border: "1px solid #F99600",
             transition: "all 0.2s",
           }}
-          onMouseEnter={e => {
+          onMouseEnter={(e) => {
             e.target.style.background = "#00FB71";
             e.target.style.color = "#fff";
             e.target.style.border = "1px solid #00FB71";
           }}
-          onMouseLeave={e => {
+          onMouseLeave={(e) => {
             e.target.style.background = "#F99600";
             e.target.style.color = "#fff";
             e.target.style.border = "1px solid #F99600";

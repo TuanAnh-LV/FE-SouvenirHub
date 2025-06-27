@@ -129,32 +129,37 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (productId, quantity = 1) => {
+  const addToCart = async (productId, quantity = 1, variantId = null) => {
     if (!token) return;
     try {
-      const res = await CartService.addToCart({ productId, quantity });
+      const payload = { productId, quantity };
+      if (variantId) payload.variantId = variantId;
+
+      const res = await CartService.addToCart(payload);
       setCart(res.data);
     } catch (err) {
       console.error("Failed to add to cart:", err);
     }
   };
 
-  const updateQuantity = async (productId, quantity) => {
+  const updateQuantity = async (productId, quantity, variantId = null) => {
     if (!token) return;
     try {
-      const res = await CartService.updateCart({ productId, quantity });
+      const payload = { productId, quantity };
+      if (variantId) payload.variantId = variantId;
+
+      const res = await CartService.updateCart(payload);
       setCart(res.data);
     } catch (err) {
       console.error("Failed to update quantity:", err);
     }
   };
 
-  const removeItem = async (productId) => {
+  const removeItem = async (productId, variantId = null) => {
     if (!token) return;
     try {
-      const res = await CartService.removeItem(productId);
+      const res = await CartService.removeItem(productId, variantId);
       setCart(res.data);
-      // message.success("Đã xoá sản phẩm khỏi giỏ hàng.");
     } catch (err) {
       message.error("Xoá sản phẩm thất bại.");
       console.error(

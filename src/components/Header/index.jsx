@@ -110,7 +110,7 @@ const Header = () => {
           {
             key: "dashboard",
             label: "Dashboard",
-            onClick: () => navigate("/seller"),
+            onClick: () => navigate("/seller/dashboard"),
           },
           { key: "logout", label: "Log out", onClick: handleLogout },
         ];
@@ -218,7 +218,7 @@ const Header = () => {
                 menu={{ items: getMenuItems() }}
                 placement="bottomRight"
               >
-                <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-3 py-1 rounded-full transition">
+                <div className="flex items-center gap-2 cursor-pointe px-3 py-1 rounded-full transition">
                   <Avatar
                     size={32}
                     src={userInfo.avatar}

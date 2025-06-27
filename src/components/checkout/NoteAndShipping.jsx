@@ -1,7 +1,7 @@
 // NoteAndShipping.jsx
 import { Card, Input } from "antd";
 
-export default function NoteAndShipping({ note, setNote, shippingFee }) {
+export default function NoteAndShipping({ note, setNote }) {
   return (
     <Card
       title="Lưu ý & Vận chuyển"
@@ -14,11 +14,6 @@ export default function NoteAndShipping({ note, setNote, shippingFee }) {
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
-      <div className="mt-4 text-sm text-gray-600">
-        Phí vận chuyển:{" "}
-        <span className="font-semibold">{shippingFee.toLocaleString()}₫</span>{" "}
-        (dự kiến)
-      </div>
     </Card>
   );
 }

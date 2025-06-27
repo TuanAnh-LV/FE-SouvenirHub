@@ -16,13 +16,13 @@ const SidebarMenu = () => {
   const role = userInfo?.role;
   const navigate = useNavigate();
 
-  const common = [
-    {
-      path: ROUTER_URL.COMMON.PROFILE,
-      label: "Profile",
-      icon: <UserOutlined />,
-    },
-  ];
+  // const common = [
+  //   {
+  //     path: ROUTER_URL.COMMON.PROFILE,
+  //     label: "Profile",
+  //     icon: <UserOutlined />,
+  //   },
+  // ];
 
   const buyer = [
     {
@@ -95,13 +95,13 @@ const SidebarMenu = () => {
 
   const getMenu = () => {
     if (role === "buyer") return [...buyer];
-    if (role === "seller") return [...seller, ...common];
-    if (role === "admin") return [...admin, ...common];
+    if (role === "seller") return [...seller];
+    if (role === "admin") return [...admin];
     return [];
   };
 
   return (
-    <div className="w-64 bg-[#FFF1E6] p-6 min-h-screen">
+    <div className="w-64 bg-[#FFF1E6] p-6 min-h-screen flex flex-col space-y-2 overflow-y-auto">
       <div className="text-2xl font-bold mb-6" onClick={() => navigate("/")}>
         SOUVENIR HUB
       </div>
@@ -109,12 +109,16 @@ const SidebarMenu = () => {
         <Link
           key={item.path}
           to={item.path}
-          className={`flex items-center gap-3 px-4 py-2 rounded-lg font-medium hover:bg-[#FFE1D6] transition-all duration-200 ${
-            location.pathname === item.path ? "bg-[#FFE1D6]" : ""
-          }`}
+          className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium 
+        hover:bg-[#FFE1D6] transition-all duration-200
+        ${
+          location.pathname === item.path
+            ? "bg-[#FFE1D6] font-semibold shadow-sm"
+            : ""
+        }`}
         >
-          {item.icon}
-          <span>{item.label}</span>
+          <div className="text-lg">{item.icon}</div>
+          <span className="truncate">{item.label}</span>
         </Link>
       ))}
     </div>

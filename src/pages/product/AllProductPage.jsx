@@ -95,13 +95,10 @@ const AllProductPage = () => {
   return (
     <div className="md:px-12 max-w-screen-xl mx-auto flex gap-6 mt-15">
       {/* Bộ lọc bên trái */}
-      <aside className="w-[260px] bg-white p-4 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">
-          Search Filter
-        </h3>
-
+      <aside className="w-[220px] bg-white p-4 shadow-sm">
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">Danh mục</h3>
         <div className="mb-6 text-sm">
-          <h4 className="font-semibold text-black-700 mb-2">Price</h4>
+          <h4 className="font-semibold text-black-700 mb-2">Giá</h4>
           <Radio.Group
             value={priceRange}
             onChange={handlePriceChange}
@@ -114,7 +111,7 @@ const AllProductPage = () => {
             ))}
           </Radio.Group>
         </div>
-        <h3 className="font-semibold text-black-700 mb-2">Category</h3>
+        <h3 className="font-semibold text-black-700 mb-2">Loại</h3>
         <Radio.Group
           value={selectedCategory}
           onChange={handleCategoryChange}
@@ -131,7 +128,7 @@ const AllProductPage = () => {
 
       {/* Khu vực sản phẩm bên phải */}
       <main className="flex-1">
-        <div className="flex justify-between items-center mb-4">
+        {/* <div className="flex justify-between items-center mb-4">
           <div className="flex gap-2 text-sm">
             <span className="font-medium text-gray-600">Sort by:</span>
             <button className="bg-orange-500 text-white px-3 py-1 rounded">
@@ -140,7 +137,7 @@ const AllProductPage = () => {
             <button className="px-3 py-1 rounded border">New</button>
             <button className="px-3 py-1 rounded border">Best Seller</button>
           </div>
-        </div>
+        </div> */}
 
         {products.length === 0 ? (
           <div className="text-center text-gray-500 text-lg mt-20">

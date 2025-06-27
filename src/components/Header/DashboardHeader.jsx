@@ -5,7 +5,7 @@ import {
   LogoutOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Input, Badge, Avatar, Dropdown, Menu, message } from "antd";
+import { Badge, Avatar, Dropdown, Menu, message } from "antd";
 import { useAuth } from "../../context/auth.context";
 import logo from "../../assets/souvenir-hub-logo.png";
 import { useNavigate } from "react-router-dom";
@@ -38,20 +38,15 @@ const DashboardHeader = () => {
         <img
           src={logo}
           alt="Souvenir Hub"
-          className="h-24"
+          className="h-15"
           onClick={() => navigate("/")}
-        />
-        <Input
-          placeholder="Tìm kiếm..."
-          prefix={<SearchOutlined />}
-          className="w-80 rounded-full"
         />
       </div>
 
       {/* Right side */}
       <div className="flex items-center gap-6">
         <Badge count={2} size="small">
-          <BellOutlined className="text-xl cursor-pointer" />
+          <BellOutlined className="text-xl cursor-pointer hover:text-blue-500 transition" />
         </Badge>
         <Dropdown overlay={menu} trigger={["click"]}>
           <div className="flex items-center gap-2 cursor-pointer">

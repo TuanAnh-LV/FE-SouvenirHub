@@ -24,9 +24,7 @@ const parsePrice = (priceObj) =>
 export default function CheckoutPage() {
   const location = useLocation();
   const orderId = location.state?.orderId;
-
   const navigate = useNavigate();
-  // const selectedProductIds = location.state?.selectedProductIds || [];
 
   const [editingAddress, setEditingAddress] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -39,12 +37,14 @@ export default function CheckoutPage() {
   const [voucherList, setVoucherList] = useState([]);
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
 
-  const shippingFee = 16500;
+  // const shippingFee = 16500;
+
   function groupItemsByShop(items) {
     const groupMap = {};
 
     for (const item of items) {
-      const shop = item.product_id.shop_id;
+      const product = item.product || item.product_id;
+      const shop = product.shop_id;
       const shopId = typeof shop === "object" ? shop._id : shop;
       const shopName = typeof shop === "object" ? shop.name : "Shop";
 
@@ -57,15 +57,16 @@ export default function CheckoutPage() {
       }
 
       groupMap[shopId].items.push({
-        product: item.product_id,
+        product,
         quantity: item.quantity,
+        variant: item.variant,
+        price: item.price || item.variant?.price || product?.price,
       });
     }
 
     return Object.values(groupMap);
   }
 
-  // 📦 Lấy danh sách sản phẩm đã chọn theo từng shop
   useEffect(() => {
     async function fetchOrder() {
       try {
@@ -74,10 +75,10 @@ export default function CheckoutPage() {
 
         const grouped = groupItemsByShop(order.items);
         setSelectedGroups(grouped);
-
         setSelectedAddressId(order.shipping_address_id);
       } catch (err) {
         message.error("Không thể tải thông tin đơn hàng");
+        console.error(err);
       }
     }
 
@@ -86,18 +87,16 @@ export default function CheckoutPage() {
     }
   }, [orderId]);
 
-  // 🧾 Tính tổng tiền sản phẩm
   const totalProductPrice = selectedGroups.reduce((sum, group) => {
     return (
       sum +
       group.items.reduce((groupSum, item) => {
-        const price = parsePrice(item.product?.price);
+        const price = parsePrice(item.price);
         return groupSum + price * item.quantity;
       }, 0)
     );
   }, 0);
 
-  // 🏠 Lấy địa chỉ
   const fetchAddresses = async () => {
     try {
       const res = await AddressService.getAddresses();
@@ -136,7 +135,6 @@ export default function CheckoutPage() {
     }
 
     try {
-      // Cập nhật shipping_address_id và voucher_id trước khi thanh toán
       await OrderService.updateOrder(orderId, {
         shipping_address_id: selectedAddressId,
         voucher_id: selectedVoucherId,
@@ -149,9 +147,9 @@ export default function CheckoutPage() {
         await PaymentService.mockPay({ order_id: orderId });
         message.success("Đặt hàng thành công!");
         navigate("/dashboard/orders");
-        // window.location.reload(); // Bỏ comment nếu muốn reload lại trang
       }
     } catch (err) {
+      console.error(err);
       message.error("Thanh toán thất bại");
     }
   };
@@ -168,8 +166,9 @@ export default function CheckoutPage() {
 
     return selectedVoucher.discount || 0;
   };
+
   const discountAmount = getVoucherDiscount();
-  const finalTotal = totalProductPrice + shippingFee - discountAmount;
+  const finalTotal = totalProductPrice - discountAmount;
 
   return (
     <div className="p-8 bg-[#fafafa]">
@@ -203,7 +202,6 @@ export default function CheckoutPage() {
         )}
       </Modal>
 
-      {/* Modal tạo mới */}
       <Modal
         open={showCreateModal}
         title="Thêm địa chỉ mới"
@@ -230,7 +228,7 @@ export default function CheckoutPage() {
         <NoteAndShipping
           note={note}
           setNote={setNote}
-          shippingFee={shippingFee}
+          // shippingFee={shippingFee}
         />
       </div>
 
@@ -250,7 +248,7 @@ export default function CheckoutPage() {
       <div>
         <SummaryBox
           totalPrice={totalProductPrice}
-          shippingFee={shippingFee}
+          // shippingFee={shippingFee}
           discount={discountAmount}
           finalAmount={finalTotal}
           onConfirm={handleSubmit}

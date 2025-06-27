@@ -49,7 +49,11 @@ export const API = {
     UPDATE_CATEGORY: "/categories/:id",
     DELETE_CATEGORY: "/categories/:id",
   },
-
+  SELLER: {
+    GET_SHOP_ORDERS: "/seller/orders",
+    UPDATE_ORDER_STATUS: "/seller/orders/status",
+    GET_SELLER_STATS: "/seller/stats",
+  },
   USER: {
     UPDATE_PROFILE: "/user/me",
     GET_USER_INFO: "/user/me",
