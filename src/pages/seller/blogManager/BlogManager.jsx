@@ -1,18 +1,15 @@
-/* eslint-disable no-unused-vars */
+// BlogManager.jsx
 import { useEffect, useState } from "react";
 import { Button, Card, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 import { BlogService } from "../../../services/blog/blog.service";
 import BlogList from "../../../components/blog-mng/BlogList";
-import CreateBlog from "./CreateBlog";
-import UpdateBlog from "./UpdateBlog";
 
 const { Title } = Typography;
 
 const BlogManager = () => {
   const [blogs, setBlogs] = useState([]);
-  const [isCreating, setIsCreating] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [currentBlog, setCurrentBlog] = useState(null);
+  const navigate = useNavigate();
 
   const fetchBlogs = async () => {
     try {
@@ -27,36 +24,31 @@ const BlogManager = () => {
     fetchBlogs();
   }, []);
 
-  const handleCreate = () => {
-    setIsCreating(true);
-    setIsUpdating(false);
-  };
-
-  const handleEdit = (blogId) => {
-    setCurrentBlog(blogId);
-    setIsUpdating(true);
-    setIsCreating(false);
-  };
-
-  const handleBack = () => {
-    setIsCreating(false);
-    setIsUpdating(false);
-    setCurrentBlog(null);
-    fetchBlogs();
-  };
-
   return (
-    <div className="p-4">
+    <div className="p-2">
       <Card>
-        <Title level={2}>Quản lý bài viết</Title>
-        <Button type="primary" onClick={handleCreate}>
-          Tạo bài biết
-        </Button>
-        {isCreating && <CreateBlog onBack={handleBack} />}
-        {isUpdating && currentBlog && (
-          <UpdateBlog blogId={currentBlog} onBack={handleBack} />
-        )}
-        <BlogList onEdit={handleEdit} onDelete={fetchBlogs} />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 16,
+          }}
+        >
+          <Title level={2} style={{ margin: 0 }}>
+            Quản lý bài viết
+          </Title>
+          <Button
+            type="primary"
+            onClick={() => navigate("/seller/blogs/create")}
+          >
+            Tạo bài viết
+          </Button>
+        </div>
+        <BlogList
+          onEdit={(id) => navigate(`/seller/blogs/update/${id}`)}
+          onDelete={fetchBlogs}
+        />
       </Card>
     </div>
   );

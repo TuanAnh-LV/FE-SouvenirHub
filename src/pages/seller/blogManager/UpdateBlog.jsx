@@ -1,52 +1,44 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
-import { Modal, message, Spin } from 'antd';
-import BlogForm from '../../../components/blog-mng/BlogForm';
-import { BlogService } from '../../../services/blog/blog.service';
+import { useEffect, useState } from "react";
+import { message, Spin } from "antd";
+import BlogForm from "../../../components/blog-mng/BlogForm";
+import { BlogService } from "../../../services/blog/blog.service";
+import { useParams, useNavigate } from "react-router-dom";
 
-const UpdateBlog = ({ blogId, onBack }) => {
+const UpdateBlog = () => {
+  const { id } = useParams();
   const [blogData, setBlogData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!blogId) return;
-    setLoading(true);
-    BlogService.getBlogById(blogId)
-      .then(res => {
-        setBlogData(res.data || res); // Tùy API trả về .data hay object trực tiếp
-      })
-      .catch(() => message.error('Không thể tải dữ liệu blog'))
+    if (!id) return;
+    BlogService.getBlogById(id)
+      .then((res) => setBlogData(res.data || res))
+      .catch(() => message.error("Không thể tải dữ liệu blog"))
       .finally(() => setLoading(false));
-  }, [blogId]);
+  }, [id]);
 
   const handleUpdate = async (values) => {
     try {
-      await BlogService.updateBlog(blogId, values);
-      message.success('Cập nhật blog thành công!');
-      if (onBack) onBack();
-    } catch (error) {
-      message.error('Lỗi khi cập nhật blog');
+      await BlogService.updateBlog(id, values);
+      message.success("Cập nhật blog thành công!");
+      navigate("/seller/blogs");
+    } catch {
+      message.error("Lỗi khi cập nhật blog");
     }
   };
 
   return (
-    <Modal
-      open={true}
-      title="Cập nhật blog"
-      footer={null}
-      onCancel={onBack}
-      destroyOnHidden
-    >
+    <div className="p-4">
+      <h2>Cập nhật Blog</h2>
       {loading ? (
         <Spin />
+      ) : blogData ? (
+        <BlogForm initialValues={blogData} onSubmit={handleUpdate} isUpdating />
       ) : (
-        <BlogForm
-          initialValues={blogData}
-          onSubmit={handleUpdate}
-          isUpdating={true}
-        />
+        <p>Không tìm thấy dữ liệu blog</p>
       )}
-    </Modal>
+    </div>
   );
 };
 

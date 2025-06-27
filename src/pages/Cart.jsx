@@ -12,18 +12,22 @@ export default function CartPage() {
   const { cart, updateQuantity, removeItem, updateCartItems } = useCart();
   const navigate = useNavigate();
 
-  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState("");
 
   const groupedItems = cart?.groupedItems || [];
   const allItems = groupedItems.flatMap((group) => group.items);
 
-  const selectedItems = allItems.filter((item) =>
-    selectedProductIds.includes(item.product._id)
+  const selectedCartItems = allItems.filter((item) =>
+    selectedItems.some(
+      (s) =>
+        s.productId === item.product._id &&
+        (s.variantId || null) === (item.variant?._id || null)
+    )
   );
 
-  const selectedTotalPrice = selectedItems.reduce(
+  const selectedTotalPrice = selectedCartItems.reduce(
     (sum, item) => sum + parsePrice(item.product?.price) * item.quantity,
     0
   );
@@ -55,31 +59,57 @@ export default function CartPage() {
     }
   }, [selectedAddressId]);
 
-  const handleQuantityChange = (productId, quantity) => {
-    if (quantity > 0) updateQuantity(productId, quantity);
+  const handleQuantityChange = (productId, quantity, variantId = null) => {
+    if (quantity > 0) updateQuantity(productId, quantity, variantId);
   };
 
-  const handleRemove = (productId) => {
-    if (productId) removeItem(productId);
+  const handleRemove = (productId, variantId = null) => {
+    if (productId) removeItem(productId, variantId);
   };
 
-  const toggleProductSelection = (productId) => {
-    setSelectedProductIds((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
+  const toggleProductSelection = (productId, variantId) => {
+    const key = `${productId}-${variantId || "none"}`;
+    const exists = selectedItems.some(
+      (item) => `${item.productId}-${item.variantId || "none"}` === key
     );
+
+    if (exists) {
+      setSelectedItems((prev) =>
+        prev.filter(
+          (item) =>
+            !(
+              item.productId === productId &&
+              (item.variantId || null) === (variantId || null)
+            )
+        )
+      );
+    } else {
+      setSelectedItems((prev) => [
+        ...prev,
+        { productId, variantId: variantId || null },
+      ]);
+    }
   };
 
   const toggleSelectAll = () => {
-    const allIds = allItems.map((item) => item.product._id);
-    setSelectedProductIds(
-      selectedProductIds.length === allIds.length ? [] : allIds
-    );
+    const all = allItems.map((item) => ({
+      productId: item.product._id,
+      variantId: item.variant?._id || null,
+    }));
+
+    const isAllSelected =
+      selectedItems.length === all.length &&
+      selectedItems.every(
+        (item, i) =>
+          item.productId === all[i].productId &&
+          (item.variantId || null) === (all[i].variantId || null)
+      );
+
+    setSelectedItems(isAllSelected ? [] : all);
   };
 
   const handleCheckout = async () => {
-    if (selectedProductIds.length === 0) {
+    if (selectedItems.length === 0) {
       return message.warning("Vui lòng chọn sản phẩm để thanh toán");
     }
 
@@ -90,20 +120,17 @@ export default function CartPage() {
     try {
       await CartService.checkout({
         shipping_address_id: selectedAddressId,
-        selectedProductIds,
+        selectedItems: selectedItems.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+        })),
       });
-      message.success("Tạo đơn hàng thành công, vui lòng vào dashboard -> đơn hàng -> thanh toán!")
+
+      message.success(
+        "Tạo đơn hàng thành công, vui lòng vào dashboard -> đơn hàng -> thanh toán!"
+      );
       await updateCartItems("pending");
-      // window.location.reload();
-      // const orderId = res?.data?.order_id;
-
-      // if (!orderId) {
-      //   return message.error("Không nhận được order_id từ server");
-      // }
-
-      // ✅ Chuyển sang trang Checkout kèm theo orderId
-      navigate("/dashboard");
-      
+      navigate("/buyer/dashboard");
     } catch (err) {
       console.error(err);
       message.error("Đặt hàng thất bại");
@@ -143,9 +170,17 @@ export default function CartPage() {
                   >
                     <div className="col-span-6 flex items-center gap-4">
                       <Checkbox
-                        checked={selectedProductIds.includes(item.product._id)}
+                        checked={selectedItems.some(
+                          (s) =>
+                            s.productId === item.product._id &&
+                            (s.variantId || null) ===
+                              (item.variant?._id || null)
+                        )}
                         onChange={() =>
-                          toggleProductSelection(item.product._id)
+                          toggleProductSelection(
+                            item.product._id,
+                            item.variant?._id
+                          )
                         }
                       />
                       <img
@@ -160,6 +195,12 @@ export default function CartPage() {
                             {item.product.name}
                           </span>
                         </Tooltip>
+                        {item.variant?.name && (
+                          <span className="text-xs text-gray-500">
+                            Mẫu: {item.variant.name}
+                          </span>
+                        )}
+
                         <span className="text-xs text-gray-500 truncate">
                           {item.product.category_id?.name}
                         </span>
@@ -176,7 +217,11 @@ export default function CartPage() {
                         max={item.product.stock}
                         value={item.quantity}
                         onChange={(value) =>
-                          handleQuantityChange(item.product._id, value)
+                          handleQuantityChange(
+                            item.product._id,
+                            value,
+                            item.variant?._id
+                          )
                         }
                       />
                     </div>
@@ -190,7 +235,9 @@ export default function CartPage() {
                         type="text"
                         icon={<DeleteOutlined />}
                         danger
-                        onClick={() => handleRemove(item.product._id)}
+                        onClick={() =>
+                          handleRemove(item.product._id, item.variant?._id)
+                        }
                       />
                     </div>
                   </div>
@@ -202,8 +249,17 @@ export default function CartPage() {
           <div className="flex flex-col lg:flex-row justify-between items-center bg-white px-4 py-4 mt-4 rounded shadow-sm border">
             <div className="flex items-center gap-2 mb-2 lg:mb-0">
               <Checkbox
-                checked={selectedProductIds.length === allItems.length}
-                onChange={toggleSelectAll}
+                checked={
+                  selectedItems.length === allItems.length &&
+                  selectedItems.every((s) =>
+                    allItems.some(
+                      (item) =>
+                        s.productId === item.product._id &&
+                        (s.variantId || null) === (item.variant?._id || null)
+                    )
+                  )
+                }
+                onChange={() => toggleSelectAll()}
               />
               <span className="text-sm">Chọn Tất Cả ({allItems.length})</span>
             </div>
@@ -215,7 +271,7 @@ export default function CartPage() {
               <Button
                 type="primary"
                 className="bg-[#d0011b] hover:bg-red-600 text-white px-6 py-2 rounded"
-                disabled={selectedProductIds.length === 0}
+                disabled={selectedItems.length === 0}
                 onClick={handleCheckout}
               >
                 Mua Hàng

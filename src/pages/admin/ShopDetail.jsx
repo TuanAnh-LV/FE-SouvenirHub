@@ -132,7 +132,7 @@ const ShopDetail = () => {
                   <Card>
                     <Statistic
                       title="Doanh thu"
-                      value={shop.totalRevenue || 0}
+                      value={Number(shop.totalRevenue) || 0}
                       precision={0}
                       valueStyle={{ color: "#1890ff" }}
                       suffix="₫"
@@ -201,13 +201,22 @@ const ShopDetail = () => {
                     <LineChart data={revenueData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
+                      <YAxis
+                        tickFormatter={(value) => value.toLocaleString()}
+                      />
+                      <Tooltip
+                        formatter={(value) =>
+                          `${Number(value).toLocaleString()} ₫`
+                        }
+                      />
                       <Legend />
                       <Line
                         type="monotone"
                         dataKey="revenue"
                         stroke="#1890ff"
+                        strokeWidth={2}
+                        dot={{ r: 4 }}
+                        activeDot={{ r: 6 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>

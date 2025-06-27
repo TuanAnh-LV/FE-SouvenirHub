@@ -3,7 +3,7 @@ import { Card, Button } from "antd";
 
 export default function SummaryBox({
   totalPrice,
-  shippingFee,
+  // shippingFee,
   discount = 0,
   finalAmount,
   onConfirm,
@@ -17,10 +17,10 @@ export default function SummaryBox({
         <span>Tạm tính:</span>
         <span>{totalPrice.toLocaleString()}₫</span>
       </div>
-      <div className="flex justify-between mb-3 text-base">
+      {/* <div className="flex justify-between mb-3 text-base">
         <span>Phí vận chuyển:</span>
         <span>{shippingFee.toLocaleString()}₫</span>
-      </div>
+      </div> */}
       {discount > 0 && (
         <div className="flex justify-between mb-3 text-base text-green-700">
           <span>Giảm giá:</span>

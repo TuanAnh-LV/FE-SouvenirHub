@@ -1,7 +1,8 @@
-/* eslint-disable no-unused-vars */
+// BlogList.jsx
 import { Table, Button, Popconfirm, message } from "antd";
 import { useEffect, useState } from "react";
 import { BlogService } from "../../services/blog/blog.service";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const BlogList = ({ onEdit }) => {
   const [blogs, setBlogs] = useState([]);
@@ -9,7 +10,7 @@ const BlogList = ({ onEdit }) => {
   const fetchBlogs = async () => {
     try {
       const response = await BlogService.getBlogs();
-      setBlogs(response.data.items || []); // Lấy từ items do BE trả về phân trang
+      setBlogs(response.data.items || []);
     } catch (error) {
       message.error("Failed to fetch blogs");
     }
@@ -17,7 +18,7 @@ const BlogList = ({ onEdit }) => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await BlogService.deleteBlog(id);
+      await BlogService.deleteBlog(id);
       message.success("Blog deleted successfully");
       fetchBlogs();
     } catch (error) {
@@ -38,16 +39,18 @@ const BlogList = ({ onEdit }) => {
       key: "actions",
       render: (_, record) => (
         <>
-          <Button onClick={() => onEdit(record._id)}>Edit</Button>
+          <Button
+            icon={<EditOutlined />}
+            type="text"
+            onClick={() => onEdit(record._id)}
+          />
           <Popconfirm
-            title="Bạn có muốn xóa bài viết??"
+            title="Bạn có muốn xóa bài viết?"
             onConfirm={() => handleDelete(record._id)}
             okText="Yes"
             cancelText="No"
           >
-            <Button type="link" danger>
-              Delete
-            </Button>
+            <Button icon={<DeleteOutlined />} type="text" danger />
           </Popconfirm>
         </>
       ),

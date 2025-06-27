@@ -22,11 +22,16 @@ export const CartService = {
       isLoading: true,
     }),
 
-    removeItem: (productId) =>
-      BaseService.remove({
-        url: API.CART.DELETE_CART.replace(":id", productId),
+    removeItem: (productId, variantId = null) => {
+      const baseUrl = API.CART.DELETE_CART.replace(":id", productId);
+      const url = variantId ? `${baseUrl}?variantId=${variantId}` : baseUrl;
+    
+      return BaseService.remove({
+        url,
         isLoading: true,
-      }),
+      });
+    },
+    
     
 
   clearCart: () =>

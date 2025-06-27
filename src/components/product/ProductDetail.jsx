@@ -24,7 +24,6 @@ const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
   const { id: productId } = useParams();
-  console.log("Product ID:", productId);
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -32,6 +31,7 @@ const ProductDetail = () => {
   // Add this state for main image
   const [mainImg, setMainImg] = useState(null);
   const { getCartCount, addToCart } = useCart();
+  const [selectedVariant, setSelectedVariant] = useState(null);
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -56,13 +56,18 @@ const ProductDetail = () => {
     return <div className="text-center py-10">Đang tải sản phẩm...</div>;
   }
 
-  const price = parseInt(product.price?.$numberDecimal || 0, 10);
+  const basePrice = selectedVariant
+    ? selectedVariant.finalPrice || selectedVariant.price
+    : product.finalPrice || parseInt(product.price?.$numberDecimal || 0, 10);
+
+  const price = parseInt(basePrice);
+
   const engravingCost = 50000;
   const totalPrice = engraving ? price + engravingCost : price;
 
   const handleAddToCart = async () => {
     try {
-      await addToCart(product._id, quantity);
+      await addToCart(product._id, quantity, selectedVariant?._id || null);
       message.success("Đã thêm vào giỏ hàng!");
       await getCartCount(); // cập nhật số lượng giỏ
     } catch (error) {
@@ -183,14 +188,6 @@ const ProductDetail = () => {
             <div className="text-[#d0011b] font-bold text-2xl mb-2">
               {totalPrice.toLocaleString()}₫
             </div>
-            {/* <Checkbox
-              checked={engraving}
-              onChange={(e) => setEngraving(e.target.checked)}
-              className="mb-2"
-              hi
-            >
-              Khắc tên (+50.000₫)
-            </Checkbox> */}
             <Paragraph className="mt-2 mb-1 font-semibold">
               Mô tả sản phẩm:
             </Paragraph>
@@ -201,6 +198,37 @@ const ProductDetail = () => {
             >
               {product.description}
             </Text>
+            {product.variants && product.variants.length > 0 && (
+              <div className="mb-2">
+                <Paragraph className="font-semibold mb-1">Mẫu mã:</Paragraph>
+                <div className="flex flex-wrap gap-2">
+                  {product.variants.map((variant) => (
+                    <Button
+                      key={variant._id}
+                      size="small"
+                      onClick={() => {
+                        setSelectedVariant(variant);
+                        if (variant.images?.[0]) setMainImg(variant.images[0]);
+                      }}
+                      style={{
+                        backgroundColor:
+                          selectedVariant?._id === variant._id
+                            ? "#E07B50"
+                            : "#fff",
+                        borderColor: "#ddd",
+                        color:
+                          selectedVariant?._id === variant._id
+                            ? "#fff"
+                            : "inherit",
+                      }}
+                    >
+                      {variant.name || variant.attributes?.color}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <Paragraph className="mt-2 mb-1 font-semibold">Số lượng:</Paragraph>
             <InputNumber
               min={1}

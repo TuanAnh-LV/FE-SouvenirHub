@@ -51,7 +51,21 @@ const ReviewPage = lazy(() => import("../pages/ReviewPage"));
 const BlogPage = lazy(() => import("../pages/blog/BlogPage"));
 const BlogDetailPage = lazy(() => import("../pages/blog/BlogDetailPage"));
 const AdminBlogManager = lazy(() => import("../pages/admin/Blog"));
-const OrderManage = lazy(() => import("../pages/seller/seller-order/OrderManage"))
+const OrderManage = lazy(() =>
+  import("../pages/seller/seller-order/OrderManage")
+);
+const SellerProductEditPage = lazy(() =>
+  import("../pages/seller/seller-product/SellerProductEditPage")
+);
+const OrderDetailPage = lazy(() =>
+  import("../pages/seller/seller-order/OrderDetailPage")
+);
+const CreateBlogPage = lazy(() =>
+  import("../pages/seller/blogManager/CreateBlog")
+);
+const UpdateBlogPage = lazy(() =>
+  import("../pages/seller/blogManager/UpdateBlog")
+);
 const routes = [
   // Public routes
   {
@@ -114,9 +128,12 @@ const routes = [
       { path: "products", element: <SellerProducts /> },
       { path: "create-product", element: <CreateProduct /> },
       { path: "blogs", element: <BlogManager /> },
-      { path: "blogs/update/:id", element: <BlogManager /> },
+      // { path: "blogs/update/:id", element: <BlogManager /> },
       { path: "orders", element: <OrderManage /> },
-
+      { path: "products/:id/edit", element: <SellerProductEditPage /> },
+      { path: "orders/:id", element: <OrderDetailPage /> },
+      { path: "blogs/create", element: <CreateBlogPage /> },
+      { path: "blogs/update/:id", element: <UpdateBlogPage /> },
     ],
   },
 
