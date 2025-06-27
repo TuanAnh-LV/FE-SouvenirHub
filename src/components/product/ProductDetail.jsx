@@ -301,14 +301,14 @@ const ProductDetail = () => {
           >
             Mô tả
           </button>
-          {product.specifications && product.specifications.trim() && (
+          {/* {product.specifications && product.specifications.trim() && (
             <button
               onClick={() => scrollToSection("specation", 150)}
               className="text-sm font-medium text-blue-600 hover:underline"
             >
               Lưu ý đặc biệt
             </button>
-          )}
+          )} */}
           <button
             onClick={() => scrollToSection("brand", 150)}
             className="text-sm font-medium text-blue-600 hover:underline"
@@ -323,7 +323,7 @@ const ProductDetail = () => {
           </button>
         </div>
 
-        <div id="specs" className="mt-10">
+        {/* <div id="specs" className="mt-10">
           <Title level={5}>Lưu ý đặc biệt</Title>
           <Text
             type="secondary"
@@ -332,7 +332,7 @@ const ProductDetail = () => {
           >
             {product.specialNotes}
           </Text>
-        </div>
+        </div> */}
 
         <div id="desc" className="mt-10">
           <Title level={5} className="text-black">
@@ -346,18 +346,30 @@ const ProductDetail = () => {
             {product.description}
           </Text>
         </div>
-        {product.specifications && product.specifications.trim() && (
-          <div id="specation" className="mt-10">
+        <div id="specation" className="mt-10">
             <Title level={5}>Lưu ý đặc biệt</Title>
             <Text
+              type="secondary"
+              // style={{ whiteSpace: "pre-line" }}
+              className="text-base text-black"
+            >
+              <div dangerouslySetInnerHTML={{ __html: product.specialNotes}} />
+            </Text>
+            
+        </div>
+        
+        <div id="notes" className="mt-10">
+          <Title level={5} className="text-black">
+            Thông số kỹ thuật
+          </Title>
+          <Text
               type="secondary"
               style={{ whiteSpace: "pre-line" }}
               className="text-sm text-black"
             >
               {product.specifications}
             </Text>
-          </div>
-        )}
+        </div>
 
         <div id="brand" className="mt-10">
           <Title level={5}>Về thương hiệu</Title>
