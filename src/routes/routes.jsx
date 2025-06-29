@@ -15,6 +15,8 @@ const SellerDashboard = lazy(() => import("../pages/seller/SellerDashboard"));
 const SellerProducts = lazy(() =>
   import("../pages/seller/seller-product/SellerProduct")
 );
+const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
+const PaymentCancel = lazy(() => import("../pages/PaymentCancel"));
 const BuyerDashboard = lazy(() => import("../pages/buyer/BuyerDashboard"));
 const ProductDetail = lazy(() => import("../pages/product/ProductDetailPage"));
 const AllProductPage = lazy(() => import("../pages/product/AllProductPage"));
@@ -86,6 +88,8 @@ const routes = [
       { path: "/products/:id/reviews", element: <ReviewPage /> },
       { path: "/blog", element: <BlogPage /> },
       { path: "/blog/:id", element: <BlogDetailPage /> },
+      { path: "/payment-success", element: <PaymentSuccess /> },
+      { path: "/payment-cancel", element: <PaymentCancel /> },
     ],
   },
 
