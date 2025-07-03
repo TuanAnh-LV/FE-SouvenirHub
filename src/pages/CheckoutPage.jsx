@@ -148,7 +148,7 @@ export default function CheckoutPage() {
         const payosRes = await PaymentService.createPayOS({
           amount: finalTotal,
           orderCode: updateOrder.data.order.order_code,
-          description: `Thanh toán đơn hàng`,
+          description: `Thanh toán ${updateOrder.data.order.order_code}`,
           returnUrl: window.location.origin + "/payment-success",
           cancelUrl: window.location.origin + "/payment-cancel"
         });
