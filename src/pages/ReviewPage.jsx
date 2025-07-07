@@ -8,9 +8,7 @@ import {
   List,
   message,
   Avatar,
-  Progress,
   Select,
-  Tag,
 } from "antd";
 import { LikeOutlined, DislikeOutlined } from "@ant-design/icons";
 import { ReviewService } from "../services/review/review.service";
@@ -20,13 +18,18 @@ const { Title, Text } = Typography;
 const { TextArea } = Input;
 const { Option } = Select;
 
-const ReviewPage = () => {
-  const { id: productId } = useParams();
+const ReviewPage = ({ productIdOverride }) => {
+  const { id: productIdFromParam } = useParams();
+  const productId = productIdOverride || productIdFromParam;
   const { userInfo } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [canReview, setCanReview] = useState(false);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(false);
+  const [hasPurchased, setHasPurchased] = useState(false);
 
   const fetchReviews = async () => {
     try {
@@ -34,6 +37,17 @@ const ReviewPage = () => {
       setReviews(res?.data || []);
     } catch (err) {
       console.error("Error loading reviews", err);
+    }
+  };
+
+  const checkReviewPermission = async () => {
+    try {
+      const res = await ReviewService.checkUserCanReview(productId);
+      setCanReview(res.data.canReview);
+      setAlreadyReviewed(res.data.alreadyReviewed);
+      setHasPurchased(res.data.hasPurchased);
+    } catch (err) {
+      console.error("Check can review failed", err);
     }
   };
 
@@ -53,6 +67,7 @@ const ReviewPage = () => {
       setRating(0);
       setComment("");
       fetchReviews();
+      checkReviewPermission(); // cập nhật lại trạng thái sau khi đánh giá
     } catch (err) {
       message.error(err?.response?.data?.error || "Lỗi khi gửi đánh giá");
     } finally {
@@ -61,10 +76,11 @@ const ReviewPage = () => {
   };
 
   useEffect(() => {
-    if (productId) {
+    if (productId && userInfo) {
       fetchReviews();
+      checkReviewPermission();
     }
-  }, [productId]);
+  }, [productId, userInfo]);
 
   const averageRating =
     reviews.length > 0
@@ -115,7 +131,7 @@ const ReviewPage = () => {
           ))}
         </div>
 
-        {/* Bộ lọc */}
+        {/* Bộ lọc + Form + Danh sách */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             <Button
@@ -139,29 +155,62 @@ const ReviewPage = () => {
             </Select>
           </div>
 
-          {/* Form viết đánh giá */}
-          <div className="mb-8 border rounded p-4 bg-gray-50">
-            <div className="flex items-center gap-3 mb-2">
-              <Avatar src={userInfo?.avatar_url}>{userInfo?.name?.[0]}</Avatar>
-              <Text>{userInfo?.name || "Bạn"}</Text>
+          {/* Điều kiện hiển thị form đánh giá */}
+          {canReview ? (
+            <div className="mb-8 border border-gray-200 rounded-xl p-5 bg-gray-50 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <Avatar src={userInfo?.avatar_url} size="large">
+                  {userInfo?.name?.[0]}
+                </Avatar>
+                <div className="flex flex-col">
+                  <Text className="font-semibold">
+                    {userInfo?.name || "Bạn"}
+                  </Text>
+                  <Rate value={rating} onChange={setRating} />
+                </div>
+              </div>
+              <TextArea
+                rows={4}
+                placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                // className="mt-2 rounded"
+                style={{ marginBottom: 16, borderRadius: 8 }}
+              />
+              <Button
+                type="primary"
+                onClick={submitReview}
+                className="mt-4 w-full"
+                loading={loading}
+                size="large"
+                style={{ backgroundColor: "#000", borderColor: "#000" }}
+              >
+                Gửi đánh giá
+              </Button>
             </div>
-            <Rate value={rating} onChange={setRating} />
-            <TextArea
-              rows={3}
-              placeholder="Chia sẻ cảm nhận của bạn..."
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="mt-2"
-            />
-            <Button
-              type="primary"
-              onClick={submitReview}
-              className="mt-3"
-              loading={loading}
-            >
-              Gửi đánh giá
-            </Button>
-          </div>
+          ) : (
+            <div className="mb-8 p-4 border border-gray-200 rounded bg-white text-gray-600 shadow-sm text-center">
+              {!hasPurchased ? (
+                <>
+                  <p className="font-medium text-gray-800 mb-1">
+                    Bạn chưa đủ điều kiện đánh giá sản phẩm này
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Vui lòng mua sản phẩm trước khi gửi đánh giá.
+                  </p>
+                </>
+              ) : alreadyReviewed ? (
+                <>
+                  <p className="font-medium text-gray-800 mb-1">
+                    Cảm ơn bạn đã đánh giá!
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Bạn đã gửi đánh giá cho sản phẩm này rồi.
+                  </p>
+                </>
+              ) : null}
+            </div>
+          )}
 
           {/* Danh sách đánh giá */}
           <List
