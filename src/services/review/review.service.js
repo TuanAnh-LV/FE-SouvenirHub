@@ -17,4 +17,9 @@ export const ReviewService = {
       isLoading: true,
       isPrivate: true,
     }),
+    checkUserCanReview: (productId) =>
+      BaseService.get({
+        url: `/reviews/${productId}/check`,
+        isPrivate: true,
+      }),
 };

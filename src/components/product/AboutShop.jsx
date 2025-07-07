@@ -17,6 +17,7 @@ const AboutShop = ({ shop_id }) => {
     try {
       const response = await ProductService.getShopById(shop_id);
       setShopProfile(response.data.shop);
+      console.log("data", response.data.shop);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu shop:", error);
     }
@@ -114,26 +115,6 @@ const AboutShop = ({ shop_id }) => {
                     >
                       {shopProfile.address}
                     </Text>
-                    <div
-                      className="flex items-center mb-1"
-                      style={{ marginBottom: 8 }}
-                    >
-                      <ShopOutlined style={{ fontSize: 20, marginRight: 8 }} />
-                      <span className="font-semibold">50</span>
-                      <span className="ml-1">Sản phẩm</span>
-                      <StarFilled
-                        style={{
-                          color: "#faad14",
-                          fontSize: 20,
-                          marginLeft: 24,
-                          marginRight: 8,
-                        }}
-                      />
-                      <span className="font-semibold">
-                        {shopProfile.rating || 0}
-                      </span>
-                      <span className="ml-1">Đánh giá</span>
-                    </div>
                   </div>
                   <Button
                     className="bg-gray-200 rounded-full px-8 py-2 font-semibold text-base"
