@@ -111,6 +111,8 @@ export const API = {
     MOMO_CREATE: "/payments/momo-create",
     MOMO_RETURN: "/payments/momo-return",
     MOMO_NOTIFY: "/payments/momo-notify",
+    PAYOS_CREATE: "/payments/payos/create",
+
   },
   REVIEW: {
     CREATE_REVIEW: "/reviews",

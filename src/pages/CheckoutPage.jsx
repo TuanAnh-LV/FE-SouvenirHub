@@ -7,7 +7,6 @@ import { VoucherService } from "../services/voucher/voucher.service";
 import { PaymentService } from "../services/payment/payment.service";
 import { AddressService } from "../services/adress/address.service";
 import { OrderService } from "../services/order/order.service";
-
 import CreateAddress from "../pages/address/CreateAddress";
 import UpdateAddress from "../pages/address/UpdateAddress";
 
@@ -129,20 +128,33 @@ export default function CheckoutPage() {
     fetchInitialData();
   }, []);
 
+
   const handleSubmit = async () => {
     if (!orderId) {
       return message.warning("Không tìm thấy order_id để thanh toán");
     }
-
+  
     try {
-      await OrderService.updateOrder(orderId, {
+      const updateOrder = await OrderService.updateOrder(orderId, {
         shipping_address_id: selectedAddressId,
         voucher_id: selectedVoucherId,
       });
-
+  
       if (paymentMethod === "momo") {
         const payRes = await PaymentService.createMomo({ order_id: orderId });
         window.location.href = payRes.data.payUrl;
+      } else if (paymentMethod === "payos") {
+        // Gọi API tạo thanh toán PayOS
+        const payosRes = await PaymentService.createPayOS({
+          amount: finalTotal,
+          orderCode: updateOrder.data.order.order_code,
+          description: `Thanh toán ${updateOrder.data.order.order_code}`,
+          returnUrl: window.location.origin + "/payment-success",
+          cancelUrl: window.location.origin + "/payment-cancel"
+        });
+        console.log(updateOrder.data.order.order_code);
+        window.location.href = payosRes.data.data.checkoutUrl; // chuyển hướng sang PayOS
+        console.log(payosRes.data.data.checkoutUrl);
       } else {
         await PaymentService.mockPay({ order_id: orderId });
         message.success("Đặt hàng thành công!");

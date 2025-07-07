@@ -18,6 +18,14 @@ export const PaymentService = {
     });
   },
 
+  createPayOS: (data) => {
+    return BaseService.post({
+      url: API.PAYMENT.PAYOS_CREATE,
+      payload: data,
+      isLoading: true,
+    });
+  },
+
   confirmOnline: (data) => {
     return BaseService.post({
       url: API.PAYMENT.ONLINE,

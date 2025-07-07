@@ -16,6 +16,9 @@ export default function PaymentOptions({ value, onChange }) {
         <Radio value="momo">
           <WalletOutlined className="mr-1 text-pink-500" /> Ví MoMo
         </Radio>
+        <Radio value="payos">
+          <WalletOutlined className="mr-1 text-pink-500" /> Mã QR
+        </Radio>
       </Radio.Group>
     </Card>
   );
