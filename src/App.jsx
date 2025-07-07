@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import routes from "./routes/routes";
-// import Loading from "./app/Loading";
-// import { useSelector } from "react-redux";
+import Loading from "./app/Loading";
+import { useSelector } from "react-redux";
 
 function AppRoutes() {
   const routing = useRoutes(routes);
@@ -10,11 +10,11 @@ function AppRoutes() {
 }
 
 function App() {
-  // const isLoading = useSelector((state) => state.loading);
+  const isLoading = useSelector((state) => state.loading);
 
   return (
     <Router>
-      {/* {isLoading && <Loading />} */}
+      {isLoading && <Loading />}
       <Suspense fallback={<div>Đang tải...</div>}>
         <AppRoutes />
       </Suspense>

@@ -25,13 +25,13 @@ const { Title, Text } = Typography;
 
 const SellerDashboard = () => {
   const [shop, setShop] = useState(null);
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
   const fetchSellerStats = async () => {
     try {
       const res = await SellerService.getSellerStats();
       setShop(res.data);
-      setProducts(res.data.products || []);
+      // setProducts(res.data.products || []);
     } catch (err) {
       message.error("Không thể tải thông tin cửa hàng.");
     }
