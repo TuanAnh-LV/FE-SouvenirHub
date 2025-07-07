@@ -99,11 +99,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = (onLogoutCleanup) => {
     setToken(null);
     setRole(null);
     setUserInfo(null);
     localStorage.clear();
+    if (typeof onLogoutCleanup === "function") {
+      onLogoutCleanup();
+    }
   };
 
   //   const forgotPassword = async (params) => {

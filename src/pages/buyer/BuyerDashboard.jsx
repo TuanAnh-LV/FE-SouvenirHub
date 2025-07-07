@@ -39,13 +39,8 @@ export default function BuyerDashboardSidebar() {
       content: <RegisterShop />,
     },
     {
-      key: "bank",
-      label: "Ngân hàng",
-      icon: <BankOutlined />,
-      content: <div>Ngân hàng</div>,
-    },
-    {
       key: "address",
+      label: "Địa chỉ",
       icon: <EnvironmentOutlined />,
       content: <AddressManager />,
     },
@@ -62,19 +57,12 @@ export default function BuyerDashboardSidebar() {
       content: <div>Thông báo</div>,
     },
     {
-      key: "privacy",
-      label: "Thiết lập riêng tư",
-      icon: <SettingOutlined />,
-      content: <div>Thiết lập riêng tư</div>,
-    },
-    {
       key: "voucher",
       label: "Kho Voucher",
       icon: <GiftOutlined />,
       content: <div>Voucher</div>,
     },
   ];
-  // const activeItem = menuItems.find((item) => item.key === activeKey);
   const activeItem =
     menuItems.find((item) => item.key === activeKey) ||
     (activeKey === "verifyEmail"

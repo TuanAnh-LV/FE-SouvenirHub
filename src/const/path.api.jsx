@@ -88,6 +88,7 @@ export const API = {
     CONFIRM_RECEIVED: "orders/:id/confirm-received",
     UPDATE_ORDER: "/orders/:id",
     MY_SHOP_ORDERS: "/orders/myorders",
+    GET_ALL_ORDER_SHOP: "/orders/shop",
   },
   CART: {
     GET_CART: "/cart",

@@ -96,7 +96,17 @@ export const BaseService = {
   
     return axiosInstance.put(url, payload, { headers: finalHeaders });
   },
-  
+  patch({ url, isLoading = true, payload = {}, headers = {} }) {
+    checkLoading(isLoading);
+
+    const isFormData = payload instanceof FormData;
+    const finalHeaders = {
+      ...headers,
+      ...(isFormData ? { 'Content-Type': 'multipart/form-data' } : {})
+    };
+
+    return axiosInstance.patch(url, payload, { headers: finalHeaders });
+  },
 
   remove({ url, isLoading = true, payload = {}, headers = {} }) {
     checkLoading(isLoading);

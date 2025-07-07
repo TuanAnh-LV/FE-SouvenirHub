@@ -16,7 +16,7 @@ import { useLocation } from "react-router-dom";
 const Header = () => {
   const navigate = useNavigate();
   const { userInfo, logout } = useAuth();
-  const { getCartCount, cart } = useCart();
+  const { cart, setCart, setCartItems, setCartCount } = useCart();
   const [options, setOptions] = useState([]);
   const [searchText, setSearchText] = useState("");
   const location = useLocation();
@@ -26,15 +26,21 @@ const Header = () => {
     setSearchText("");
     setOptions([]);
   }, [location.pathname]);
-  useEffect(() => {
-    getCartCount();
-  }, [getCartCount]);
 
   const handleLogout = () => {
-    logout();
+    logout(() => {
+      setCart({
+        items: [],
+        total_price: 0,
+        total_quantity: 0,
+      });
+      setCartItems([]);
+      setCartCount(0);
+    });
     message.success("Đăng xuất thành công!");
     navigate("/login");
   };
+
   const fetchSuggestions = async (value) => {
     const keyword = value.trim();
     if (!keyword) {
@@ -118,14 +124,8 @@ const Header = () => {
       default:
         return [
           {
-            key: "profile",
-            label: "Profile",
-            onClick: () => navigate("/buyer/profile"),
-          },
-
-          {
             key: "dashboard-buyer",
-            label: "Dashboard",
+            label: "Profile",
             onClick: () => navigate("/buyer/dashboard"),
           },
           { key: "logout", label: "Log out", onClick: handleLogout },
@@ -252,7 +252,7 @@ const Header = () => {
               onClick={() => navigate("/cart")}
             >
               <Badge
-                count={cart?.total_quantity || 0}
+                count={cart?.total_quantity ?? 0}
                 size="small"
                 offset={[2, -2]}
                 style={{

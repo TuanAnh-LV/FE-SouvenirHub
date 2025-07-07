@@ -23,14 +23,11 @@ import { useCart } from "../../context/cart.context";
 const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
-  // const { id: productId } = useParams();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [engraving, setEngraving] = useState(false);
-  // Add this state for main image
   const [mainImg, setMainImg] = useState(null);
-  const { getCartCount, addToCart } = useCart();
+  const { addToCart, refreshCart } = useCart();
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   const fetchProduct = useCallback(async () => {
@@ -62,14 +59,13 @@ const ProductDetail = () => {
 
   const price = parseInt(basePrice);
 
-  const engravingCost = 50000;
-  const totalPrice = engraving ? price + engravingCost : price;
+  const totalPrice = price;
 
   const handleAddToCart = async () => {
     try {
       await addToCart(product._id, quantity, selectedVariant?._id || null);
+      await refreshCart();
       message.success("Đã thêm vào giỏ hàng!");
-      await getCartCount(); // cập nhật số lượng giỏ
     } catch (error) {
       message.error("Thêm vào giỏ hàng thất bại!");
       console.error(error);

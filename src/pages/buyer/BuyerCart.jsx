@@ -49,6 +49,7 @@ const BuyerCart = () => {
     }
     setLoading(false);
   };
+
   const handleConfirmReceived = async (orderId) => {
     try {
       await OrderService.confirmReceived(orderId);
@@ -58,10 +59,6 @@ const BuyerCart = () => {
       message.error("Xác nhận nhận hàng thất bại");
     }
   };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   const handleDeleteItem = async (orderId) => {
     try {
@@ -73,15 +70,21 @@ const BuyerCart = () => {
     }
   };
 
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
-    <div className="cart-container">
+    <div className="min-h-screen p-4">
       {orders.length === 0 ? (
-        <div className="empty">Không có đơn hàng.</div>
+        <div className="text-center text-gray-500 mt-12">
+          Không có đơn hàng.
+        </div>
       ) : (
         orders.map((order) => (
-          <div key={order._id} className="order-card">
+          <div key={order._id} className="bg-white mb-4 p-4 shadow-sm">
             {order.items.map((item) => (
-              <div key={item._id} className="order-item">
+              <div key={item._id} className="flex items-center mb-3">
                 <img
                   src={
                     item.variant?.images?.[0] ||
@@ -89,9 +92,10 @@ const BuyerCart = () => {
                     "https://via.placeholder.com/80"
                   }
                   alt={item.product?.name || "Product image"}
+                  className="w-20 h-20 object-cover rounded mr-4"
                 />
-                <div className="item-info">
-                  <div className="title">
+                <div className="flex-1">
+                  <div className="font-semibold text-base">
                     {item.product?.name || "Sản phẩm không xác định"}
                     {item.variant?.name && (
                       <span className="text-sm text-gray-500">
@@ -100,29 +104,31 @@ const BuyerCart = () => {
                       </span>
                     )}
                   </div>
-                  <div className="category">
+                  <div className="text-sm text-gray-500">
                     {item.product_id?.category_id?.name || ""}
                   </div>
                 </div>
-                <div className="item-price">
+                <div className="w-24 text-right text-base">
                   {(item.price || 0).toLocaleString()}₫
                 </div>
-                <div className="item-quantity">x{item.quantity}</div>
+                <div className="w-20 text-right text-gray-600">
+                  x{item.quantity}
+                </div>
               </div>
             ))}
-            <div className="order-footer">
-              <div className="order-total">
+            <div className="flex justify-between items-center border-t pt-3 mt-3">
+              <div className="text-base">
                 Tổng tiền:{" "}
                 <b>
                   {parseInt(order.total_price.$numberDecimal).toLocaleString()}₫
                 </b>
               </div>
-              <div className="order-status">
+              <div className="flex items-center gap-2">
                 <Tag color={statusColor[order.status] || "default"}>
                   {order.status === "pending"
                     ? "Chờ xác nhận"
                     : order.status === "processing"
-                    ? "Đang xử lý"
+                    ? "Đang giao hàng"
                     : order.status === "shipped"
                     ? "Đã giao"
                     : order.status === "completed"
@@ -143,7 +149,6 @@ const BuyerCart = () => {
                     </Button>
                     <Button
                       type="primary"
-                      style={{ marginLeft: 8 }}
                       onClick={() =>
                         navigate("/checkout", { state: { orderId: order._id } })
                       }
@@ -165,66 +170,6 @@ const BuyerCart = () => {
           </div>
         ))
       )}
-
-      <style>{`
-        .cart-container {
-          min-height: 100vh;
-        }
-        .empty {
-          text-align: center;
-          color: #999;
-          margin-top: 48px;
-        }
-        .order-card {
-          background: #fff;
-          border: 1px solid #eee;
-          margin-bottom: 16px;
-          border-radius: 6px;
-          padding: 16px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-        .order-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        .order-item img {
-          width: 80px;
-          height: 80px;
-          object-fit: cover;
-          border-radius: 6px;
-          margin-right: 16px;
-        }
-        .item-info {
-          flex: 1;
-        }
-        .item-info .title {
-          font-weight: 600;
-          font-size: 16px;
-          margin-bottom: 4px;
-        }
-        .item-info .category {
-          color: #888;
-          font-size: 13px;
-        }
-        .item-price, .item-quantity {
-          width: 100px;
-          text-align: right;
-        }
-        .order-footer {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-top: 1px solid #eee;
-          padding-top: 12px;
-          margin-top: 12px;
-        }
-        .order-status {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-      `}</style>
     </div>
   );
 };
