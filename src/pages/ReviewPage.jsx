@@ -30,6 +30,7 @@ const ReviewPage = ({ productIdOverride }) => {
   const [canReview, setCanReview] = useState(false);
   const [alreadyReviewed, setAlreadyReviewed] = useState(false);
   const [hasPurchased, setHasPurchased] = useState(false);
+  const [filterStar, setFilterStar] = useState(null);
 
   const fetchReviews = async () => {
     try {
@@ -67,7 +68,7 @@ const ReviewPage = ({ productIdOverride }) => {
       setRating(0);
       setComment("");
       fetchReviews();
-      checkReviewPermission(); // cập nhật lại trạng thái sau khi đánh giá
+      checkReviewPermission();
     } catch (err) {
       message.error(err?.response?.data?.error || "Lỗi khi gửi đánh giá");
     } finally {
@@ -97,12 +98,13 @@ const ReviewPage = ({ productIdOverride }) => {
     };
   });
 
-  return (
-    <div className="max-w-6xl mx-auto mt-8 p-4 bg-white rounded shadow">
-      <Title level={3}>Review</Title>
+  const filteredReviews = filterStar
+    ? reviews.filter((r) => r.rating === filterStar)
+    : reviews;
 
+  return (
+    <div className="max-w-7xl mx-auto mt-8 p-4 bg-white rounded shadow">
       <div className="flex flex-wrap gap-8">
-        {/* Tổng quan đánh giá */}
         <div className="w-[220px] bg-gray-100 rounded p-4 text-center">
           <Text className="text-6xl font-bold">{averageRating}</Text>
           <div className="mt-2 mb-4">
@@ -131,31 +133,38 @@ const ReviewPage = ({ productIdOverride }) => {
           ))}
         </div>
 
-        {/* Bộ lọc + Form + Danh sách */}
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             <Button
-              type="default"
+              type={!filterStar ? "default" : "text"}
               className="rounded-full px-4 py-1 font-medium border-black"
+              onClick={() => setFilterStar(null)}
             >
               All review
             </Button>
             {[5, 4, 3, 2, 1].map((star) => (
-              <Button key={star} className="rounded-full px-4 py-1">
+              <Button
+                key={star}
+                type={filterStar === star ? "primary" : "default"}
+                className="rounded-full px-4 py-1"
+                onClick={() => setFilterStar(star)}
+              >
                 <span className="mr-1">★</span> {star}
               </Button>
             ))}
-            <Button className="rounded-full px-4 py-1">With photo</Button>
+            <Button className="rounded-full px-4 py-1" disabled>
+              With photo
+            </Button>
             <Select
               defaultValue="newest"
               style={{ marginLeft: "auto", width: 120 }}
+              disabled
             >
               <Option value="newest">Newest</Option>
               <Option value="oldest">Oldest</Option>
             </Select>
           </div>
 
-          {/* Điều kiện hiển thị form đánh giá */}
           {canReview ? (
             <div className="mb-8 border border-gray-200 rounded-xl p-5 bg-gray-50 shadow-sm">
               <div className="flex items-center gap-3 mb-3">
@@ -174,7 +183,6 @@ const ReviewPage = ({ productIdOverride }) => {
                 placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                // className="mt-2 rounded"
                 style={{ marginBottom: 16, borderRadius: 8 }}
               />
               <Button
@@ -212,12 +220,11 @@ const ReviewPage = ({ productIdOverride }) => {
             </div>
           )}
 
-          {/* Danh sách đánh giá */}
           <List
-            dataSource={reviews}
+            dataSource={filteredReviews}
             locale={{ emptyText: "Chưa có đánh giá nào." }}
             renderItem={(item) => (
-              <List.Item className="px-0">
+              <List.Item className="px-0 border-b border-gray-200 pb-4">
                 <div className="w-full">
                   <div className="flex items-center gap-3 mb-1">
                     <Avatar>{item.user_id?.name?.[0]}</Avatar>
@@ -230,14 +237,6 @@ const ReviewPage = ({ productIdOverride }) => {
                   </div>
                   <Rate value={item.rating} disabled />
                   <p className="text-sm text-gray-800">{item.comment}</p>
-                  <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
-                    <span>
-                      0 <LikeOutlined />
-                    </span>
-                    <span>
-                      0 <DislikeOutlined />
-                    </span>
-                  </div>
                 </div>
               </List.Item>
             )}
