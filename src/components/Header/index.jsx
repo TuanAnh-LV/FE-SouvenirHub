@@ -143,7 +143,7 @@ const Header = () => {
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <img src={logo} alt="Souvenir Hub" className="h-18" />
+            <img src={logo} alt="Souvenir Hub" className="h-16" />
           </div>
 
           {/* Search*/}
@@ -198,7 +198,7 @@ const Header = () => {
               </span>
               <span
                 className="cursor-pointer hover:text-white"
-                onClick={() => navigate("/gift-box")}
+                onClick={() => navigate("/products?category=Hộp quà tặng")}
               >
                 Hộp quà
               </span>

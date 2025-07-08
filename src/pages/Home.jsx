@@ -14,7 +14,6 @@ import { motion } from "framer-motion";
 
 const banners = [
   { src: assets.banner_1, alt: "banner 1" },
-  { src: assets.banner_2, alt: "banner 2" },
   { src: assets.banner_3, alt: "banner 3" },
 ];
 
