@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card, Col, Row, Rate } from "antd";
 import { StarFilled } from "@ant-design/icons";
-import { Motion as Motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import fallbackImg from "../../assets/souvenir-hub-logo.png";
 
 const cardVariants = {
