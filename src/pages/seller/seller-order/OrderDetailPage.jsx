@@ -109,7 +109,7 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="max-w-full mx-auto">
+    <div className="max-w-full mx-auto p-6">
       <Button
         icon={<ArrowLeftOutlined />}
         onClick={() => navigate(-1)}

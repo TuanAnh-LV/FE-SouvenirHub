@@ -25,7 +25,7 @@ const BlogManager = () => {
   }, []);
 
   return (
-    <div className="p-2">
+    <>
       <Card>
         <div
           style={{
@@ -50,7 +50,7 @@ const BlogManager = () => {
           onDelete={fetchBlogs}
         />
       </Card>
-    </div>
+    </>
   );
 };
 

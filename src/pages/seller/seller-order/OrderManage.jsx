@@ -82,7 +82,7 @@ export default function OrderManage() {
   ];
 
   return (
-    <div className="p-2">
+    <div>
       <Card>
         <Title level={2}>Quản lý đơn hàng của shop</Title>
         <Table

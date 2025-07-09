@@ -38,7 +38,7 @@ const DashboardHeader = () => {
         <img
           src={logo}
           alt="Souvenir Hub"
-          className="h-15"
+          className="h-12"
           onClick={() => navigate("/")}
         />
       </div>
