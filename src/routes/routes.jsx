@@ -68,6 +68,8 @@ const CreateBlogPage = lazy(() =>
 const UpdateBlogPage = lazy(() =>
   import("../pages/seller/blogManager/UpdateBlog")
 );
+const VoucherPage = lazy(() => import("../pages/seller/VoucherPage"));
+const CommissionPolicy = lazy(() => import("../pages/seller/CommissionPolicy"));
 const routes = [
   // Public routes
   {
@@ -138,6 +140,8 @@ const routes = [
       { path: "orders/:id", element: <OrderDetailPage /> },
       { path: "blogs/create", element: <CreateBlogPage /> },
       { path: "blogs/update/:id", element: <UpdateBlogPage /> },
+      { path: "vouchers", element: <VoucherPage /> },
+      { path: "commission-policy", element: <CommissionPolicy /> },
     ],
   },
 

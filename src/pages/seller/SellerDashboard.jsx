@@ -8,6 +8,8 @@ import {
   Statistic,
   Table,
   message,
+  Button,
+  Modal,
 } from "antd";
 import {
   LineChart,
@@ -25,15 +27,41 @@ const { Title, Text } = Typography;
 
 const SellerDashboard = () => {
   const [shop, setShop] = useState(null);
-  // const [products, setProducts] = useState([]);
+  const [orderDetails, setOrderDetails] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchSellerStats = async () => {
     try {
       const res = await SellerService.getSellerStats();
       setShop(res.data);
-      // setProducts(res.data.products || []);
     } catch (err) {
       message.error("Không thể tải thông tin cửa hàng.");
+    }
+  };
+
+  const openOrderDetails = async () => {
+    try {
+      const res = await SellerService.getShopOrders();
+      const cleaned = (res.data.orders || []).map((item) => ({
+        ...item,
+        price:
+          typeof item.price === "object" && item.price.$numberDecimal
+            ? Number(item.price.$numberDecimal)
+            : item.price,
+        commission_amount:
+          typeof item.commission_amount === "object" &&
+          item.commission_amount.$numberDecimal
+            ? Number(item.commission_amount.$numberDecimal)
+            : item.commission_amount,
+        net_amount:
+          typeof item.net_amount === "object" && item.net_amount.$numberDecimal
+            ? Number(item.net_amount.$numberDecimal)
+            : item.net_amount,
+      }));
+      setOrderDetails(cleaned);
+      setIsModalOpen(true);
+    } catch (err) {
+      message.error("Không thể tải đơn hàng.");
     }
   };
 
@@ -94,10 +122,10 @@ const SellerDashboard = () => {
       {shop && (
         <>
           <Row gutter={[24, 24]}>
-            <Col xs={24} md={6}>
+            <Col xs={24} md={4}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
-                  title="Doanh thu"
+                  title="Tổng doanh thu"
                   value={Number(shop.totalRevenue) || 0}
                   precision={0}
                   valueStyle={{ color: "#1890ff" }}
@@ -105,7 +133,29 @@ const SellerDashboard = () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} md={6}>
+            <Col xs={24} md={4}>
+              <Card className="shadow-sm rounded-xl">
+                <Statistic
+                  title="Hoa hồng hệ thống"
+                  value={Number(shop.totalCommission) || 0}
+                  precision={0}
+                  valueStyle={{ color: "#faad14" }}
+                  suffix="₫"
+                />
+              </Card>
+            </Col>
+            <Col xs={24} md={4}>
+              <Card className="shadow-sm rounded-xl">
+                <Statistic
+                  title="Thực nhận"
+                  value={Number(shop.netRevenue) || 0}
+                  precision={0}
+                  valueStyle={{ color: "#3f8600" }}
+                  suffix="₫"
+                />
+              </Card>
+            </Col>
+            <Col xs={24} md={4}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Đơn hàng"
@@ -114,7 +164,7 @@ const SellerDashboard = () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} md={6}>
+            <Col xs={24} md={4}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Đơn huỷ"
@@ -123,7 +173,7 @@ const SellerDashboard = () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} md={6}>
+            <Col xs={24} md={4}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Đánh giá"
@@ -133,6 +183,12 @@ const SellerDashboard = () => {
               </Card>
             </Col>
           </Row>
+
+          <div className="flex justify-end mt-2">
+            <Button onClick={openOrderDetails} type="link">
+              Xem chi tiết đơn hàng
+            </Button>
+          </div>
 
           <Row gutter={[24, 24]} className="mt-6 mb-6">
             <Col xs={24} md={16}>
@@ -199,6 +255,50 @@ const SellerDashboard = () => {
               rowKey="_id"
             />
           </Card>
+
+          <Modal
+            open={isModalOpen}
+            title="Chi tiết doanh thu theo đơn hàng"
+            footer={null}
+            onCancel={() => setIsModalOpen(false)}
+            width={800}
+          >
+            <Table
+              dataSource={orderDetails}
+              rowKey={(r, i) => i}
+              pagination={{ pageSize: 5 }}
+              columns={[
+                {
+                  title: "Sản phẩm",
+                  dataIndex: "product_name",
+                },
+                {
+                  title: "Giá bán",
+                  dataIndex: "price",
+                  render: (val) => `${val.toLocaleString()}₫`,
+                },
+                {
+                  title: "SL",
+                  dataIndex: "quantity",
+                },
+                {
+                  title: "Tỉ lệ hoa hồng",
+                  dataIndex: "commission_rate",
+                  render: (val) => `${(val * 100).toFixed(1)}%`,
+                },
+                {
+                  title: "Hoa hồng",
+                  dataIndex: "commission_amount",
+                  render: (val) => `${val.toLocaleString()}₫`,
+                },
+                {
+                  title: "Thực nhận",
+                  dataIndex: "net_amount",
+                  render: (val) => `${val.toLocaleString()}₫`,
+                },
+              ]}
+            />
+          </Modal>
         </>
       )}
     </div>

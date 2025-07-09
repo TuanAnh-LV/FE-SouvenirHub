@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import queryString from "query-string";
 const priceOptions = [
   { label: "Tất cả", value: "" },
+  { label: "Dưới 100k", value: "<100" },
   { label: "Từ 100k đến 400k", value: "100-400" },
   { label: "Từ 400k đến 1tr", value: "400-1000" },
   { label: "Trên 1tr", value: ">1000" },
@@ -36,6 +37,7 @@ const AllProductPage = () => {
   }, [category]);
   // Xử lý giá trị min/max theo radio
   const getPriceFilter = (price = priceRange) => {
+    if (price === "<100") return { minPrice: 0, maxPrice: 100000 };
     if (price === "100-400") return { minPrice: 100000, maxPrice: 400000 };
     if (price === "400-1000") return { minPrice: 400000, maxPrice: 1000000 };
     if (price === ">1000") return { minPrice: 1000000, maxPrice: 0 };

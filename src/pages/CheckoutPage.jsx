@@ -128,18 +128,17 @@ export default function CheckoutPage() {
     fetchInitialData();
   }, []);
 
-
   const handleSubmit = async () => {
     if (!orderId) {
       return message.warning("Không tìm thấy order_id để thanh toán");
     }
-  
+
     try {
       const updateOrder = await OrderService.updateOrder(orderId, {
         shipping_address_id: selectedAddressId,
         voucher_id: selectedVoucherId,
       });
-  
+
       if (paymentMethod === "momo") {
         const payRes = await PaymentService.createMomo({ order_id: orderId });
         window.location.href = payRes.data.payUrl;
@@ -150,7 +149,7 @@ export default function CheckoutPage() {
           orderCode: updateOrder.data.order.order_code,
           description: `Thanh toán ${updateOrder.data.order.order_code}`,
           returnUrl: window.location.origin + "/payment-success",
-          cancelUrl: window.location.origin + "/payment-cancel"
+          cancelUrl: window.location.origin + "/payment-cancel",
         });
         console.log(updateOrder.data.order.order_code);
         window.location.href = payosRes.data.data.checkoutUrl; // chuyển hướng sang PayOS

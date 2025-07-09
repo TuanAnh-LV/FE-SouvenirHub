@@ -5,8 +5,7 @@ const parsePrice = (priceObj) =>
   parseFloat(priceObj?.$numberDecimal || priceObj || 0);
 
 export default function ProductList({ items, shopName }) {
-  const shippingFee = 16500;
-  const insuranceFee = 289;
+  // const shippingFee = 16500;
 
   const total = items.reduce((acc, item) => {
     const price = parsePrice(
@@ -76,23 +75,6 @@ export default function ProductList({ items, shopName }) {
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-start gap-2 bg-gray-50 p-2 rounded border border-dashed">
-                <Checkbox />
-                <div className="text-xs text-gray-600">
-                  <strong>Bảo hiểm Thiệt hại sản phẩm</strong>
-                  <div>
-                    Bảo vệ sản phẩm khỏi thiệt hại do sự cố bất ngờ, tiếp xúc
-                    với chất lỏng hoặc hư hỏng trong quá trình sử dụng.{" "}
-                    <a href="#" className="text-blue-500">
-                      Tìm hiểu thêm
-                    </a>
-                  </div>
-                </div>
-                <div className="ml-auto text-sm font-medium text-gray-700">
-                  {insuranceFee.toLocaleString()}₫
-                </div>
-              </div>
             </div>
           </Card>
         );
@@ -112,9 +94,7 @@ export default function ProductList({ items, shopName }) {
 
         <div className="flex justify-end items-center text-base font-semibold">
           <span className="mr-2">Tổng số tiền:</span>
-          <span className="text-orange-600">
-            {(total + shippingFee).toLocaleString()}₫
-          </span>
+          <span className="text-orange-600">{total.toLocaleString()}₫</span>
         </div>
       </div>
     </Card>
