@@ -79,16 +79,6 @@ const SidebarMenu = () => {
       icon: <TagOutlined />,
     },
     {
-      path: "/seller/notifications",
-      label: "Thông báo",
-      icon: <BellOutlined />,
-    },
-    {
-      path: "/seller/finance",
-      label: "Tài chính",
-      icon: <DollarOutlined />,
-    },
-    {
       path: "/seller/commission-policy",
       label: "Chính sách hoa hồng",
       icon: <PercentageOutlined />,

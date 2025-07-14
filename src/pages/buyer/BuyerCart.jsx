@@ -82,10 +82,9 @@ const BuyerCart = () => {
       try {
         const res = await ReviewService.checkUserCanReview(productId);
         results[productId] = res.data?.canReview;
-        console.log("✅ Review check:", productId, res.data);
       } catch (error) {
         results[productId] = false;
-        console.error("❌ Lỗi check review:", productId, error);
+        console.error(" Lỗi check review:", productId, error);
       }
     }
     setCanReviewMap(results);

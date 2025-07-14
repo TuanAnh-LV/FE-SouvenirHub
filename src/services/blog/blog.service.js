@@ -10,9 +10,16 @@ export const BlogService = {
         });
     },
 
-    getMyBlogs: () => {
+    // getMyBlogs: () => {
+    //     return BaseService.get({
+    //         url: API.BLOG.GET_MY_BLOGS,
+    //         isLoading: true,
+    //     });
+    // },
+    getMyBlogs:(params = {}) => {
+        const queryString = new URLSearchParams(params).toString();
         return BaseService.get({
-            url: API.BLOG.GET_MY_BLOGS,
+            url: `${API.BLOG.GET_MY_BLOGS}?${queryString}`,
             isLoading: true,
         });
     },
