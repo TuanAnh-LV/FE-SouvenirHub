@@ -70,6 +70,9 @@ const UpdateBlogPage = lazy(() =>
 );
 const VoucherPage = lazy(() => import("../pages/seller/VoucherPage"));
 const CommissionPolicy = lazy(() => import("../pages/seller/CommissionPolicy"));
+const NotificationBellPage = lazy(() =>
+  import("../components/SendNotificationTest")
+);
 const routes = [
   // Public routes
   {
@@ -92,6 +95,7 @@ const routes = [
       { path: "/blog/:id", element: <BlogDetailPage /> },
       { path: "/payment-success", element: <PaymentSuccess /> },
       { path: "/payment-cancel", element: <PaymentCancel /> },
+      { path: "notifi", element: <NotificationBellPage /> },
     ],
   },
 

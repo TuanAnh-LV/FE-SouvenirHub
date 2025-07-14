@@ -9,8 +9,8 @@ const BlogList = ({ onEdit }) => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await BlogService.getBlogs();
-      setBlogs(response.data.items || []);
+      const response = await BlogService.getMyBlogs();
+      setBlogs(response.data || []);
     } catch (error) {
       message.error("Failed to fetch blogs");
     }

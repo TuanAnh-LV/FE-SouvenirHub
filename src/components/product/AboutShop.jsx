@@ -14,7 +14,6 @@ const AboutShop = ({ shop_id }) => {
     try {
       const response = await ProductService.getShopById(shop_id);
       setShopProfile(response.data.shop);
-      console.log("data", response.data.shop);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu shop:", error);
     }

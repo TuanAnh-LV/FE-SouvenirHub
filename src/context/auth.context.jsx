@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { AuthService } from "../services/auth-service/auth.service";
 import { HttpException } from "../app/toastException/http.exception";
-
+import socket from "../utils/socket";
 // HTTP status codes
 const HTTP_STATUS = {
   BADREQUEST: 400,
@@ -88,6 +88,8 @@ export const AuthProvider = ({ children }) => {
       setRole(userData.role);
       localStorage.setItem("userInfo", JSON.stringify(userData));
       localStorage.setItem("role", userData.role);
+      socket.connect();
+      socket.emit("join", userData._id);
     } catch (error) {
       console.error("Failed to get user info:", error);
       throw error instanceof HttpException
@@ -104,6 +106,10 @@ export const AuthProvider = ({ children }) => {
     setRole(null);
     setUserInfo(null);
     localStorage.clear();
+    if (socket.connected) {
+      socket.disconnect();
+      console.log(" Socket disconnected");
+    }
     if (typeof onLogoutCleanup === "function") {
       onLogoutCleanup();
     }

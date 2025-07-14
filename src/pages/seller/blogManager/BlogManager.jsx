@@ -4,7 +4,7 @@ import { Button, Card, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { BlogService } from "../../../services/blog/blog.service";
 import BlogList from "../../../components/blog-mng/BlogList";
-
+import { PlusOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 const BlogManager = () => {
@@ -41,6 +41,27 @@ const BlogManager = () => {
           <Button
             type="primary"
             onClick={() => navigate("/seller/blogs/create")}
+            style={{
+              background: "#F99600",
+              color: "#fff",
+              border: "none",
+              fontSize: "1rem",
+              padding: "1rem",
+              height: "2.5rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              transition: "all 0.2s",
+            }}
+            icon={<PlusOutlined style={{ color: "#fff", fontSize: "1rem" }} />}
+            onMouseEnter={(e) => {
+              e.target.style.background = "#d17c00";
+              e.target.style.color = "#fff";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = "#F99600";
+              e.target.style.color = "#fff";
+            }}
           >
             Tạo bài viết
           </Button>

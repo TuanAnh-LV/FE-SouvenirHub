@@ -49,8 +49,8 @@ const columns = [
 
 const CommissionPolicy = () => {
   return (
-    <div className="p-6 bg-white rounded shadow">
-      <Title level={4}>📌 Chính sách hoa hồng theo giá sản phẩm</Title>
+    <div className="p-6">
+      <Title level={4}> Chính sách hoa hồng theo giá sản phẩm</Title>
       <Paragraph>
         Chính sách này giúp bạn tối ưu chi phí và lợi nhuận khi bán hàng.
       </Paragraph>
