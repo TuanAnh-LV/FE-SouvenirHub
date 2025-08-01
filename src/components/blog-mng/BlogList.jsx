@@ -1,5 +1,5 @@
 // BlogList.jsx
-import { Table, Button, Popconfirm, message } from "antd";
+import { Tooltip, Table, Button, Popconfirm, message } from "antd";
 import { useEffect, useState } from "react";
 import { BlogService } from "../../services/blog/blog.service";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
@@ -9,8 +9,8 @@ const BlogList = ({ onEdit }) => {
 
   const fetchBlogs = async () => {
     try {
-      const response = await BlogService.getBlogs();
-      setBlogs(response.data.items || []);
+      const response = await BlogService.getMyBlogs();
+      setBlogs(response.data || []);
     } catch (error) {
       message.error("Failed to fetch blogs");
     }
@@ -19,10 +19,10 @@ const BlogList = ({ onEdit }) => {
   const handleDelete = async (id) => {
     try {
       await BlogService.deleteBlog(id);
-      message.success("Blog deleted successfully");
+      message.success("Xóa blog thành công!");
       fetchBlogs();
     } catch (error) {
-      message.error("Failed to delete blog");
+      message.error("Xóa blog thất bại.");
       console.error(error);
     }
   };
@@ -39,18 +39,23 @@ const BlogList = ({ onEdit }) => {
       key: "actions",
       render: (_, record) => (
         <>
-          <Button
-            icon={<EditOutlined />}
-            type="text"
-            onClick={() => onEdit(record._id)}
-          />
+          <Tooltip title="Chỉnh sửa bài viết">
+            <Button
+              icon={<EditOutlined />}
+              type="text"
+              onClick={() => onEdit(record._id)}
+            />
+          </Tooltip>
+
           <Popconfirm
             title="Bạn có muốn xóa bài viết?"
             onConfirm={() => handleDelete(record._id)}
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<DeleteOutlined />} type="text" danger />
+            <Tooltip title="Xóa bài viết">
+              <Button icon={<DeleteOutlined />} type="text" danger />
+            </Tooltip>
           </Popconfirm>
         </>
       ),

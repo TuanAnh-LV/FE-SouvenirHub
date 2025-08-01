@@ -15,14 +15,14 @@ export const CartStatusEnum = {
   done: "done",
   cancelled: "cancelled",
 };
-
+import { useAuth } from "./auth.context";
 const CartContext = createContext(undefined);
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [cartCompletedItems, setCartCompletedItems] = useState([]);
   const [cartCount, setCartCount] = useState(0);
-  const token = localStorage.getItem("token");
+  const { token } = useAuth();
   const [cart, setCart] = useState({
     items: [],
     total_price: 0,
@@ -108,9 +108,15 @@ export const CartProvider = ({ children }) => {
         await updateCartItems(CartStatusEnum.new);
         await getCartCount();
         await getCompletedCount();
+        await refreshCart();
       } else {
         setCartItems([]);
         setCartCount(0);
+        setCart({
+          items: [],
+          total_price: 0,
+          total_quantity: 0,
+        });
       }
     };
     initCart();
@@ -137,6 +143,7 @@ export const CartProvider = ({ children }) => {
 
       const res = await CartService.addToCart(payload);
       setCart(res.data);
+      await getCartCount();
     } catch (err) {
       console.error("Failed to add to cart:", err);
     }

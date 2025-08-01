@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AdminService } from "../../services/admin/admin.service";
-import { Button, Input, Modal, message } from "antd";
+import { Tooltip, Button, Input, Modal, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 
 const ManagePendingProducts = () => {
   const [products, setProducts] = useState([]);
@@ -70,7 +75,7 @@ const ManagePendingProducts = () => {
   }, []);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow">
+    <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">
         Quản lý sản phẩm chờ duyệt
       </h1>
@@ -106,21 +111,29 @@ const ManagePendingProducts = () => {
                 </span>
               </td>
               <td className="p-3 text-center space-x-2">
-                <Button
-                  type="primary"
-                  onClick={() => handleApprove(product._id)}
-                >
-                  Duyệt
-                </Button>
-                <Button danger onClick={() => openRejectModal(product._id)}>
-                  Từ chối
-                </Button>
-                <Button
-                  type="default"
-                  onClick={() => navigate(`/admin/products/${product._id}`)}
-                >
-                  Chi tiết
-                </Button>
+                <Tooltip title="Duyệt sản phẩm này">
+                  <Button
+                    type="text"
+                    icon={<CheckCircleOutlined />}
+                    onClick={() => handleApprove(product._id)}
+                  />
+                </Tooltip>
+
+                <Tooltip title="Từ chối sản phẩm này">
+                  <Button
+                    type="text"
+                    icon={<CloseCircleOutlined />}
+                    onClick={() => openRejectModal(product._id)}
+                  />
+                </Tooltip>
+
+                <Tooltip title="Xem chi tiết sản phẩm">
+                  <Button
+                    type="text"
+                    icon={<EyeOutlined />}
+                    onClick={() => navigate(`/admin/products/${product._id}`)}
+                  />
+                </Tooltip>
               </td>
             </tr>
           ))}

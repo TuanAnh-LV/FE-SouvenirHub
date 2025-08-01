@@ -27,10 +27,19 @@ const LoginPage = () => {
         email: form.email,
         password: form.password,
       });
+
       if (response?.data?.token && response?.data?.user) {
         await handleLogin(response.data.token, response.data.user);
         message.success("Đăng nhập thành công!");
-        navigate(ROUTER_URL.COMMON.HOME);
+
+        const role = response.data.user.role;
+        if (role === "admin") {
+          navigate(ROUTER_URL.ADMIN.DASHBOARD); // hoặc trang admin cụ thể
+        } else if (role === "seller") {
+          navigate(ROUTER_URL.SELLER.DASHBOARD); // hoặc trang seller cụ thể
+        } else {
+          navigate(ROUTER_URL.COMMON.HOME); // fallback nếu role không rõ
+        }
       } else {
         message.error("Phản hồi đăng nhập không hợp lệ.");
       }
@@ -45,9 +54,23 @@ const LoginPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
-      await loginGoogle(idToken);
-      message.success("Đăng nhập Google thành công!");
-      navigate(ROUTER_URL.COMMON.HOME);
+      const response = await loginGoogle(idToken);
+
+      if (response?.data?.token && response?.data?.user) {
+        await handleLogin(response.data.token, response.data.user);
+        message.success("Đăng nhập Google thành công!");
+
+        const role = response.data.user.role;
+        if (role === "admin") {
+          navigate(ROUTER_URL.ADMIN.DASHBOARD);
+        } else if (role === "seller") {
+          navigate(ROUTER_URL.SELLER.DASHBOARD);
+        } else {
+          navigate(ROUTER_URL.COMMON.HOME);
+        }
+      } else {
+        message.error("Phản hồi đăng nhập Google không hợp lệ.");
+      }
     } catch {
       message.error("Đăng nhập Google thất bại");
     }

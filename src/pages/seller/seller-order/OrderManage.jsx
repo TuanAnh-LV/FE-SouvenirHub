@@ -3,7 +3,6 @@ import { Table, Tag, Button, message, Card, Typography } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { OrderService } from "../../../services/order/order.service";
-
 const { Title } = Typography;
 
 const statusColor = {
@@ -72,17 +71,19 @@ export default function OrderManage() {
       title: "Thao tác",
       key: "action",
       render: (_, record) => (
-        <Button
-          icon={<EyeOutlined />}
-          type="text"
-          onClick={() => navigate(`/seller/orders/${record._id}`)}
-        />
+        <Tooltip title="Xem chi tiết đơn hàng">
+          <Button
+            icon={<EyeOutlined />}
+            type="text"
+            onClick={() => navigate(`/seller/orders/${record._id}`)}
+          />
+        </Tooltip>
       ),
     },
   ];
 
   return (
-    <div className="p-2">
+    <div>
       <Card>
         <Title level={2}>Quản lý đơn hàng của shop</Title>
         <Table

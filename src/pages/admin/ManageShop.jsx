@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag, Button, message } from "antd";
+import { Tooltip, Table, Tag, Button, message, Popconfirm } from "antd";
 import { AdminService } from "../../services/admin/admin.service";
 import { useNavigate } from "react-router-dom";
-
+import { CheckOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 const ManageShop = () => {
   const [shops, setShops] = useState([]);
   const navigate = useNavigate();
@@ -17,14 +17,12 @@ const ManageShop = () => {
   };
 
   const confirmDelete = async (shopId) => {
-    if (window.confirm("Bạn có chắc muốn xoá cửa hàng này?")) {
-      try {
-        await AdminService.deleteShop(shopId);
-        message.success("Xoá cửa hàng thành công!");
-        fetchShops();
-      } catch (error) {
-        message.error("Xoá cửa hàng thất bại.");
-      }
+    try {
+      await AdminService.deleteShop(shopId);
+      message.success("Xoá cửa hàng thành công!");
+      fetchShops();
+    } catch (error) {
+      message.error("Xoá cửa hàng thất bại.");
     }
   };
 
@@ -75,26 +73,36 @@ const ManageShop = () => {
       key: "actions",
       render: (_, record) => (
         <div className="flex gap-2">
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => navigate(`/admin/shops/${record._id}`)}
-          >
-            Chi tiết
-          </Button>
+          <Tooltip title="Xem chi tiết cửa hàng">
+            <Button
+              icon={<EyeOutlined />}
+              type="text"
+              onClick={() => navigate(`/admin/shops/${record._id}`)}
+            />
+          </Tooltip>
 
           {record.status === "pending" && (
-            <Button
-              size="small"
-              onClick={() => navigate(`/admin/shop-applications/${record._id}`)}
-            >
-              Xét duyệt
-            </Button>
+            <Tooltip title="Duyệt đơn đăng ký">
+              <Button
+                icon={<CheckOutlined />}
+                type="text"
+                onClick={() =>
+                  navigate(`/admin/shop-applications/${record._id}`)
+                }
+              />
+            </Tooltip>
           )}
 
-          <Button danger size="small" onClick={() => confirmDelete(record._id)}>
-            Xoá
-          </Button>
+          <Popconfirm
+            title="Bạn có muốn xóa cửa hàng?"
+            onConfirm={() => confirmDelete(record._id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Tooltip title="Xoá cửa hàng">
+              <Button icon={<DeleteOutlined />} type="text" danger />
+            </Tooltip>
+          </Popconfirm>
         </div>
       ),
     },

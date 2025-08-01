@@ -28,7 +28,9 @@ export default function CartPage() {
   );
 
   const selectedTotalPrice = selectedCartItems.reduce(
-    (sum, item) => sum + parsePrice(item.product?.price) * item.quantity,
+    (sum, item) =>
+      sum +
+      parsePrice(item.variant?.price || item.product?.price) * item.quantity,
     0
   );
 
@@ -162,7 +164,9 @@ export default function CartPage() {
               </div>
 
               {group.items.map((item) => {
-                const price = parsePrice(item.product?.price);
+                const price = parsePrice(
+                  item.variant?.price || item.product?.price
+                );
                 return (
                   <div
                     key={item._id}

@@ -68,6 +68,11 @@ const CreateBlogPage = lazy(() =>
 const UpdateBlogPage = lazy(() =>
   import("../pages/seller/blogManager/UpdateBlog")
 );
+const VoucherPage = lazy(() => import("../pages/seller/VoucherPage"));
+const CommissionPolicy = lazy(() => import("../pages/seller/CommissionPolicy"));
+const NotificationBellPage = lazy(() =>
+  import("../components/SendNotificationTest")
+);
 const routes = [
   // Public routes
   {
@@ -90,6 +95,7 @@ const routes = [
       { path: "/blog/:id", element: <BlogDetailPage /> },
       { path: "/payment-success", element: <PaymentSuccess /> },
       { path: "/payment-cancel", element: <PaymentCancel /> },
+      { path: "notifi", element: <NotificationBellPage /> },
     ],
   },
 
@@ -138,6 +144,8 @@ const routes = [
       { path: "orders/:id", element: <OrderDetailPage /> },
       { path: "blogs/create", element: <CreateBlogPage /> },
       { path: "blogs/update/:id", element: <UpdateBlogPage /> },
+      { path: "vouchers", element: <VoucherPage /> },
+      { path: "commission-policy", element: <CommissionPolicy /> },
     ],
   },
 

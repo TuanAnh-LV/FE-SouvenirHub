@@ -12,7 +12,6 @@ import UpdateAddress from "../pages/address/UpdateAddress";
 
 import AddressBox from "../components/checkout/AddressBox";
 import ProductList from "../components/checkout/ProductList";
-import NoteAndShipping from "../components/checkout/NoteAndShipping";
 import VoucherSelect from "../components/checkout/VoucherSelect";
 import PaymentOptions from "../components/checkout/PaymentOptions";
 import SummaryBox from "../components/checkout/SummaryBox";
@@ -31,7 +30,6 @@ export default function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState("");
 
   const [selectedGroups, setSelectedGroups] = useState([]); // group = { shop_name, items[] }
-  const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [voucherList, setVoucherList] = useState([]);
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
@@ -128,18 +126,17 @@ export default function CheckoutPage() {
     fetchInitialData();
   }, []);
 
-
   const handleSubmit = async () => {
     if (!orderId) {
       return message.warning("Không tìm thấy order_id để thanh toán");
     }
-  
+
     try {
       const updateOrder = await OrderService.updateOrder(orderId, {
         shipping_address_id: selectedAddressId,
         voucher_id: selectedVoucherId,
       });
-  
+
       if (paymentMethod === "momo") {
         const payRes = await PaymentService.createMomo({ order_id: orderId });
         window.location.href = payRes.data.payUrl;
@@ -150,7 +147,7 @@ export default function CheckoutPage() {
           orderCode: updateOrder.data.order.order_code,
           description: `Thanh toán ${updateOrder.data.order.order_code}`,
           returnUrl: window.location.origin + "/payment-success",
-          cancelUrl: window.location.origin + "/payment-cancel"
+          cancelUrl: window.location.origin + "/payment-cancel",
         });
         console.log(updateOrder.data.order.order_code);
         window.location.href = payosRes.data.data.checkoutUrl; // chuyển hướng sang PayOS
@@ -235,14 +232,6 @@ export default function CheckoutPage() {
           <ProductList items={group.items} shopName={group.shop_name} />
         </div>
       ))}
-
-      <div className="mb-6">
-        <NoteAndShipping
-          note={note}
-          setNote={setNote}
-          // shippingFee={shippingFee}
-        />
-      </div>
 
       <div className="mb-6">
         <VoucherSelect

@@ -5,8 +5,7 @@ const parsePrice = (priceObj) =>
   parseFloat(priceObj?.$numberDecimal || priceObj || 0);
 
 export default function ProductList({ items, shopName }) {
-  const shippingFee = 16500;
-  const insuranceFee = 289;
+  // const shippingFee = 16500;
 
   const total = items.reduce((acc, item) => {
     const price = parsePrice(
@@ -14,6 +13,20 @@ export default function ProductList({ items, shopName }) {
     );
     return acc + price * item.quantity;
   }, 0);
+  const formatDateVN = (date) => {
+    const d = new Date(date);
+    return `${d.getDate()} Tháng ${d.getMonth() + 1}`;
+  };
+  const today = new Date();
+  const earliestDate = new Date(today);
+  earliestDate.setDate(today.getDate() + 2);
+
+  const latestDate = new Date(today);
+  latestDate.setDate(today.getDate() + 5);
+
+  const deliveryEstimate = `Đảm bảo nhận hàng từ ${formatDateVN(
+    earliestDate
+  )} - ${formatDateVN(latestDate)}`;
 
   return (
     <Card
@@ -76,23 +89,6 @@ export default function ProductList({ items, shopName }) {
                   </div>
                 </div>
               </div>
-
-              <div className="flex items-start gap-2 bg-gray-50 p-2 rounded border border-dashed">
-                <Checkbox />
-                <div className="text-xs text-gray-600">
-                  <strong>Bảo hiểm Thiệt hại sản phẩm</strong>
-                  <div>
-                    Bảo vệ sản phẩm khỏi thiệt hại do sự cố bất ngờ, tiếp xúc
-                    với chất lỏng hoặc hư hỏng trong quá trình sử dụng.{" "}
-                    <a href="#" className="text-blue-500">
-                      Tìm hiểu thêm
-                    </a>
-                  </div>
-                </div>
-                <div className="ml-auto text-sm font-medium text-gray-700">
-                  {insuranceFee.toLocaleString()}₫
-                </div>
-              </div>
             </div>
           </Card>
         );
@@ -104,17 +100,13 @@ export default function ProductList({ items, shopName }) {
           <span className="text-gray-700">Phương thức vận chuyển:</span>
           <span className="text-blue-600 cursor-pointer">Thay đổi</span>
         </div>
-        <div className="text-sm text-gray-600 mb-4">
-          Đảm bảo nhận hàng từ 7 Tháng 6 - 9 Tháng 6
-        </div>
+        <div className="text-sm text-gray-600 mb-4">{deliveryEstimate}</div>
 
         <Input placeholder="Lưu ý cho Người bán..." className="mb-4" />
 
         <div className="flex justify-end items-center text-base font-semibold">
           <span className="mr-2">Tổng số tiền:</span>
-          <span className="text-orange-600">
-            {(total + shippingFee).toLocaleString()}₫
-          </span>
+          <span className="text-orange-600">{total.toLocaleString()}₫</span>
         </div>
       </div>
     </Card>

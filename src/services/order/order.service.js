@@ -25,9 +25,9 @@ export const OrderService = {
     },
     
     updateOrderStatus: (id, status) => {
-        return BaseService.put({
+        return BaseService.patch({
         url: API.ORDER.UPDATE_ORDER_STATUS.replace(":id", id),
-        payload: status,
+        payload: { status },
         isLoading: true,
         });
     },
@@ -56,5 +56,11 @@ export const OrderService = {
             url : API.ORDER.MY_SHOP_ORDERS,
             isLoading: true,
         })
+    },
+    getAllOrderOfShop: () => {
+        return BaseService.get({
+            url: API.ORDER.GET_ALL_ORDER_SHOP,
+            isLoading: true,
+        });
     }
 }

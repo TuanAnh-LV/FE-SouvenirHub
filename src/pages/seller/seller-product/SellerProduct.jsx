@@ -16,7 +16,7 @@ const SellerProduct = () => {
   };
 
   return (
-    <div className="p-2 text-center">
+    <div className="text-center">
       <Card>
         <div
           style={{

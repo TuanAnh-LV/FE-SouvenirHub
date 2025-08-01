@@ -1,10 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { Card, message, Tag, Button } from "antd";
+import { Card, message, Tag, Button, Modal } from "antd";
 import { OrderService } from "../../services/order/order.service";
 import { ProductService } from "../../services/product-service/product.service";
+import { ReviewService } from "../../services/review/review.service";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import ReviewPage from "../ReviewPage";
 
 const statusColor = {
   pending: "orange",
@@ -17,6 +19,9 @@ const statusColor = {
 const BuyerCart = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [canReviewMap, setCanReviewMap] = useState({});
+  const [openReview, setOpenReview] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const navigate = useNavigate();
 
   const fetchOrders = async () => {
@@ -24,17 +29,24 @@ const BuyerCart = () => {
     try {
       const res = await OrderService.getOrders();
       let allOrders = [];
+
       if (res && Array.isArray(res.data)) {
         allOrders = res.data;
+
         for (const order of allOrders) {
           for (const item of order.items) {
-            if (!item.product_id || typeof item.product_id !== "object")
-              continue;
+            // ✅ Fix: đồng bộ product → product_id nếu cần
+            if (!item.product_id && item.product) {
+              item.product_id = item.product;
+            }
+
+            const productId = item.product_id?._id;
+            if (!productId || typeof item.product_id !== "object") continue;
+
+            // Nếu chưa có hình ảnh → fetch chi tiết sản phẩm
             if (!item.product_id.images) {
               try {
-                const productRes = await ProductService.getByid(
-                  item.product_id._id
-                );
+                const productRes = await ProductService.getByid(productId);
                 item.product_id = productRes.data;
               } catch {
                 item.product_id.images = [];
@@ -43,12 +55,41 @@ const BuyerCart = () => {
           }
         }
       }
+
       setOrders(allOrders);
+
+      // ✅ Gộp danh sách product_id duy nhất để kiểm tra quyền review
+      const uniqueProducts = new Map();
+      for (const order of allOrders) {
+        for (const item of order.items) {
+          const pid = item.product_id?._id;
+          if (pid && !uniqueProducts.has(pid)) {
+            uniqueProducts.set(pid, item.product_id);
+          }
+        }
+      }
+
+      checkReviewStatus([...uniqueProducts.keys()]);
     } catch (err) {
       message.error("Không thể lấy danh sách đơn hàng");
     }
     setLoading(false);
   };
+
+  const checkReviewStatus = async (productIds) => {
+    const results = {};
+    for (const productId of productIds) {
+      try {
+        const res = await ReviewService.checkUserCanReview(productId);
+        results[productId] = res.data?.canReview;
+      } catch (error) {
+        results[productId] = false;
+        console.error(" Lỗi check review:", productId, error);
+      }
+    }
+    setCanReviewMap(results);
+  };
+
   const handleConfirmReceived = async (orderId) => {
     try {
       await OrderService.confirmReceived(orderId);
@@ -58,10 +99,6 @@ const BuyerCart = () => {
       message.error("Xác nhận nhận hàng thất bại");
     }
   };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   const handleDeleteItem = async (orderId) => {
     try {
@@ -73,56 +110,84 @@ const BuyerCart = () => {
     }
   };
 
+  const handleOpenReview = (productId) => {
+    setSelectedProductId(productId);
+    setOpenReview(true);
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
   return (
-    <div className="cart-container">
+    <div className="min-h-screen p-4">
       {orders.length === 0 ? (
-        <div className="empty">Không có đơn hàng.</div>
+        <div className="text-center text-gray-500 mt-12">
+          Không có đơn hàng.
+        </div>
       ) : (
         orders.map((order) => (
-          <div key={order._id} className="order-card">
-            {order.items.map((item) => (
-              <div key={item._id} className="order-item">
-                <img
-                  src={
-                    item.variant?.images?.[0] ||
-                    item.product?.image ||
-                    "https://via.placeholder.com/80"
-                  }
-                  alt={item.product?.name || "Product image"}
-                />
-                <div className="item-info">
-                  <div className="title">
-                    {item.product?.name || "Sản phẩm không xác định"}
-                    {item.variant?.name && (
-                      <span className="text-sm text-gray-500">
-                        {" "}
-                        - Mẫu: {item.variant.name}
-                      </span>
-                    )}
+          <div key={order._id} className="bg-white mb-4 p-4 shadow-sm">
+            {order.items.map((item) => {
+              const productId = item.product_id?._id;
+              const canReview = canReviewMap[productId];
+
+              return (
+                <div key={item._id} className="flex items-center mb-3">
+                  <img
+                    src={
+                      item.variant?.images?.[0] ||
+                      item.product?.image ||
+                      "https://via.placeholder.com/80"
+                    }
+                    alt={item.product?.name || "Product image"}
+                    className="w-20 h-20 object-cover rounded mr-4"
+                  />
+                  <div className="flex-1">
+                    <div className="font-semibold text-base">
+                      {item.product?.name || "Sản phẩm không xác định"}
+                      {item.variant?.name && (
+                        <span className="text-sm text-gray-500">
+                          {" "}
+                          - Mẫu: {item.variant.name}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {item.product_id?.category_id?.name || ""}
+                    </div>
                   </div>
-                  <div className="category">
-                    {item.product_id?.category_id?.name || ""}
+                  <div className="w-24 text-right text-base">
+                    {(item.price || 0).toLocaleString()}₫
                   </div>
+                  <div className="w-20 text-right text-gray-600">
+                    x{item.quantity}
+                  </div>
+                  {order.status === "completed" && canReview && (
+                    <Button
+                      size="small"
+                      type="link"
+                      onClick={() => handleOpenReview(productId)}
+                    >
+                      Đánh giá
+                    </Button>
+                  )}
                 </div>
-                <div className="item-price">
-                  {(item.price || 0).toLocaleString()}₫
-                </div>
-                <div className="item-quantity">x{item.quantity}</div>
-              </div>
-            ))}
-            <div className="order-footer">
-              <div className="order-total">
+              );
+            })}
+            <div className="flex justify-between items-center border-t pt-3 mt-3">
+              <div className="text-base">
                 Tổng tiền:{" "}
                 <b>
                   {parseInt(order.total_price.$numberDecimal).toLocaleString()}₫
                 </b>
               </div>
-              <div className="order-status">
+              <div className="flex items-center gap-2">
                 <Tag color={statusColor[order.status] || "default"}>
                   {order.status === "pending"
                     ? "Chờ xác nhận"
                     : order.status === "processing"
-                    ? "Đang xử lý"
+                    ? "Đang giao hàng"
                     : order.status === "shipped"
                     ? "Đã giao"
                     : order.status === "completed"
@@ -143,7 +208,6 @@ const BuyerCart = () => {
                     </Button>
                     <Button
                       type="primary"
-                      style={{ marginLeft: 8 }}
                       onClick={() =>
                         navigate("/checkout", { state: { orderId: order._id } })
                       }
@@ -166,65 +230,24 @@ const BuyerCart = () => {
         ))
       )}
 
-      <style>{`
-        .cart-container {
-          min-height: 100vh;
-        }
-        .empty {
-          text-align: center;
-          color: #999;
-          margin-top: 48px;
-        }
-        .order-card {
-          background: #fff;
-          border: 1px solid #eee;
-          margin-bottom: 16px;
-          border-radius: 6px;
-          padding: 16px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-        .order-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        .order-item img {
-          width: 80px;
-          height: 80px;
-          object-fit: cover;
-          border-radius: 6px;
-          margin-right: 16px;
-        }
-        .item-info {
-          flex: 1;
-        }
-        .item-info .title {
-          font-weight: 600;
-          font-size: 16px;
-          margin-bottom: 4px;
-        }
-        .item-info .category {
-          color: #888;
-          font-size: 13px;
-        }
-        .item-price, .item-quantity {
-          width: 100px;
-          text-align: right;
-        }
-        .order-footer {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-top: 1px solid #eee;
-          padding-top: 12px;
-          margin-top: 12px;
-        }
-        .order-status {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-      `}</style>
+      <Modal
+        title="Đánh giá sản phẩm"
+        open={openReview}
+        onCancel={() => setOpenReview(false)}
+        footer={null}
+        width={700}
+        destroyOnClose
+      >
+        {selectedProductId && (
+          <ReviewPage
+            productIdOverride={selectedProductId}
+            onReviewed={() => {
+              setOpenReview(false);
+              fetchOrders();
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

@@ -88,6 +88,7 @@ export const API = {
     CONFIRM_RECEIVED: "orders/:id/confirm-received",
     UPDATE_ORDER: "/orders/:id",
     MY_SHOP_ORDERS: "/orders/myorders",
+    GET_ALL_ORDER_SHOP: "/orders/shop",
   },
   CART: {
     GET_CART: "/cart",
@@ -111,7 +112,6 @@ export const API = {
     MOMO_RETURN: "/payments/momo-return",
     MOMO_NOTIFY: "/payments/momo-notify",
     PAYOS_CREATE: "/payments/payos/create",
-
   },
   REVIEW: {
     CREATE_REVIEW: "/reviews",
@@ -129,5 +129,11 @@ export const API = {
     CREATE_BLOG_IMAGE: "/blog-images/:id",
     DELETE_BLOG_IMAGE: "/blog-images/image/:id",
     DELETE_BLOG_IMAGES: "/blog-images/blog/:id",
+  },
+  NOTIFICATION: {
+    GET_BY_USER_ID: "/notifications/:userId",
+    CREATE: "/notifications",
+    MARK_ALL_AS_READ: "/notifications/read-all/:userId",
+    DELETE_ALL_BY_USER: "/notifications/user/:userId",
   },
 };

@@ -23,14 +23,11 @@ import { useCart } from "../../context/cart.context";
 const { Title, Paragraph, Text } = Typography;
 const ProductDetail = () => {
   const { id } = useParams();
-  const { id: productId } = useParams();
 
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [engraving, setEngraving] = useState(false);
-  // Add this state for main image
   const [mainImg, setMainImg] = useState(null);
-  const { getCartCount, addToCart } = useCart();
+  const { addToCart, refreshCart } = useCart();
   const [selectedVariant, setSelectedVariant] = useState(null);
 
   const fetchProduct = useCallback(async () => {
@@ -62,14 +59,13 @@ const ProductDetail = () => {
 
   const price = parseInt(basePrice);
 
-  const engravingCost = 50000;
-  const totalPrice = engraving ? price + engravingCost : price;
+  const totalPrice = price;
 
   const handleAddToCart = async () => {
     try {
       await addToCart(product._id, quantity, selectedVariant?._id || null);
+      await refreshCart();
       message.success("Đã thêm vào giỏ hàng!");
-      await getCartCount(); // cập nhật số lượng giỏ
     } catch (error) {
       message.error("Thêm vào giỏ hàng thất bại!");
       console.error(error);
@@ -288,96 +284,83 @@ const ProductDetail = () => {
             Khách hàng có thể cân nhắc trước khi đặt.
           </Paragraph>
         </div>
-        <div className="flex justify-center gap-12 mt-6 sticky top-[64px] z-10 py-2 border-b">
+        <div className="flex justify-center gap-12 mt-6 sticky top-[64px] z-10 py-2 shadow-sm">
           <button
             onClick={() => scrollToSection("specs", 150)}
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm font-medium text-black hover:underline"
           >
             Thông số kỹ thuật
           </button>
           <button
             onClick={() => scrollToSection("desc", 150)}
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm font-medium text-black hover:underline"
           >
             Mô tả
           </button>
-          {/* {product.specifications && product.specifications.trim() && (
+          {product.specifications && product.specifications.trim() && (
             <button
               onClick={() => scrollToSection("specation", 150)}
-              className="text-sm font-medium text-blue-600 hover:underline"
+              className="text-sm font-medium text-black hover:underline"
             >
               Lưu ý đặc biệt
             </button>
-          )} */}
+          )}
           <button
             onClick={() => scrollToSection("brand", 150)}
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm font-medium text-black hover:underline"
           >
             Về thương hiệu
           </button>
           <button
             onClick={() => scrollToSection("reviews", 300)}
-            className="text-sm font-medium text-blue-600 hover:underline"
+            className="text-sm font-medium text-black hover:underline"
           >
             Đánh giá
           </button>
         </div>
-
-        {/* <div id="specs" className="mt-10">
-          <Title level={5}>Lưu ý đặc biệt</Title>
-          <Text
-            type="secondary"
-            style={{ whiteSpace: "pre-line" }}
-            className="text-sm text-gray-700"
-          >
-            {product.specialNotes}
-          </Text>
-        </div> */}
+        {product.specifications && product.specifications.trim() && (
+          <div id="specation" className="mt-10">
+            <h3 className="text-black font-semibold">Thông số kỹ thuật</h3>
+            <div
+              className="prose max-w-full text-sm text-gray-700"
+              dangerouslySetInnerHTML={{ __html: product.specifications }}
+            />
+          </div>
+        )}
 
         <div id="desc" className="mt-10">
-          <Title level={5} className="text-black">
+          <h3 level={5} className="text-black font-semibold">
             Mô tả
-          </Title>
+          </h3>
           <Text
             type="secondary"
-            style={{ whiteSpace: "pre-line" }}
-            className="text-sm text-gray-700"
+            style={{
+              whiteSpace: "pre-line",
+              color: "black",
+              fontSize: "14px",
+              lineHeight: "20px",
+            }}
           >
-            {product.description}
+            {product.description.replace(/\\n/g, "\n")}
           </Text>
         </div>
-        <div id="specation" className="mt-10">
-            <Title level={5}>Lưu ý đặc biệt</Title>
-            <Text
-              type="secondary"
-              // style={{ whiteSpace: "pre-line" }}
-              className="text-base text-black"
-            >
-              <div dangerouslySetInnerHTML={{ __html: product.specialNotes}} />
-            </Text>
-            
-        </div>
-        
-        <div id="notes" className="mt-10">
-          <Title level={5} className="text-black">
-            Thông số kỹ thuật
-          </Title>
-          <Text
-              type="secondary"
-              style={{ whiteSpace: "pre-line" }}
-              className="text-sm text-black"
-            >
-              {product.specifications}
-            </Text>
-        </div>
+        {product.specialNotes?.trim() && (
+          <div id="specs" className="mt-10">
+            <h3 className="text-lg font-semibold mb-3">Lưu ý đặc biệt</h3>
+            <div
+              className="prose max-w-full text-sm text-gray-700"
+              dangerouslySetInnerHTML={{ __html: product.specialNotes }}
+            />
+          </div>
+        )}
 
         <div id="brand" className="mt-10">
-          <Title level={5}>Về thương hiệu</Title>
+          <h3 className="text-black font-semibold">Về thương hiệu</h3>
           <AboutShop shop_id={product.shop_id._id} />
         </div>
 
         <div id="reviews" className="mt-10">
-          <Title level={5}>Đánh giá sản phẩm</Title>
+          <h3 className="text-black font-semibold">Đánh giá sản phẩm</h3>
           <ReviewPage />
         </div>
       </div>

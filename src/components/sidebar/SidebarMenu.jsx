@@ -5,7 +5,12 @@ import {
   AppstoreOutlined,
   UserOutlined,
   ReadOutlined,
+  TagOutlined,
+  BellOutlined,
+  DollarOutlined,
+  PercentageOutlined,
 } from "@ant-design/icons";
+
 import { Link, useLocation } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.const";
 import { useAuth } from "../../context/auth.context";
@@ -67,6 +72,16 @@ const SidebarMenu = () => {
       path: "/seller/blogs",
       label: "Blogs",
       icon: <ReadOutlined />,
+    },
+    {
+      path: "/seller/vouchers",
+      label: "Mã giảm giá",
+      icon: <TagOutlined />,
+    },
+    {
+      path: "/seller/commission-policy",
+      label: "Chính sách hoa hồng",
+      icon: <PercentageOutlined />,
     },
   ];
 

@@ -9,6 +9,7 @@ import {
   message,
   Divider,
   Button,
+  Modal,
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { OrderService } from "../../../services/order/order.service";
@@ -28,6 +29,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState(null);
   const [address, setAddress] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
   const fetchOrderDetail = async () => {
     try {
@@ -44,6 +46,48 @@ export default function OrderDetailPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleConfirmOrder = () => {
+    Modal.confirm({
+      title: "Xác nhận đơn hàng?",
+      content: "Bạn có chắc muốn chuyển đơn hàng sang trạng thái 'Đang xử lý'?",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
+      onOk: async () => {
+        setUpdating(true);
+        try {
+          await OrderService.updateOrderStatus(order._id, "processing");
+          message.success("Đơn hàng đã được xác nhận");
+          fetchOrderDetail();
+        } catch {
+          message.error("Lỗi khi xác nhận đơn hàng");
+        } finally {
+          setUpdating(false);
+        }
+      },
+    });
+  };
+
+  const handleCompleteOrder = () => {
+    Modal.confirm({
+      title: "Hoàn tất đơn hàng?",
+      content: "Bạn có chắc muốn chuyển đơn hàng sang trạng thái 'Hoàn thành'?",
+      okText: "Hoàn tất",
+      cancelText: "Hủy",
+      onOk: async () => {
+        setUpdating(true);
+        try {
+          await OrderService.updateOrderStatus(order._id, "completed");
+          message.success("Đơn hàng đã được hoàn tất");
+          fetchOrderDetail();
+        } catch {
+          message.error("Lỗi khi cập nhật trạng thái đơn hàng");
+        } finally {
+          setUpdating(false);
+        }
+      },
+    });
   };
 
   useEffect(() => {
@@ -65,7 +109,7 @@ export default function OrderDetailPage() {
   }
 
   return (
-    <div className="max-w-full mx-auto">
+    <div className="max-w-full mx-auto p-6">
       <Button
         icon={<ArrowLeftOutlined />}
         onClick={() => navigate(-1)}
@@ -101,6 +145,31 @@ export default function OrderDetailPage() {
             {new Date(order.created_at).toLocaleString()}
           </Descriptions.Item>
         </Descriptions>
+
+        {/* Các nút chuyển trạng thái */}
+        {order.status === "pending" && (
+          <div style={{ marginTop: 16 }}>
+            <Button
+              type="primary"
+              loading={updating}
+              onClick={handleConfirmOrder}
+            >
+              Xác nhận đơn hàng
+            </Button>
+          </div>
+        )}
+
+        {order.status === "shipped" && (
+          <div style={{ marginTop: 16 }}>
+            <Button
+              type="primary"
+              loading={updating}
+              onClick={handleCompleteOrder}
+            >
+              Hoàn tất đơn hàng
+            </Button>
+          </div>
+        )}
 
         <Divider orientation="left">Địa chỉ giao hàng</Divider>
         {address ? (
