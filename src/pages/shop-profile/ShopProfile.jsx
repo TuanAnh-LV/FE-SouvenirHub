@@ -3,7 +3,9 @@ import { ProductService } from "../../services/shop-service/shop.service";
 import { useParams } from "react-router-dom";
 
 const ProductGrid = lazy(() => import("../../components/product/AllProduct"));
-const ShopDescripton = lazy(() => import ("../../components/ShopProfile/ShopDescription"));
+const ShopDescripton = lazy(() =>
+  import("../../components/ShopProfile/ShopDescription")
+);
 
 const ShopProfile = () => {
   const [products, setProducts] = useState([]);
@@ -17,7 +19,8 @@ const ShopProfile = () => {
       console.log("Shop profile fetched:", response.data);
       // Ensure products is always an array
       const arr =
-        Array.isArray(response.data.products) && response.data.products.length > 0
+        Array.isArray(response.data.products) &&
+        response.data.products.length > 0
           ? response.data.products
           : [];
       setProducts(arr);
@@ -34,16 +37,17 @@ const ShopProfile = () => {
 
   return (
     <div
-      className="main mt-7 mx-auto p-4 bg-white flex"
+      className="mx-auto p-4 flex"
       style={{ marginLeft: "10%", marginRight: "10%" }}
     >
-
       {/* Product Grid */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden" 
+      <div
+        className="flex-1 overflow-y-auto overflow-x-hidden"
         style={{ marginTop: "5%", marginBottom: "10%" }}
       >
         <ShopDescripton shop={shopProfile} />
-        <div style={{ height: 32 }} /> {/* Gap between ShopDescripton and ProductGrid */}
+        <div style={{ height: 32 }} />{" "}
+        {/* Gap between ShopDescripton and ProductGrid */}
         <ProductGrid products={products} />
       </div>
     </div>

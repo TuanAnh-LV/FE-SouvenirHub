@@ -23,20 +23,32 @@ const CreateProduct = () => {
   const [categories, setCategories] = useState([]);
   const [fileList, setFileList] = useState([]);
   const [specialNotes, setSpecialNotes] = useState("");
+  const [specifications, setSpecifications] = useState("");
   const navigate = useNavigate();
   const handleFinish = async () => {
     try {
       const values = await form.validateFields();
-      values.specialNotes = specialNotes;
-      // Gọi API tạo sản phẩm trước
-      const response = await ProductService.createProduct(values);
-      if (response && response.data) {
+
+      // Gộp thêm các trường không thuộc form
+      const payload = {
+        ...values,
+        specialNotes,
+        specifications,
+      };
+
+      const response = await ProductService.createProduct(payload);
+
+      if (response?.data?._id) {
         const newProductId = response.data._id;
-        // Chờ tạo sản phẩm xong mới upload ảnh
-        await handleUpload(newProductId);
+        await handleUpload(newProductId); // Upload ảnh sau khi tạo thành công
+        message.success("Tạo sản phẩm thành công!");
+        navigate("/seller/products"); // hoặc trang chi tiết sản phẩm nếu cần
+      } else {
+        message.error("Không nhận được dữ liệu sản phẩm từ server.");
       }
     } catch (error) {
-      message.error("Tạo sản phẩm hoặc tải ảnh thất bại!", error);
+      console.error("❌ Lỗi tạo sản phẩm:", error);
+      message.error("Tạo sản phẩm hoặc tải ảnh thất bại!");
     }
   };
 
@@ -96,10 +108,7 @@ const CreateProduct = () => {
 
   return (
     <>
-      <Card
-        title="Tạo sản phẩm mới"
-        style={{ maxWidth: "90%", margin: "0 auto" }}
-      >
+      <Card title="Tạo sản phẩm mới" style={{ maxWidth: "100%" }}>
         <Form
           form={form}
           layout="vertical"
@@ -179,9 +188,24 @@ const CreateProduct = () => {
                 />
               </Form.Item>
               <Form.Item label="Thông số kỹ thuật" name="specifications">
-                <TextArea
-                  rows={2}
-                  placeholder="Thông số kỹ thuật của sản phẩm"
+                <Editor
+                  apiKey="r317wer69jgeks8pv43lmnj19b5oodhdcv7jt86gwuyilw5c"
+                  value={specifications}
+                  init={{
+                    height: 180,
+                    menubar: false,
+                    plugins: [
+                      "advlist autolink lists link image charmap print preview anchor",
+                      "searchreplace visualblocks code fullscreen",
+                      "insertdatetime media table paste code help wordcount",
+                    ],
+                    toolbar:
+                      "undo redo | formatselect | " +
+                      "bold italic backcolor | alignleft aligncenter " +
+                      "alignright alignjustify | bullist numlist outdent indent | " +
+                      "removeformat | help",
+                  }}
+                  onEditorChange={setSpecifications}
                 />
               </Form.Item>
             </Col>

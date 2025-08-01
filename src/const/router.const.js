@@ -55,7 +55,7 @@ export const ROUTER_URL = {
     REGISTER_SHOP: "/buyer/register-shop",
   },
   SELLER: {
-    DASHBOARD: "/seller",
+    DASHBOARD: "/seller/dashboard",
     PRODUCTS: "/seller/products",
     ORDERS: "/seller/orders",
   },
