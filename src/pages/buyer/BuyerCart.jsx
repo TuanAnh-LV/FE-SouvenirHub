@@ -163,7 +163,7 @@ const BuyerCart = () => {
                   <div className="w-20 text-right text-gray-600">
                     x{item.quantity}
                   </div>
-                  {order.status === "completed" && canReview && (
+                  {((order.status === "completed" || order.status === "shipped") && canReview) && (
                     <Button
                       size="small"
                       type="link"
@@ -189,7 +189,7 @@ const BuyerCart = () => {
                     : order.status === "processing"
                     ? "Đang giao hàng"
                     : order.status === "shipped"
-                    ? "Đã giao"
+                    ? "Đã giao hàng"
                     : order.status === "completed"
                     ? "Hoàn thành"
                     : order.status === "cancelled"

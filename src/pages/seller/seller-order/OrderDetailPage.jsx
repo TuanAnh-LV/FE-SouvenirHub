@@ -202,7 +202,7 @@ export default function OrderDetailPage() {
             }}
           >
             <Image
-              src={item.product_id?.image}
+              src={item.product?.image}
               width={60}
               height={60}
               style={{ objectFit: "cover", borderRadius: 6, flexShrink: 0 }}
@@ -210,7 +210,7 @@ export default function OrderDetailPage() {
             />
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 600 }}>
-                {item.product_id?.name || "Sản phẩm"}
+                {item.product?.name || "Sản phẩm"}
               </div>
               <div style={{ color: "#555" }}>Số lượng: {item.quantity}</div>
               <div style={{ color: "#555" }}>
