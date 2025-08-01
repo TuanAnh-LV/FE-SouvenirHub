@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { message } from "antd";
 import { ProductService } from "../../services/shop-service/shop.service";
+import { useNavigate } from "react-router-dom";
 function FileUploadBox({ id, label, onFileSelect, preview }) {
   return (
     <label
@@ -45,7 +46,7 @@ export default function RegisterShopApplicationStep({
   const [previewFront, setPreviewFront] = useState(null);
   const [previewBack, setPreviewBack] = useState(null);
   const [previewLicense, setPreviewLicense] = useState(null);
-
+  const navigate = useNavigate();
   const handleApplicationSubmit = async () => {
     try {
       const formData = new FormData();
@@ -81,7 +82,8 @@ export default function RegisterShopApplicationStep({
       }
 
       await ProductService.createShopApplication(formData);
-      message.success("Gửi hồ sơ thành công!");
+      message.success("Gửi hồ sơ thành công! Vui lòng chờ admin xác nhận");
+      navigate("/");
     } catch (error) {
       message.error(error.response?.data?.error || "Gửi hồ sơ thất bại.");
     }

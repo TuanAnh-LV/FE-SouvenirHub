@@ -321,17 +321,10 @@ const ProductDetail = () => {
         {product.specifications && product.specifications.trim() && (
           <div id="specation" className="mt-10">
             <h3 className="text-black font-semibold">Thông số kỹ thuật</h3>
-            <Text
-              type="secondary"
-              style={{
-                whiteSpace: "pre-line",
-                color: "black",
-                fontSize: "14px",
-                lineHeight: "20px",
-              }}
-            >
-              {product.specifications.replace(/\\n/g, "\n")}
-            </Text>
+            <div
+              className="prose max-w-full text-sm text-gray-700"
+              dangerouslySetInnerHTML={{ __html: product.specifications }}
+            />
           </div>
         )}
 

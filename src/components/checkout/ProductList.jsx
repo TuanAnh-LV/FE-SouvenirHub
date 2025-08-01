@@ -13,6 +13,20 @@ export default function ProductList({ items, shopName }) {
     );
     return acc + price * item.quantity;
   }, 0);
+  const formatDateVN = (date) => {
+    const d = new Date(date);
+    return `${d.getDate()} Tháng ${d.getMonth() + 1}`;
+  };
+  const today = new Date();
+  const earliestDate = new Date(today);
+  earliestDate.setDate(today.getDate() + 2);
+
+  const latestDate = new Date(today);
+  latestDate.setDate(today.getDate() + 5);
+
+  const deliveryEstimate = `Đảm bảo nhận hàng từ ${formatDateVN(
+    earliestDate
+  )} - ${formatDateVN(latestDate)}`;
 
   return (
     <Card
@@ -86,9 +100,7 @@ export default function ProductList({ items, shopName }) {
           <span className="text-gray-700">Phương thức vận chuyển:</span>
           <span className="text-blue-600 cursor-pointer">Thay đổi</span>
         </div>
-        <div className="text-sm text-gray-600 mb-4">
-          Đảm bảo nhận hàng từ 7 Tháng 6 - 9 Tháng 6
-        </div>
+        <div className="text-sm text-gray-600 mb-4">{deliveryEstimate}</div>
 
         <Input placeholder="Lưu ý cho Người bán..." className="mb-4" />
 

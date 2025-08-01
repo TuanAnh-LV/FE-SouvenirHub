@@ -55,8 +55,8 @@ const ShopApprovalDetail = () => {
   }, [id]);
 
   return (
-    <div className="p-6 min-h-screen bg-[#fff6f1]">
-      <Button onClick={() => navigate(-1)} className="mb-4">
+    <div className="p-6 bg-white rounded-md shadow-md">
+      <Button onClick={() => navigate(-1)} className="mb-6">
         ← Quay lại
       </Button>
 
@@ -66,164 +66,170 @@ const ShopApprovalDetail = () => {
         size="large"
       >
         {shop && application && (
-          <div className="bg-white rounded-xl shadow border border-gray-200 p-6 max-w-4xl mx-auto">
+          <div className="space-y-8">
             {/* Thông tin nhà cung cấp */}
-            <Title level={5} className="text-red-500 font-semibold mb-4">
-              Thông tin nhà cung cấp
-            </Title>
+            <div>
+              <Title level={4} className="text-orange-500 mb-4">
+                🏪 Thông tin nhà cung cấp
+              </Title>
+              <div className="grid grid-cols-1 md:grid-cols-[180px_auto] gap-6">
+                <div className="flex flex-col items-center">
+                  {application.logo_file ? (
+                    <img
+                      src={application.logo_file}
+                      alt="Logo"
+                      className="w-40 h-40 object-contain border border-gray-200 rounded-lg shadow-sm mb-2"
+                    />
+                  ) : (
+                    <div className="w-40 h-40 flex items-center justify-center border border-gray-300 rounded-lg text-sm text-gray-500">
+                      No logo uploaded
+                    </div>
+                  )}
+                  <span className="text-xs text-gray-500">Logo cửa hàng</span>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-[180px_auto] gap-6 mb-6">
-              <div className="flex flex-col items-center justify-center">
-                {application.logo_file ? (
-                  <img
-                    src={application.logo_file}
-                    alt="Logo"
-                    className="w-40 h-40 object-contain border border-gray-300 rounded-lg mb-2"
-                  />
-                ) : (
-                  <div className="w-40 h-40 flex items-center justify-center border border-gray-300 rounded-lg text-sm text-gray-500">
-                    No logo uploaded
-                  </div>
-                )}
-                <span className="text-sm font-semibold text-red-500">
-                  Logo *
-                </span>
-              </div>
-
-              <div className="space-y-2 text-sm">
-                <p>
-                  <strong>Tên nhà cung cấp:</strong> {shop.name}
-                </p>
-                <p>
-                  <strong>Danh mục kinh doanh:</strong>{" "}
-                  {application.business_category}
-                </p>
-                <p>
-                  <strong>Trạng thái phê duyệt:</strong>{" "}
-                  <Tag
-                    color={
-                      shop.status === "approved"
-                        ? "green"
-                        : shop.status === "pending"
-                        ? "orange"
-                        : "red"
-                    }
-                  >
-                    {shop.status === "pending" ? "Chờ duyệt" : shop.status}
-                  </Tag>
-                </p>
-                <p>
-                  <strong>Ngày đăng ký:</strong>{" "}
-                  {application.submitted_at
-                    ? new Date(application.submitted_at).toLocaleDateString()
-                    : "—"}
-                </p>
+                <div className="space-y-2 text-sm">
+                  <p>
+                    <strong>Tên nhà cung cấp:</strong> {shop.name}
+                  </p>
+                  <p>
+                    <strong>Danh mục kinh doanh:</strong>{" "}
+                    {application.business_category}
+                  </p>
+                  <p>
+                    <strong>Trạng thái phê duyệt:</strong>{" "}
+                    <Tag
+                      color={
+                        shop.status === "approved"
+                          ? "green"
+                          : shop.status === "pending"
+                          ? "orange"
+                          : "red"
+                      }
+                    >
+                      {shop.status === "pending" ? "Chờ duyệt" : shop.status}
+                    </Tag>
+                  </p>
+                  <p>
+                    <strong>Ngày đăng ký:</strong>{" "}
+                    {application.submitted_at
+                      ? new Date(application.submitted_at).toLocaleDateString()
+                      : "—"}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* Thông tin liên hệ */}
-            <Title level={5} className="text-red-500 font-semibold mt-6 mb-2">
-              Thông tin liên hệ
-            </Title>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
-              <p>
-                <strong>Người đại diện:</strong>{" "}
-                {application.representative_name}
-              </p>
-              <p>
-                <strong>Email Doanh Nghiệp:</strong> {application.email}
-              </p>
-              <p>
-                <strong>Số điện thoại:</strong> {application.phone}
+            <div>
+              <Title level={4} className="text-orange-500 mb-2">
+                📞 Thông tin liên hệ
+              </Title>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <p>
+                  <strong>Người đại diện:</strong>{" "}
+                  {application.representative_name}
+                </p>
+                <p>
+                  <strong>Email doanh nghiệp:</strong> {application.email}
+                </p>
+                <p>
+                  <strong>Số điện thoại:</strong> {application.phone}
+                </p>
+              </div>
+              <p className="text-sm mt-2">
+                <strong>Địa chỉ:</strong> {application.address}
               </p>
             </div>
-            <p className="text-sm mb-4">
-              <strong>Địa chỉ của Kho hoặc Trụ sở:</strong>{" "}
-              {application.address}
-            </p>
 
             {/* Thông tin pháp lý */}
-            <Title level={5} className="text-red-500 font-semibold mt-6 mb-2">
-              Thông tin pháp lý
-            </Title>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-              <p>
-                <strong>Mã số thuế(MST):</strong> {application.tax_id}
-              </p>
-              <p>
-                <strong>CMND/CCCD của người đại diện:</strong>{" "}
-                {application.id_card_number}
-              </p>
+            <div>
+              <Title level={4} className="text-orange-500 mb-2">
+                📄 Thông tin pháp lý
+              </Title>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <p>
+                  <strong>Mã số thuế (MST):</strong> {application.tax_id}
+                </p>
+                <p>
+                  <strong>CMND/CCCD đại diện:</strong>{" "}
+                  {application.id_card_number}
+                </p>
+              </div>
             </div>
 
-            {/* Giấy tờ đính kèm */}
-            <div className="text-center">
-              <p className="font-semibold mb-1">CMND mặt trước</p>
-              {application.id_card_front ? (
-                <img
-                  src={application.id_card_front}
-                  alt="ID Front"
-                  className="w-full h-40 object-contain border rounded"
-                />
-              ) : (
-                <div className="w-full h-40 flex items-center justify-center border rounded text-gray-400 text-sm">
-                  Chưa upload
-                </div>
-              )}
-            </div>
+            {/* Hình ảnh giấy tờ */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <p className="font-semibold mb-1">CMND mặt trước</p>
+                {application.id_card_front ? (
+                  <img
+                    src={application.id_card_front}
+                    alt="ID Front"
+                    className="w-full h-40 object-contain border rounded shadow-sm"
+                  />
+                ) : (
+                  <div className="w-full h-40 flex items-center justify-center border rounded text-gray-400 text-sm">
+                    Chưa upload
+                  </div>
+                )}
+              </div>
 
-            <div className="text-center">
-              <p className="font-semibold mb-1">CMND mặt sau</p>
-              {application.id_card_back ? (
-                <img
-                  src={application.id_card_back}
-                  alt="ID Back"
-                  className="w-full h-40 object-contain border rounded"
-                />
-              ) : (
-                <div className="w-full h-40 flex items-center justify-center border rounded text-gray-400 text-sm">
-                  Chưa upload
-                </div>
-              )}
-            </div>
+              <div className="text-center">
+                <p className="font-semibold mb-1">CMND mặt sau</p>
+                {application.id_card_back ? (
+                  <img
+                    src={application.id_card_back}
+                    alt="ID Back"
+                    className="w-full h-40 object-contain border rounded shadow-sm"
+                  />
+                ) : (
+                  <div className="w-full h-40 flex items-center justify-center border rounded text-gray-400 text-sm">
+                    Chưa upload
+                  </div>
+                )}
+              </div>
 
-            <div className="text-center">
-              <p className="font-semibold mb-1">Giấy phép kinh doanh</p>
-              {application.license_file ? (
-                <>
-                  <p>File pdf giấy phép kinh doanh</p>
-                  <a
-                    href={application.license_file}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
-                  >
-                    Xem file PDF
-                  </a>
-                </>
-              ) : (
-                <div className="w-full h-40 flex items-center justify-center border rounded text-gray-400 text-sm">
-                  Chưa upload
-                </div>
-              )}
+              <div className="text-center">
+                <p className="font-semibold mb-1">Giấy phép kinh doanh</p>
+                {application.license_file ? (
+                  <>
+                    <p className="text-xs mb-1 text-gray-500">
+                      File PDF giấy phép
+                    </p>
+                    <a
+                      href={application.license_file}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline text-sm"
+                    >
+                      Xem file PDF
+                    </a>
+                  </>
+                ) : (
+                  <div className="w-full h-40 flex items-center justify-center border rounded text-gray-400 text-sm">
+                    Chưa upload
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Nút hành động */}
-            <div className="flex justify-center gap-6 mt-10">
+            <div className="flex justify-center gap-6 mt-8">
               <Button
                 type="primary"
                 size="large"
-                className="bg-yellow-500 hover:bg-yellow-600 text-white"
+                className="bg-green-500 hover:bg-green-600 text-white"
                 onClick={approveShop}
               >
-                Duyệt & Kích hoạt tài khoản
+                ✔️ Duyệt & Kích hoạt
               </Button>
               <Button
                 danger
                 size="large"
                 onClick={() => setRejectModalOpen(true)}
               >
-                Từ chối & Lý do
+                ❌ Từ chối & Ghi lý do
               </Button>
             </div>
           </div>

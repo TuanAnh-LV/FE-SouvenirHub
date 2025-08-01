@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Table, Image, message, Tag, Button } from "antd";
+import { Tooltip, Table, Image, message, Tag, Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { ProductService } from "../../services/shop-service/shop.service";
@@ -109,11 +109,13 @@ const SellerProductsTable = () => {
       key: "action",
       align: "center",
       render: (_, record) => (
-        <Button
-          icon={<EditOutlined />}
-          type="text"
-          onClick={() => navigate(`/seller/products/${record._id}/edit`)}
-        />
+        <Tooltip title="Chỉnh sửa sản phẩm">
+          <Button
+            icon={<EditOutlined />}
+            type="text"
+            onClick={() => navigate(`/seller/products/${record._id}/edit`)}
+          />
+        </Tooltip>
       ),
     },
   ];

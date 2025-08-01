@@ -12,7 +12,6 @@ import UpdateAddress from "../pages/address/UpdateAddress";
 
 import AddressBox from "../components/checkout/AddressBox";
 import ProductList from "../components/checkout/ProductList";
-import NoteAndShipping from "../components/checkout/NoteAndShipping";
 import VoucherSelect from "../components/checkout/VoucherSelect";
 import PaymentOptions from "../components/checkout/PaymentOptions";
 import SummaryBox from "../components/checkout/SummaryBox";
@@ -31,7 +30,6 @@ export default function CheckoutPage() {
   const [selectedAddressId, setSelectedAddressId] = useState("");
 
   const [selectedGroups, setSelectedGroups] = useState([]); // group = { shop_name, items[] }
-  const [note, setNote] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [voucherList, setVoucherList] = useState([]);
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
@@ -234,14 +232,6 @@ export default function CheckoutPage() {
           <ProductList items={group.items} shopName={group.shop_name} />
         </div>
       ))}
-
-      <div className="mb-6">
-        <NoteAndShipping
-          note={note}
-          setNote={setNote}
-          // shippingFee={shippingFee}
-        />
-      </div>
 
       <div className="mb-6">
         <VoucherSelect

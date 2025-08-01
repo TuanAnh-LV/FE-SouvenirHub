@@ -1,6 +1,6 @@
 import { toggleLoading } from '../app/loadingSlice';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { getItemInLocalStorage } from '../utils/localStorage';
 import store from "../app/store";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from '../const/const';
@@ -54,8 +54,8 @@ const checkLoading = (isLoading = false) => {
 
 // ✅ Toast lỗi
 const handleErrorByToast = (error) => {
-  const message = error.response?.data?.message || error.message;
-  toast.error(message);
+  // const message = error.response?.data?.message || error.message;
+  // toast.error(message);
   store.dispatch(toggleLoading(false));
   return null;
 };
