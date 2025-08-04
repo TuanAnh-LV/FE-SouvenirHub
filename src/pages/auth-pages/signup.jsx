@@ -19,7 +19,7 @@ const Signup = () => {
     setLoading(true);
     try {
       const res = await AuthService.register(form);
-      if (res?.data?.token) {
+      if (res?.status === 201) {
         message.success("Đăng ký thành công!");
         navigate(ROUTER_URL.LOGIN);
       } else {
