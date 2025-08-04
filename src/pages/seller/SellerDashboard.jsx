@@ -30,10 +30,30 @@ const SellerDashboard = () => {
   const [orderDetails, setOrderDetails] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const formatDecimal = (val) => {
+    const raw =
+      typeof val === "object" && val?.$numberDecimal
+        ? parseFloat(val.$numberDecimal)
+        : typeof val === "string"
+        ? parseFloat(val)
+        : val;
+
+    return !isNaN(raw) && isFinite(raw) && raw < 1e12 ? raw : 0;
+  };
+
   const fetchSellerStats = async () => {
     try {
       const res = await SellerService.getSellerStats();
-      setShop(res.data);
+      const data = res.data;
+
+      const cleanStats = {
+        ...data,
+        totalRevenue: formatDecimal(data.totalRevenue),
+        totalCommission: formatDecimal(data.totalCommission),
+        netRevenue: formatDecimal(data.netRevenue),
+      };
+
+      setShop(cleanStats);
     } catch (err) {
       message.error("Không thể tải thông tin cửa hàng.");
     }
@@ -72,7 +92,7 @@ const SellerDashboard = () => {
   const revenueData = shop?.revenueByMonth
     ? Object.entries(shop.revenueByMonth).map(([month, value]) => ({
         month,
-        revenue: value,
+        revenue: formatDecimal(value),
       }))
     : [];
 
@@ -116,6 +136,10 @@ const SellerDashboard = () => {
       key: "stock",
     },
   ];
+  const safeFormat = (num) => {
+    if (!isFinite(num) || num > 1e12) return "999,999+ ₫";
+    return `${num.toLocaleString("vi-VN")} ₫`;
+  };
 
   return (
     <div className="p-2 min-h-screen">
@@ -126,10 +150,11 @@ const SellerDashboard = () => {
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Tổng doanh thu"
-                  value={Number(shop.totalRevenue) || 0}
-                  precision={0}
+                  value={shop.totalRevenue}
+                  formatter={(value) =>
+                    `${Number(value).toLocaleString("vi-VN")} ₫`
+                  }
                   valueStyle={{ color: "#1890ff" }}
-                  suffix="₫"
                 />
               </Card>
             </Col>
@@ -137,10 +162,9 @@ const SellerDashboard = () => {
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Hoa hồng hệ thống"
-                  value={Number(shop.totalCommission) || 0}
-                  precision={0}
+                  value={shop.totalCommission}
+                  formatter={safeFormat}
                   valueStyle={{ color: "#faad14" }}
-                  suffix="₫"
                 />
               </Card>
             </Col>
@@ -148,10 +172,9 @@ const SellerDashboard = () => {
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Thực nhận"
-                  value={Number(shop.netRevenue) || 0}
-                  precision={0}
+                  value={shop.netRevenue}
+                  formatter={safeFormat}
                   valueStyle={{ color: "#3f8600" }}
-                  suffix="₫"
                 />
               </Card>
             </Col>
