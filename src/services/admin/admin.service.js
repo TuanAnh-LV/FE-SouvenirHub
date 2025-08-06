@@ -38,6 +38,21 @@ export const AdminService = {
             isLoading: true,
         });
     },
+        updateUser: (id, data) => {
+    return BaseService.put({
+        url: API.ADMIN.UPDATE_USER.replace(":id", id),
+       payload: data,
+        isLoading: true,
+    });
+    },
+
+    deleteUser: (id) => {
+    return BaseService.remove({
+        url: API.ADMIN.DELETE_USER.replace(":id", id),
+        isLoading: true,
+    });
+    },
+
     getDashboardStats: () => {
         return BaseService.get({
             url: API.ADMIN.GET_DASHBOARD_STATS,

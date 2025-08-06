@@ -258,7 +258,7 @@ const ProductDetail = () => {
             </Button>
           </div>
         </div>
-        <div className="p-4 bg-[#fff7f6] mt-4 rounded-lg shadow-md">
+        {/* <div className="p-4 bg-[#fff7f6] mt-4 rounded-lg shadow-md">
           <div className="flex items-center gap-2 mb-2">
             <EditOutlined className="text-lg text-black" />
             <Title level={5} className="!mb-0">
@@ -283,7 +283,7 @@ const ProductDetail = () => {
             <strong>Lưu ý:</strong> Thời gian làm có thể kéo dài từ 7–12 ngày.
             Khách hàng có thể cân nhắc trước khi đặt.
           </Paragraph>
-        </div>
+        </div> */}
         <div className="flex justify-center gap-12 mt-6 sticky top-[64px] z-10 py-2 shadow-sm">
           <button
             onClick={() => scrollToSection("specs", 150)}

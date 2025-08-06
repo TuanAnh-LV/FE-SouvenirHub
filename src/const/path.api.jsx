@@ -8,6 +8,8 @@ export const API = {
     GET_ALL_SHOPS: "/admin/shops",
     GET_SHOP_BY_ID: "/admin/shops/:id",
     GET_ALL_USERS: "/admin/users",
+    UPDATE_USER: "/admin/users/:id",
+    DELETE_USER: "/admin/users/:id",
     GET_USER_BY_ID: "/admin/users/:id",
     GET_DASHBOARD_STATS: "/admin/stats",
     UPDATE_ORDER_STATUS: "/admin/orders/status/:id",

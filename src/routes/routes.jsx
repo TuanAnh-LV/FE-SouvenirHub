@@ -73,6 +73,9 @@ const CommissionPolicy = lazy(() => import("../pages/seller/CommissionPolicy"));
 const NotificationBellPage = lazy(() =>
   import("../components/SendNotificationTest")
 );
+const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
+const UserDetail = lazy(() => import("../pages/admin/UserDetail"));
+const UserEdit = lazy(() => import("../pages/admin/UserEdit"));
 const routes = [
   // Public routes
   {
@@ -122,6 +125,16 @@ const routes = [
         element: <ProductApprovalDetail />,
       },
       { path: "blogs", element: <AdminBlogManager /> },
+      { path: "vouchers", element: <VoucherPage /> },
+      { path: "users", element: <ManageUser /> },
+      {
+        path: "users/:id",
+        element: <UserDetail />,
+      },
+      {
+        path: "users/:id/edit",
+        element: <UserEdit />,
+      },
     ],
   },
 

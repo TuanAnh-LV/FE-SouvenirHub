@@ -14,17 +14,28 @@ import {
   Tag,
   message,
 } from "antd";
+import { Line } from "react-chartjs-2";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
   Tooltip,
-  ResponsiveContainer,
   Legend,
-} from "recharts";
+  Filler,
+} from "chart.js";
 
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+  Filler
+);
+import { ArrowLeftOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
 
 const ShopDetail = () => {
@@ -97,8 +108,13 @@ const ShopDetail = () => {
 
   return (
     <div className="p-6 bg-[#fffaf7] min-h-screen">
-      <Button onClick={() => navigate(-1)} className="mb-4">
-        ← Quay lại
+      <Button
+        icon={<ArrowLeftOutlined />}
+        type="text"
+        onClick={() => navigate(-1)}
+        className="mb-4"
+      >
+        Quay lại
       </Button>
 
       {shop && (
@@ -166,6 +182,28 @@ const ShopDetail = () => {
                     />
                   </Card>
                 </Col>
+                <Col span={6}>
+                  <Card className="mt-5">
+                    <Statistic
+                      title="Hoa hồng hệ thống"
+                      value={Number(shop.totalCommission)}
+                      precision={0}
+                      suffix="₫"
+                      valueStyle={{ color: "#fa541c" }}
+                    />
+                  </Card>
+                </Col>
+                <Col span={6} className="mt-5">
+                  <Card>
+                    <Statistic
+                      title="Thực nhận (seller)"
+                      value={Number(shop.netRevenue)}
+                      precision={0}
+                      suffix="₫"
+                      valueStyle={{ color: "#3f8600" }}
+                    />
+                  </Card>
+                </Col>
               </Row>
             </Col>
 
@@ -197,29 +235,45 @@ const ShopDetail = () => {
                 className="rounded-2xl shadow-sm"
               >
                 {revenueData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={revenueData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis
-                        tickFormatter={(value) => value.toLocaleString()}
-                      />
-                      <Tooltip
-                        formatter={(value) =>
-                          `${Number(value).toLocaleString()} ₫`
-                        }
-                      />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#1890ff"
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        activeDot={{ r: 6 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <Line
+                    data={{
+                      labels: revenueData.map((d) => d.month),
+                      datasets: [
+                        {
+                          label: "Doanh thu (VNĐ)",
+                          data: revenueData.map((d) => d.revenue),
+                          fill: true,
+                          borderColor: "#1890ff",
+                          backgroundColor: "rgba(24, 144, 255, 0.1)",
+                          tension: 0.3,
+                          pointRadius: 4,
+                          pointHoverRadius: 6,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: { position: "top" },
+                        tooltip: {
+                          callbacks: {
+                            label: (context) =>
+                              `${context.dataset.label}: ${Number(
+                                context.raw
+                              ).toLocaleString()} ₫`,
+                          },
+                        },
+                      },
+                      scales: {
+                        y: {
+                          ticks: {
+                            callback: (value) =>
+                              `${Number(value).toLocaleString()} ₫`,
+                          },
+                        },
+                      },
+                    }}
+                  />
                 ) : (
                   <p>Không có dữ liệu</p>
                 )}
