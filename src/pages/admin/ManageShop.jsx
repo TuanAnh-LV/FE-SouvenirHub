@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Tooltip, Table, Tag, Button, message, Popconfirm } from "antd";
+import {
+  Tooltip,
+  Table,
+  Tag,
+  Button,
+  message,
+  Popconfirm,
+  Typography,
+} from "antd";
+const { Title } = Typography;
 import { AdminService } from "../../services/admin/admin.service";
 import { useNavigate } from "react-router-dom";
 import { CheckOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
@@ -114,6 +123,7 @@ const ManageShop = () => {
 
   return (
     <div className="p-6">
+      <Title level={3}>Quản lý cửa hàng</Title>
       <Table dataSource={shops} columns={columns} rowKey="_id" bordered />
     </div>
   );

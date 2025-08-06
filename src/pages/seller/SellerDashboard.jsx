@@ -11,16 +11,28 @@ import {
   Button,
   Modal,
 } from "antd";
+import { Line } from "react-chartjs-2";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
   Tooltip,
-  ResponsiveContainer,
   Legend,
-} from "recharts";
+  Filler,
+} from "chart.js";
+
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Tooltip,
+  Legend,
+  Filler
+);
+
 import { SellerService } from "../../services/seller/seller.service";
 
 const { Title, Text } = Typography;
@@ -146,7 +158,7 @@ const SellerDashboard = () => {
       {shop && (
         <>
           <Row gutter={[24, 24]}>
-            <Col xs={24} md={4}>
+            <Col xs={24} md={5}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Tổng doanh thu"
@@ -158,7 +170,7 @@ const SellerDashboard = () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} md={4}>
+            <Col xs={24} md={5}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Hoa hồng hệ thống"
@@ -168,7 +180,7 @@ const SellerDashboard = () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} md={4}>
+            <Col xs={24} md={5}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Thực nhận"
@@ -178,7 +190,7 @@ const SellerDashboard = () => {
                 />
               </Card>
             </Col>
-            <Col xs={24} md={4}>
+            <Col xs={24} md={5}>
               <Card className="shadow-sm rounded-xl">
                 <Statistic
                   title="Đơn hàng"
@@ -193,15 +205,6 @@ const SellerDashboard = () => {
                   title="Đơn huỷ"
                   value={shop.totalCancelled || 0}
                   valueStyle={{ color: "#cf1322" }}
-                />
-              </Card>
-            </Col>
-            <Col xs={24} md={4}>
-              <Card className="shadow-sm rounded-xl">
-                <Statistic
-                  title="Đánh giá"
-                  value={shop.rating || 0}
-                  suffix="/ 5"
                 />
               </Card>
             </Col>
@@ -220,27 +223,45 @@ const SellerDashboard = () => {
                 className="shadow-sm rounded-xl"
               >
                 {revenueData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={revenueData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis
-                        tickFormatter={(value) => value.toLocaleString()}
-                      />
-                      <Tooltip
-                        formatter={(value) =>
-                          `${Number(value).toLocaleString()} ₫`
-                        }
-                      />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#1890ff"
-                        strokeWidth={2}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <Line
+                    data={{
+                      labels: revenueData.map((d) => d.month),
+                      datasets: [
+                        {
+                          label: "Doanh thu (VNĐ)",
+                          data: revenueData.map((d) => d.revenue),
+                          fill: true,
+                          borderColor: "#1890ff",
+                          backgroundColor: "rgba(24, 144, 255, 0.1)",
+                          tension: 0.4,
+                          pointRadius: 4,
+                          pointHoverRadius: 6,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: { position: "top" },
+                        tooltip: {
+                          callbacks: {
+                            label: (ctx) =>
+                              `Doanh thu: ${Number(
+                                ctx.raw
+                              ).toLocaleString()} ₫`,
+                          },
+                        },
+                      },
+                      scales: {
+                        y: {
+                          ticks: {
+                            callback: (value) =>
+                              `${Number(value).toLocaleString()} ₫`,
+                          },
+                        },
+                      },
+                    }}
+                  />
                 ) : (
                   <Text type="secondary">Không có dữ liệu doanh thu</Text>
                 )}

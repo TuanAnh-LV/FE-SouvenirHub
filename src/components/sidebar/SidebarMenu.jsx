@@ -6,9 +6,8 @@ import {
   UserOutlined,
   ReadOutlined,
   TagOutlined,
-  BellOutlined,
-  DollarOutlined,
   PercentageOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 
 import { Link, useLocation } from "react-router-dom";
@@ -92,6 +91,11 @@ const SidebarMenu = () => {
       icon: <HomeOutlined />,
     },
     {
+      path: "/admin/users",
+      label: "Quản lý người dùng",
+      icon: <TeamOutlined />,
+    },
+    {
       path: "/admin/manage-shop",
       label: "Quản lý shop",
       icon: <ShopOutlined />,
@@ -105,6 +109,11 @@ const SidebarMenu = () => {
       path: "/admin/blogs",
       label: "Quản lý blog",
       icon: <ReadOutlined />,
+    },
+    {
+      path: "/admin/vouchers",
+      label: "Mã giảm giá",
+      icon: <TagOutlined />,
     },
   ];
 
