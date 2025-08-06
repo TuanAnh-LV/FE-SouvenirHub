@@ -101,6 +101,11 @@ const SidebarMenu = () => {
       icon: <ShopOutlined />,
     },
     {
+      path: "/admin/orders",
+      label: "Tất cả đơn hàng",
+      icon: <ShopOutlined />,
+    },
+    {
       path: "/admin/products/pending",
       label: "Trạng thái sản phẩm",
       icon: <ShopOutlined />,
