@@ -101,6 +101,11 @@ const SidebarMenu = () => {
       icon: <ShopOutlined />,
     },
     {
+      path: "/admin/orders",
+      label: "Tất cả đơn hàng",
+      icon: <ShopOutlined />,
+    },
+    {
       path: "/admin/products/pending",
       label: "Trạng thái sản phẩm",
       icon: <ShopOutlined />,
@@ -127,7 +132,7 @@ const SidebarMenu = () => {
   return (
     <div className="w-64 bg-[#FFF1E6] p-6 min-h-screen flex flex-col space-y-2 overflow-y-auto">
       <div className="text-2xl font-bold mb-6" onClick={() => navigate("/")}>
-        SOUVENIR HUB
+        ㅤㅤㅤㅤㅤㅤㅤㅤ
       </div>
       {getMenu().map((item) => (
         <Link

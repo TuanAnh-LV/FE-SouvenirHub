@@ -62,5 +62,11 @@ export const OrderService = {
             url: API.ORDER.GET_ALL_ORDER_SHOP,
             isLoading: true,
         });
+    },
+    getAllOrder: () => {
+        return BaseService.get({
+            url: API.ORDER.GET_ALL_ORDERS,
+            isLoading: true,
+        });
     }
 }

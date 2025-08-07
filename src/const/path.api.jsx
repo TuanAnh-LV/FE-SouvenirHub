@@ -91,6 +91,7 @@ export const API = {
     UPDATE_ORDER: "/orders/:id",
     MY_SHOP_ORDERS: "/orders/myorders",
     GET_ALL_ORDER_SHOP: "/orders/shop",
+    GET_ALL_ORDERS: "/orders/all",
   },
   CART: {
     GET_CART: "/cart",

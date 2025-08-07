@@ -65,6 +65,14 @@ const AdminDashboard = () => {
     ],
   };
 
+  const statusMap = {
+    pending: { label: "Đang chờ", color: "#FFF8D5" },        
+    processing: { label: "Đang xử lý", color: "#B2C9E2" },  
+    shipped: { label: "Đã giao", color: "#9DD6AD" },        
+    completed: { label: "Đã hoàn thành", color: "#9DD6AD" }, 
+    cancelled: { label: "Đã hủy", color: "#C54F4F" },        
+  };
+
   return (
     <div className="p-8">
       <Row gutter={16}>
@@ -93,13 +101,28 @@ const AdminDashboard = () => {
         Trạng thái đơn hàng
       </AntTitle>
       <Row gutter={16}>
-        {stats.ordersByStatus.map((s) => (
-          <Col key={s._id} span={6}>
-            <Card>
-              <Statistic title={s._id} value={s.count} />
-            </Card>
-          </Col>
-        ))}
+        {stats.ordersByStatus.map((s) => {
+          const status = statusMap[s._id] || { label: s._id, color: "#e5e7eb" };
+          return (
+            <Col key={s._id} span={6}>
+              <Card
+                style={{
+                  background: status.color,
+                  color: "#222",
+                  border: "none",
+                  borderRadius: 10,
+                  minHeight: 110,
+                }}
+              >
+                <Statistic
+                  title={<span style={{ fontWeight: "bold" }}>{status.label}</span>}
+                  value={s.count}
+                  valueStyle={{ color: "#222" }}
+                />
+              </Card>
+            </Col>
+          );
+        })}
       </Row>
 
       <Row gutter={24} className="mt-12">
