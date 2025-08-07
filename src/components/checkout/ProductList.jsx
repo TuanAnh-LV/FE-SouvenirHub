@@ -4,8 +4,8 @@ import { MessageOutlined, HeartFilled } from "@ant-design/icons";
 const parsePrice = (priceObj) =>
   parseFloat(priceObj?.$numberDecimal || priceObj || 0);
 
-export default function ProductList({ items, shopName }) {
-  // const shippingFee = 16500;
+export default function ProductList({ items }) {
+  const shopName = items?.[0]?.product?.shop_id?.name || "Shop không xác định";
 
   const total = items.reduce((acc, item) => {
     const price = parsePrice(

@@ -31,6 +31,7 @@ const AdminDashboard = () => {
       try {
         const res = await AdminService.getDashboardStats();
         setStats(res.data);
+        console.log(res.data.totalRevenue);
       } catch {
         message.error("Không thể tải thống kê");
       }

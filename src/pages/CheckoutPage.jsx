@@ -235,7 +235,11 @@ export default function CheckoutPage() {
 
       <div className="mb-6">
         <VoucherSelect
-          vouchers={voucherList}
+          vouchers={voucherList.filter(
+            (voucher) =>
+              !voucher.shop_id ||
+              selectedGroups.some((group) => group.shop_id === voucher.shop_id)
+          )}
           selectedVoucherId={selectedVoucherId}
           setSelectedVoucherId={setSelectedVoucherId}
           orderTotal={totalProductPrice}
