@@ -45,15 +45,6 @@ const AllOrders = () => {
       render: (user) => user?.name || user?._id || "Ẩn danh",
     },
     {
-      title: "Địa chỉ giao",
-      dataIndex: "shipping_address_id",
-      key: "shipping_address_id",
-      render: (addr) =>
-        typeof addr === "object"
-          ? `${addr?.address_line || ""}, ${addr?.ward || ""}, ${addr?.city || ""}`
-          : addr,
-    },
-    {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
