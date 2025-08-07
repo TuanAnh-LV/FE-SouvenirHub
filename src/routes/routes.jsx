@@ -76,6 +76,7 @@ const NotificationBellPage = lazy(() =>
 const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
 const UserDetail = lazy(() => import("../pages/admin/UserDetail"));
 const UserEdit = lazy(() => import("../pages/admin/UserEdit"));
+const VoucherFormPage = lazy(() => import("../pages/seller/VoucherFormPage"));
 const routes = [
   // Public routes
   {
@@ -159,6 +160,14 @@ const routes = [
       { path: "blogs/update/:id", element: <UpdateBlogPage /> },
       { path: "vouchers", element: <VoucherPage /> },
       { path: "commission-policy", element: <CommissionPolicy /> },
+      {
+        path: "vouchers/add",
+        element: <VoucherFormPage />,
+      },
+      {
+        path: "vouchers/edit/:id",
+        element: <VoucherFormPage />,
+      },
     ],
   },
 
