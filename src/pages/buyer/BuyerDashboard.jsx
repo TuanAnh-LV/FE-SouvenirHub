@@ -50,18 +50,18 @@ export default function BuyerDashboardSidebar() {
       icon: <LockOutlined />,
       content: <ChangePassword />,
     },
-    {
-      key: "notification",
-      label: "Cài đặt thông báo",
-      icon: <NotificationOutlined />,
-      content: <div>Thông báo</div>,
-    },
-    {
-      key: "voucher",
-      label: "Kho Voucher",
-      icon: <GiftOutlined />,
-      content: <div>Voucher</div>,
-    },
+    // {
+    //   key: "notification",
+    //   label: "Cài đặt thông báo",
+    //   icon: <NotificationOutlined />,
+    //   content: <div>Thông báo</div>,
+    // },
+    // {
+    //   key: "voucher",
+    //   label: "Kho Voucher",
+    //   icon: <GiftOutlined />,
+    //   content: <div>Voucher</div>,
+    // },
   ];
   const activeItem =
     menuItems.find((item) => item.key === activeKey) ||
@@ -73,7 +73,7 @@ export default function BuyerDashboardSidebar() {
       : null);
 
   return (
-    <div className="min-h-60 flex justify-center bg-[#f5f5f5] py-10 px-2 mt-5">
+    <div className="min-h-[calc(100vh-100px)] flex justify-center bg-[#f5f5f5] py-10 px-2">
       <div className="w-full max-w-6xl flex bg-white shadow overflow-hidden">
         {/* Sidebar */}
         <aside className="w-70 p-5 border-r border-gray-200">

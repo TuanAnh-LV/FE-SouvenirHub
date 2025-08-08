@@ -1,5 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { Input, Badge, Dropdown, Avatar, message, AutoComplete } from "antd";
+import {
+  Input,
+  Badge,
+  Dropdown,
+  Avatar,
+  message,
+  AutoComplete,
+  Button,
+} from "antd";
 import {
   ShoppingOutlined,
   UserOutlined,
@@ -179,13 +187,25 @@ const Header = () => {
               <Search
                 placeholder="Tìm kiếm quà tặng, hộp quà, và nhiều hơn nữa..."
                 allowClear
-                enterButton
                 size="large"
+                value={searchText}
                 onSearch={(value) => {
                   navigate(`/products?q=${encodeURIComponent(value)}`);
                   setSearchText("");
                 }}
                 onChange={(e) => setSearchText(e.target.value)}
+                enterButton={
+                  <Button
+                    type="primary"
+                    style={{
+                      backgroundColor: "#d35400",
+                      borderColor: "#d35400",
+                      borderTopLeftRadius: 0,
+                      borderBottomLeftRadius: 0,
+                    }}
+                    icon={<SearchOutlined />}
+                  />
+                }
               />
             </AutoComplete>
 

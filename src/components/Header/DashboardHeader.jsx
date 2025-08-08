@@ -69,9 +69,6 @@ const DashboardHeader = () => {
 
   const profileMenu = (
     <Menu>
-      <Menu.Item key="profile" icon={<SettingOutlined />}>
-        Hồ sơ cá nhân
-      </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
         Đăng xuất
       </Menu.Item>
