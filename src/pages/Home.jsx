@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ProductService } from "../services/product/product.service";
 import { BlogService } from "../services/blog/blog.service";
 import assets from "../assets/assets";
@@ -23,6 +23,8 @@ const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const personalGiftRef = useRef(null);
+  const businessGiftRef = useRef(null);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -103,6 +105,18 @@ const Home = () => {
   const handleBlogClick = (id) => {
     navigate(`/blog/${id}`);
   };
+  const scrollToRef = (ref) => {
+    if (ref.current) {
+      const offset = 120; // chiều cao header cố định của bạn
+      const top =
+        ref.current.getBoundingClientRect().top + window.scrollY - offset;
+
+      window.scrollTo({
+        top,
+        behavior: "smooth",
+      });
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -138,7 +152,10 @@ const Home = () => {
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
       >
-        <div className="relative rounded-xl overflow-hidden">
+        <div
+          className="relative rounded-xl overflow-hidden cursor-pointer"
+          onClick={() => scrollToRef(personalGiftRef)}
+        >
           <div className="absolute top-0 left-0 w-full bg-[#fff7ed] bg-opacity-90 text-black text-center py-2 z-10">
             Quà tặng cá nhân hóa
           </div>
@@ -148,7 +165,10 @@ const Home = () => {
             className="w-full h-64 object-cover"
           />
         </div>
-        <div className="relative rounded-xl overflow-hidden">
+        <div
+          className="relative rounded-xl overflow-hidden cursor-pointer"
+          onClick={() => scrollToRef(businessGiftRef)}
+        >
           <div className="absolute top-0 left-0 w-full bg-[#fff7ed] bg-opacity-90 text-black text-center py-2 z-10">
             Quà tặng doanh nghiệp
           </div>
@@ -162,6 +182,7 @@ const Home = () => {
 
       {/* Personalized Products */}
       <motion.section
+        ref={personalGiftRef}
         className="mt-12"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -180,6 +201,7 @@ const Home = () => {
 
       {/* Business Products */}
       <motion.section
+        ref={businessGiftRef}
         className="mt-12"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -217,7 +239,11 @@ const Home = () => {
                 onClick={() => handleBlogClick(blog._id)}
               >
                 <img
-                  src={blog.images?.[0]?.url || "/default-blog.jpg"}
+                  src={
+                    blog.images?.[0]?.url ||
+                    blog.thumbnail ||
+                    "/default-blog.jpg"
+                  }
                   alt={blog.title}
                   className="w-full h-40 object-cover rounded-md mb-3"
                 />
